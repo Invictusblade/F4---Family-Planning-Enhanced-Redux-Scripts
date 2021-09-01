@@ -50,23 +50,27 @@ Group Data_Creature
 	Perk Property Creature_STD Auto Const	;Creatures STD that could be given
 	SPELL Property SP_Cumshot_Extra Auto	;What colour is a Creatures Cum
 	int Property int_Surrogate_Worth = 100 Auto	;How much is this in Surrogacy
-	String[] Property Creature_Names_M Auto Const
-	String[] Property Creature_Names_F Auto Const
-	String[] Property Creature_Names Auto Const
-	GlobalVariable property FPFP_Global_Rename_Auto Auto Const Mandatory
+	String[] Property Creature_Names_M Auto Const ;Male Name
+	String[] Property Creature_Names_F Auto Const ;Female Name
+	String[] Property Creature_Names Auto Const ;Unisex Name
+	GlobalVariable property FPFP_Global_Rename_Auto Auto Const Mandatory ;if Naming is Automated
+	
+	
+	Actorbase Property NewFather Auto Const ;Fake Father who will come in to cockblock you
+	Perk Property Creature_Balls Auto Const	;Creatures Perk when given to NPC allows them to father this Race
 EndGroup
 
 Group Data_Adults
-	MiscObject property Caps_Object = None auto
-	Form Property Meat_Object Auto Const
-	Form Property Caged_Object Auto Const
-	int Property int_howmuch_Meat auto
-	int Property int_howmuch_Exile auto
-	int Property int_howmuch_Slave auto
-	string Property fpfp_leavingHome auto
-	string Property fpfp_Butchered auto
-	string Property fpfp_Caged auto
-	string Property fpfp_Slavery auto
+	Form property Caps_Object = None auto ;Money or Product
+	Form Property Meat_Object Auto Const ;Meat Object to be Selected
+	Form Property Caged_Object Auto Const ;Caged Object to be Selected
+	int Property int_howmuch_Meat auto ;How much Meat is the Creature
+	int Property int_howmuch_Exile auto ;How much Product is the Creature
+	int Property int_howmuch_Slave auto ;How much Money is the Creature
+	string Property fpfp_leavingHome auto ;String for Creature being Exiled 
+	string Property fpfp_Butchered auto ;String for Creature being Butchered
+	string Property fpfp_Caged auto ;String for Creature being Caged
+	string Property fpfp_Slavery auto ;String for Creature being Sold
 	
 	Bool Property Adult_Allowed = true Auto Const	;if Creature is allowed to be Bah
 EndGroup
@@ -123,6 +127,13 @@ Bool Function IsRaceMatch(Race akRace) ; uses our properties to check if the rac
 	Return False ; if we get here then there are no keywords AND no match	
 EndFunction
 
+Bool Function IsPerkMatch(Actor akMan) ; uses our properties to check if the race sent to us matches
+	If akMan.HasPerk(Creature_Balls)	
+		Return True ; the given race matches one of ours
+	EndIf
+
+	Return False ; if we get here then there are no keywords AND no match	
+EndFunction
 
 Int Function AdditionalBabies() ; This function is here to ensure that the add.babbs are >= 0
 	

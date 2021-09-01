@@ -1,48 +1,40 @@
 Scriptname FPFP_PlayerPregData Extends FPFP_BasePregData
 
 Group PlayerDataTechnicalProperties
-Potion Property Stimpak Auto Const Mandatory
-Potion Property RadAway Auto Const Mandatory
-MagicEffect Property FortifyResistRadsRadX Auto Const Mandatory
-Keyword Property ObjectTypeAlcohol Auto Const Mandatory
-Keyword Property CA_ObjType_ChemBad Auto Const Mandatory
-GlobalVariable Property FPFP_Global_BabyHealth Auto Const Mandatory
-Perk Property Cannibal01 Auto Const Mandatory
-Perk Property Cannibal02 Auto Const Mandatory
-Perk Property Cannibal03 Auto Const Mandatory
-Perk Property Ghoulish01 Auto Const Mandatory
-Perk Property Ghoulish02 Auto Const Mandatory
-Perk Property Ghoulish03 Auto Const Mandatory
-Perk Property RadResistant01 Auto Const Mandatory
-Perk Property RadResistant02 Auto Const Mandatory
-Perk Property RadResistant03 Auto Const Mandatory
-Perk Property Toughness01 Auto Const Mandatory
-Perk Property Toughness02 Auto Const Mandatory
-Perk Property Toughness03 Auto Const Mandatory
-Perk Property Toughness04 Auto Const Mandatory
-Perk Property Toughness05 Auto Const Mandatory
-Perk Property LeadBelly01 Auto Const Mandatory
+	Potion Property Stimpak Auto Const Mandatory
+	Potion Property RadAway Auto Const Mandatory
+	MagicEffect Property FortifyResistRadsRadX Auto Const Mandatory
+	Keyword Property ObjectTypeAlcohol Auto Const Mandatory
+	Keyword Property CA_ObjType_ChemBad Auto Const Mandatory
+	GlobalVariable Property FPFP_Global_BabyHealth Auto Const Mandatory
+	
+	Perk Property Cannibal01 Auto Const Mandatory
+	Perk Property Cannibal02 Auto Const Mandatory
+	Perk Property Cannibal03 Auto Const Mandatory
+	Perk Property Ghoulish01 Auto Const Mandatory
+	Perk Property Ghoulish02 Auto Const Mandatory
+	Perk Property Ghoulish03 Auto Const Mandatory
+	Perk Property RadResistant01 Auto Const Mandatory
+	Perk Property RadResistant02 Auto Const Mandatory
+	Perk Property RadResistant03 Auto Const Mandatory
+	Perk Property Toughness01 Auto Const Mandatory
+	Perk Property Toughness02 Auto Const Mandatory
+	Perk Property Toughness03 Auto Const Mandatory
+	Perk Property Toughness04 Auto Const Mandatory
+	Perk Property Toughness05 Auto Const Mandatory
+	Perk Property LeadBelly01 Auto Const Mandatory
 
 EndGroup
 
 Group PlayerDataVariableProperties
-Float Property BabyHealth Auto 
-Float Property RadiationDamage Auto 
-Float Property LastBabyHealthUpdate Auto
-Bool Property IsGivingBirth Auto
-Bool Property MorningAfterPill Auto
+	Float Property BabyHealth Auto 
+	Float Property RadiationDamage Auto 
+	Float Property LastBabyHealthUpdate Auto
+	Bool Property IsGivingBirth Auto
+	Bool Property MorningAfterPill Auto
 EndGroup
 
-Perk Property WLD_Perk_Month_01 Auto
-Perk Property WLD_Perk_Month_02 Auto
-Perk Property WLD_Perk_Month_03 Auto
-Perk Property WLD_Perk_Month_04 Auto
-Perk Property WLD_Perk_Month_05 Auto
-Perk Property WLD_Perk_Month_06 Auto
-Perk Property WLD_Perk_Month_07 Auto
-Perk Property WLD_Perk_Month_08 Auto
-Perk Property WLD_Perk_Month_09 Auto
-Perk Property WLD_Perk_Month_010 Auto
+;Perk[] Property WLD_Perk_Month Auto
 Perk Property WLD_Perk_Impregnated_Special Auto
 
 ;Startup handling
@@ -140,6 +132,7 @@ Function Impregnate(Actor akMan) ; When called, akWoman is PlayerREF. animation_
 	
 	if PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 		PlayerREF.RemovePerk(WLD_Perk_Pregnancy_Freezing)
+		Debug.Notification("FP: Freezing Perk Removed...")
 	endIf
 	
 	bool impregnated = false
@@ -236,44 +229,52 @@ If !PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 	
 	float currentMonth = GetCurrentMonth()
 	
-	If currentMonth > 0 && currentMonth < Creature_Cycle
+	If currentMonth < Creature_Cycle
 		UpdateBody(currentMonth)
-		
-		if FPFP_Global_Perks_Monthly.GetValue() == 1
-			PlayerREF.RemovePerk(WLD_Perk_Month_01)
-			PlayerREF.RemovePerk(WLD_Perk_Month_02)
-			PlayerREF.RemovePerk(WLD_Perk_Month_03)
-			PlayerREF.RemovePerk(WLD_Perk_Month_04)
-			PlayerREF.RemovePerk(WLD_Perk_Month_05)
-			PlayerREF.RemovePerk(WLD_Perk_Month_06)
-			PlayerREF.RemovePerk(WLD_Perk_Month_07)
-			PlayerREF.RemovePerk(WLD_Perk_Month_08)
-			PlayerREF.RemovePerk(WLD_Perk_Month_09)
-			PlayerREF.RemovePerk(WLD_Perk_Month_010)	
+				
+		if (FPFP_Global_Perks_Monthly.GetValue() == 1)
+			PlayerREF.RemovePerk(WLD_Perk_Month[0])
+			PlayerREF.RemovePerk(WLD_Perk_Month[1])
+			PlayerREF.RemovePerk(WLD_Perk_Month[2])
+			PlayerREF.RemovePerk(WLD_Perk_Month[3])
+			PlayerREF.RemovePerk(WLD_Perk_Month[4])
+			PlayerREF.RemovePerk(WLD_Perk_Month[5])
+			PlayerREF.RemovePerk(WLD_Perk_Month[6])
+			PlayerREF.RemovePerk(WLD_Perk_Month[7])
+			PlayerREF.RemovePerk(WLD_Perk_Month[8])
+			PlayerREF.RemovePerk(WLD_Perk_Month[9])	
+			PlayerREF.AddPerk(WLD_Perk_Month[currentMonth as int])
 			
-			if currentMonth <= 1
-				PlayerREF.AddPerk(WLD_Perk_Month_01)	
-			elseif currentMonth <= 2
-				PlayerREF.AddPerk(WLD_Perk_Month_02)
-			elseif currentMonth <= 3
-				PlayerREF.AddPerk(WLD_Perk_Month_03)	
-			elseif currentMonth <= 4
-				PlayerREF.AddPerk(WLD_Perk_Month_04)	
-			elseif currentMonth <= 5
-				PlayerREF.AddPerk(WLD_Perk_Month_05)	
-			elseif currentMonth <= 6
-				PlayerREF.AddPerk(WLD_Perk_Month_06)	
-			elseif currentMonth <= 7
-				PlayerREF.AddPerk(WLD_Perk_Month_07)	
-			elseif currentMonth <= 8
-				PlayerREF.AddPerk(WLD_Perk_Month_08)	
-			elseif currentMonth <= 9
-				PlayerREF.AddPerk(WLD_Perk_Month_09)	
-			elseif currentMonth <= 10
-				PlayerREF.AddPerk(WLD_Perk_Month_010)
-			endif
 		endif
+	else
+		UpdateBody(Creature_Cycle)
 		
+		if (FPFP_Global_Perks_Monthly.GetValue() == 1)
+			PlayerREF.RemovePerk(WLD_Perk_Month[0])
+			PlayerREF.RemovePerk(WLD_Perk_Month[1])
+			PlayerREF.RemovePerk(WLD_Perk_Month[2])
+			PlayerREF.RemovePerk(WLD_Perk_Month[3])
+			PlayerREF.RemovePerk(WLD_Perk_Month[4])
+			PlayerREF.RemovePerk(WLD_Perk_Month[5])
+			PlayerREF.RemovePerk(WLD_Perk_Month[6])
+			PlayerREF.RemovePerk(WLD_Perk_Month[7])
+			PlayerREF.RemovePerk(WLD_Perk_Month[8])
+			PlayerREF.RemovePerk(WLD_Perk_Month[9])
+			
+			if currentMonth == Creature_Cycle
+				PlayerREF.AddPerk(WLD_Perk_Month[Creature_Cycle as int])	
+			else
+				if Creature_Cycle > 9
+					PlayerREF.AddPerk(WLD_Perk_Month[9])
+				else
+					PlayerREF.AddPerk(WLD_Perk_Month[currentMonth as int])
+				endIf	
+			endif	
+		endif
+	EndIf
+			
+	
+	If currentMonth > 0 && currentMonth < Creature_Cycle
 		If FirstCheck
 			debug.notification("There's no mistake about it: I'm pregnant!")
 			StartFPEPlayerQuests()
@@ -287,7 +288,8 @@ If !PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 	ElseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() < FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1
 		FPFP_Global_Current_Births_Player.setValue(FPFP_Global_Current_Births_Player.GetValue() + 1)
 		DoLabour()
-	elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 0 || FPFP_Global_Total_Freeze.GetValue() == 2
+		;Sthan:  I am adding these parentheses
+	elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && (FPFP_Global_Total_Freeze.GetValue() == 0 || FPFP_Global_Total_Freeze.GetValue() == 2)
 		PlayerREF.AddPerk(WLD_Perk_Pregnancy_Freezing)
 	elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 3
 		FPFP_Surrogate.Surrogate(false, PlayerREF, FatherRace, NumChildren)
@@ -301,8 +303,9 @@ If !PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 			FPFP_Global_Current_Births_Player.setValue(FPFP_Global_Current_Births_Player.GetValue() + 1)
 			GiveBirth_Multi()
 			endif
-		elseIf Creature_Cycle_Multi == true && currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 0 || FPFP_Global_Total_Freeze.GetValue() == 2
+		elseIf Creature_Cycle_Multi == true && currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && (FPFP_Global_Total_Freeze.GetValue() == 0 || FPFP_Global_Total_Freeze.GetValue() == 2)
 			PlayerREF.AddPerk(WLD_Perk_Pregnancy_Freezing)
+			debug.Notification("Added Freezing Perk:" + "Creature Cycle: ")
 		elseif Creature_Cycle_Multi == true && FPFP_Global_BirthLimit.GetValue() == 0
 			if currentMonth > (Creature_Cycle - FPFP_Global_MultiBirth_Modifier.GetValue())
 				GiveBirth_Multi()
@@ -337,7 +340,7 @@ EndFunction
 Bool Function GiveBirth_Multi()
 	Game.FadeOutGame(true, true, 0, 1, true)
 	Utility.Wait(1)
-	Debug.notification("I am Giving Birth to the first of many.")
+	Debug.notification("I am giving birth to the first of many.")
 	if FPFP_Global_BloodyBirth.GetValue() == 1
 		SP_BloodyBirth.Cast(PlayerREF, PlayerREF)
 	endif
@@ -352,14 +355,12 @@ Bool Function GiveBirth_Multi()
 EndFunction
 
 Function RemovePerks(Race akDadRace)
-	bool FoundFather = false
-	FoundFather = FPFP_BabyHandler.FoundtheFather(akDadRace)
 	
 	if PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 		PlayerREF.RemovePerk(WLD_Perk_Pregnancy_Freezing)
 	endIf
 	
-	if FoundFather
+	if FPFP_BabyHandler.FoundtheFather(akDadRace)
 		Creature_Perk = FPFP_BabyHandler.WhatsmyPerk(akDadRace)
 		if PlayerREF.HasPerk(Creature_Perk)
 			PlayerREF.RemovePerk(Creature_Perk)
@@ -369,6 +370,20 @@ Function RemovePerks(Race akDadRace)
 	if PlayerREF.HasPerk(WLD_Perk_Impregnated_Special)
 		PlayerREF.RemovePerk(WLD_Perk_Impregnated_Special)
 	endif
+	
+	if FPFP_Global_Perks_Monthly.GetValue() == 1	
+		PlayerREF.RemovePerk(WLD_Perk_Month[0])
+		PlayerREF.RemovePerk(WLD_Perk_Month[1])
+		PlayerREF.RemovePerk(WLD_Perk_Month[2])
+		PlayerREF.RemovePerk(WLD_Perk_Month[3])
+		PlayerREF.RemovePerk(WLD_Perk_Month[4])
+		PlayerREF.RemovePerk(WLD_Perk_Month[5])
+		PlayerREF.RemovePerk(WLD_Perk_Month[6])
+		PlayerREF.RemovePerk(WLD_Perk_Month[7])
+		PlayerREF.RemovePerk(WLD_Perk_Month[8])
+		PlayerREF.RemovePerk(WLD_Perk_Month[9])	
+	endif
+	
 EndFunction
 
 
@@ -376,18 +391,7 @@ Bool Function GiveBirth(bool akBirth = True) ; returns whether or not a birth ha
 
 	UnBecomePreggo()
 	
-	if FPFP_Global_Perks_Monthly.GetValue() == 1	
-		PlayerREF.RemovePerk(WLD_Perk_Month_01)
-		PlayerREF.RemovePerk(WLD_Perk_Month_02)
-		PlayerREF.RemovePerk(WLD_Perk_Month_03)
-		PlayerREF.RemovePerk(WLD_Perk_Month_04)
-		PlayerREF.RemovePerk(WLD_Perk_Month_05)
-		PlayerREF.RemovePerk(WLD_Perk_Month_06)
-		PlayerREF.RemovePerk(WLD_Perk_Month_07)
-		PlayerREF.RemovePerk(WLD_Perk_Month_08)
-		PlayerREF.RemovePerk(WLD_Perk_Month_09)
-		PlayerREF.RemovePerk(WLD_Perk_Month_010)	
-	endif
+	
 	
 	RemovePerks(FatherRace)
 
@@ -556,7 +560,7 @@ Event OnRadiationDamage(ObjectReference akPlayerRef, bool abIngested)
 	
 	If FPFP_Global_BabyHealth.GetValue() == 1.0 ; if the baby health option is enabled
 		
-		Debug.Trace(" FPE Player Pregnancy Data has detected radiation.")
+		Debug.Trace("FPE Player Pregnancy Data has detected radiation.")
 		
 		; first, do total rad damage calc
 		float theDamage = 1

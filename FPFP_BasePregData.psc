@@ -94,16 +94,7 @@ Perk Property WLD_Perk_Impregnated_15 Auto
 Perk Property WLD_Perk_Impregnated_30 Auto
 Perk Property WLD_Perk_Cuckold Auto
 Perk Property WLD_Perk_Pregnancies_5 Auto
-Perk Property WLD_Perk_Month_1 Auto
-Perk Property WLD_Perk_Month_2 Auto
-Perk Property WLD_Perk_Month_3 Auto
-Perk Property WLD_Perk_Month_4 Auto
-Perk Property WLD_Perk_Month_5 Auto
-Perk Property WLD_Perk_Month_6 Auto
-Perk Property WLD_Perk_Month_7 Auto
-Perk Property WLD_Perk_Month_8 Auto
-Perk Property WLD_Perk_Month_9 Auto
-Perk Property WLD_Perk_Month_10 Auto
+Perk[] Property WLD_Perk_Month Auto
 Perk Property WLD_Perk_Pregnancy_Freezing Auto
 
 EndGroup
@@ -136,14 +127,6 @@ GlobalVariable property INVB_Global_Infect Auto Const Mandatory
 
 GlobalVariable property INVB_Global_Birth_Death_Chance Auto Const Mandatory
 GlobalVariable property INVB_Global_Racial_Baby_Chance Auto Const Mandatory
-Perk Property WLD_Perk_Racial_Asian Auto
-ActorBase Property ac_Father_Asian Auto					; changed from Actor
-Perk Property WLD_Perk_Racial_Black Auto
-ActorBase Property ac_Father_Black Auto					; changed from Actor
-Perk Property WLD_Perk_Racial_Hispanic Auto
-ActorBase Property ac_Father_Hispanic Auto					; changed from Actor
-Perk Property WLD_Perk_Racial_White Auto
-ActorBase Property ac_Father_White Auto					; changed from Actor
 Keyword Property fpfp_noDaddy Auto
 Keyword Property fpfp_Father Auto
 
@@ -226,7 +209,7 @@ Function TryForFertility()
 EndFunction
 
 Function MakeFertile()
-
+	Trace(ourself.GetActorBase().GetName() + " is fertile!", true)
 	Ourself.EquipItem(FPFP_Fertile, abSilent = True) 
 
 EndFunction
@@ -709,7 +692,7 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 	If !Ourself.IsInFaction(FPFP_Preggo) && Utility.RandomFloat(0,100) <= chance
 		if FPFP_Global_Current_Births.GetValue() <= FPFP_Global_Total_Births.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1
 			impregnated = true
-		elseIf (FPFP_Global_Current_Births.GetValue() >= FPFP_Global_Total_Births.GetValue()) && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 2
+		elseIf (FPFP_Global_Current_Births.GetValue() >= FPFP_Global_Total_Births.GetValue()) && FPFP_Global_BirthLimit.GetValue() == 1 && (FPFP_Global_Total_Freeze.GetValue() == 1 || FPFP_Global_Total_Freeze.GetValue() == 2)
 			impregnated = false
 		elseif FPFP_Global_BirthLimit.GetValue() == 0
 			impregnated = true
@@ -765,38 +748,8 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 	If impregnated && !Ourself.IsInFaction(FPFP_Preggo)
 		int random_seed = Utility.RandomInt(1, 100)
 		if (random_seed <= INVB_Global_Racial_Baby_Chance.GetValue())
-			if akMan.HasPerk(WLD_Perk_Racial_Asian)
-				Actor tempActor = akMan.PlaceAtMe(ac_Father_Asian, abInitiallyDisabled = true) as Actor
-				if akMan == PlayerREF
-					tempActor.AddKeyword(fpfp_Father)
-					tempActor.AddKeyword(fpfp_noDaddy)
-				else
-					tempActor.AddKeyword(fpfp_noDaddy)
-				endif
-				Impregnate(tempActor)
-				tempActor.delete()
-			elseif akMan.HasPerk(WLD_Perk_Racial_Black)
-				Actor tempActor = akMan.PlaceAtMe(ac_Father_Black, abInitiallyDisabled = true) as Actor
-				if akMan == PlayerREF
-					tempActor.AddKeyword(fpfp_Father)
-					tempActor.AddKeyword(fpfp_noDaddy)
-				else
-					tempActor.AddKeyword(fpfp_noDaddy)
-				endif
-				Impregnate(tempActor)
-				tempActor.delete()
-			elseif akMan.HasPerk(WLD_Perk_Racial_Hispanic)
-				Actor tempActor = akMan.PlaceAtMe(ac_Father_Hispanic, abInitiallyDisabled = true) as Actor
-				if akMan == PlayerREF
-					tempActor.AddKeyword(fpfp_Father)
-					tempActor.AddKeyword(fpfp_noDaddy)
-				else
-					tempActor.AddKeyword(fpfp_noDaddy)
-				endif
-				Impregnate(tempActor)
-				tempActor.delete()
-			elseif akMan.HasPerk(WLD_Perk_Racial_White)
-				Actor tempActor = akMan.PlaceAtMe(ac_Father_White, abInitiallyDisabled = true) as Actor
+			if FPFP_BabyHandler.WhatBallsdoIHave(akMan)
+				Actor tempActor = akMan.PlaceAtMe(FPFP_BabyHandler.NewFather(akMan), abInitiallyDisabled = true) as Actor
 				if akMan == PlayerREF
 					tempActor.AddKeyword(fpfp_Father)
 					tempActor.AddKeyword(fpfp_noDaddy)
@@ -818,6 +771,7 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 	Return impregnated
 
 EndFunction
+
 
 Function Impregnate(Actor akMan) ; akMan is the father of the baby
 
@@ -857,27 +811,9 @@ Function Impregnate(Actor akMan) ; akMan is the father of the baby
 	
 	if Creature_Start_1st == true
 		UpdateBody(Creature_Start)
-		if Creature_Start <= 1
-			Ourself.AddPerk(WLD_Perk_Month_1)	
-		elseif Creature_Start <= 2
-			Ourself.AddPerk(WLD_Perk_Month_2)
-		elseif Creature_Start <= 3
-			Ourself.AddPerk(WLD_Perk_Month_3)	
-		elseif Creature_Start <= 4
-			Ourself.AddPerk(WLD_Perk_Month_4)	
-		elseif Creature_Start <= 5
-			Ourself.AddPerk(WLD_Perk_Month_5)	
-		elseif Creature_Start <= 6
-			Ourself.AddPerk(WLD_Perk_Month_6)	
-		elseif Creature_Start <= 7
-			Ourself.AddPerk(WLD_Perk_Month_7)	
-		elseif Creature_Start <= 8
-			Ourself.AddPerk(WLD_Perk_Month_8)	
-		elseif Creature_Start <= 9
-			Ourself.AddPerk(WLD_Perk_Month_9)	
-		elseif Creature_Start <= 10
-			Ourself.AddPerk(WLD_Perk_Month_10)
-		endif
+		if Creature_Start <= 1				
+			Ourself.AddPerk(WLD_Perk_Month[Creature_Start as int])
+		endif					
 		Creature_Start_1st = false
 	endif
 	
@@ -995,19 +931,17 @@ EndFunction
 
 Function UnBecomePreggo()
 	IsPregnant = False
-
 	Ourself.removeFromFaction(FPFP_Preggo)
+	Trace("Pregnancy Removed from " + Ourself.GetActorBase().GetName())
 EndFunction
 
 Function RemovePerks(Race akDadRace)
-	bool FoundFather = false
-	FoundFather = FPFP_BabyHandler.FoundtheFather(akDadRace)
 	
 	if Ourself.HasPerk(WLD_Perk_Pregnancy_Freezing)
 		Ourself.RemovePerk(WLD_Perk_Pregnancy_Freezing)
 	endIf
 	
-	if FoundFather
+	if FPFP_BabyHandler.FoundtheFather(akDadRace)
 		Creature_Perk = FPFP_BabyHandler.WhatsmyPerk(akDadRace)
 		if Ourself.HasPerk(Creature_Perk)
 			Ourself.RemovePerk(Creature_Perk)
@@ -1028,6 +962,19 @@ Function RemovePerks(Race akDadRace)
 			PlayerREF.RemovePerk(WLD_Perk_Pregnancies_5)	
 		endif
 	endif
+	
+	if FPFP_Global_Perks_Monthly.GetValue() == 1 && Ourself != NONE	
+		Ourself.RemovePerk(WLD_Perk_Month[0])
+		Ourself.RemovePerk(WLD_Perk_Month[1])
+		Ourself.RemovePerk(WLD_Perk_Month[2])
+		Ourself.RemovePerk(WLD_Perk_Month[3])
+		Ourself.RemovePerk(WLD_Perk_Month[4])
+		Ourself.RemovePerk(WLD_Perk_Month[5])
+		Ourself.RemovePerk(WLD_Perk_Month[6])
+		Ourself.RemovePerk(WLD_Perk_Month[7])
+		Ourself.RemovePerk(WLD_Perk_Month[8])
+		Ourself.RemovePerk(WLD_Perk_Month[9])
+	endif
 EndFunction
 
 
@@ -1038,44 +985,52 @@ if !Ourself.HasPerk(WLD_Perk_Pregnancy_Freezing)
 	If Ourself.IsDeleted()
 		GiveBirth(false)
 	ElseIf IsPregnant
-		If currentMonth > 0 && currentMonth < Creature_Cycle
+	
+		If currentMonth < Creature_Cycle
 			UpdateBody(currentMonth)
-
-		if (FPFP_Global_Perks_Monthly.GetValue() == 1) && Ourself != PlayerREF && Ourself != NONE
-			Ourself.RemovePerk(WLD_Perk_Month_1)
-			Ourself.RemovePerk(WLD_Perk_Month_2)
-			Ourself.RemovePerk(WLD_Perk_Month_3)
-			Ourself.RemovePerk(WLD_Perk_Month_4)
-			Ourself.RemovePerk(WLD_Perk_Month_5)
-			Ourself.RemovePerk(WLD_Perk_Month_6)
-			Ourself.RemovePerk(WLD_Perk_Month_7)
-			Ourself.RemovePerk(WLD_Perk_Month_8)
-			Ourself.RemovePerk(WLD_Perk_Month_9)
-			Ourself.RemovePerk(WLD_Perk_Month_10)	
-			
-			if currentMonth <= 1
-				Ourself.AddPerk(WLD_Perk_Month_1)	
-			elseif currentMonth <= 2
-				Ourself.AddPerk(WLD_Perk_Month_2)
-			elseif currentMonth <= 3
-				Ourself.AddPerk(WLD_Perk_Month_3)	
-			elseif currentMonth <= 4
-				Ourself.AddPerk(WLD_Perk_Month_4)	
-			elseif currentMonth <= 5
-				Ourself.AddPerk(WLD_Perk_Month_5)	
-			elseif currentMonth <= 6
-				Ourself.AddPerk(WLD_Perk_Month_6)	
-			elseif currentMonth <= 7
-				Ourself.AddPerk(WLD_Perk_Month_7)	
-			elseif currentMonth <= 8
-				Ourself.AddPerk(WLD_Perk_Month_8)	
-			elseif currentMonth <= 9
-				Ourself.AddPerk(WLD_Perk_Month_9)	
-			elseif currentMonth <= 10
-				Ourself.AddPerk(WLD_Perk_Month_10)
+					
+			if (FPFP_Global_Perks_Monthly.GetValue() == 1)
+				Ourself.RemovePerk(WLD_Perk_Month[0])
+				Ourself.RemovePerk(WLD_Perk_Month[1])
+				Ourself.RemovePerk(WLD_Perk_Month[2])
+				Ourself.RemovePerk(WLD_Perk_Month[3])
+				Ourself.RemovePerk(WLD_Perk_Month[4])
+				Ourself.RemovePerk(WLD_Perk_Month[5])
+				Ourself.RemovePerk(WLD_Perk_Month[6])
+				Ourself.RemovePerk(WLD_Perk_Month[7])
+				Ourself.RemovePerk(WLD_Perk_Month[8])
+				Ourself.RemovePerk(WLD_Perk_Month[9])	
+				Ourself.AddPerk(WLD_Perk_Month[currentMonth as int])
+				
 			endif
-		endif	
+		else
+			UpdateBody(Creature_Cycle)
 			
+			if (FPFP_Global_Perks_Monthly.GetValue() == 1)
+				Ourself.RemovePerk(WLD_Perk_Month[0])
+				Ourself.RemovePerk(WLD_Perk_Month[1])
+				Ourself.RemovePerk(WLD_Perk_Month[2])
+				Ourself.RemovePerk(WLD_Perk_Month[3])
+				Ourself.RemovePerk(WLD_Perk_Month[4])
+				Ourself.RemovePerk(WLD_Perk_Month[5])
+				Ourself.RemovePerk(WLD_Perk_Month[6])
+				Ourself.RemovePerk(WLD_Perk_Month[7])
+				Ourself.RemovePerk(WLD_Perk_Month[8])
+				Ourself.RemovePerk(WLD_Perk_Month[9])
+				
+				if currentMonth == Creature_Cycle
+					Ourself.AddPerk(WLD_Perk_Month[Creature_Cycle as int])	
+				else
+					if Creature_Cycle > 9
+						Ourself.AddPerk(WLD_Perk_Month[9])
+					else
+						Ourself.AddPerk(WLD_Perk_Month[currentMonth as int])
+					endIf	
+				endif	
+			endif
+		EndIf
+		
+		If currentMonth > 0 && currentMonth < Creature_Cycle
 			If FirstCheck
 				FirstCheck = False
 			EndIf
@@ -1149,18 +1104,7 @@ Bool Function GiveBirth(bool akBirth = True)
 		Ourself.AddPerk(Perk_Lactation)
 	endif
 	
-	if FPFP_Global_Perks_Monthly.GetValue() == 1 && Ourself != NONE
-		Ourself.RemovePerk(WLD_Perk_Month_1)
-		Ourself.RemovePerk(WLD_Perk_Month_2)
-		Ourself.RemovePerk(WLD_Perk_Month_3)
-		Ourself.RemovePerk(WLD_Perk_Month_4)
-		Ourself.RemovePerk(WLD_Perk_Month_5)
-		Ourself.RemovePerk(WLD_Perk_Month_6)
-		Ourself.RemovePerk(WLD_Perk_Month_7)
-		Ourself.RemovePerk(WLD_Perk_Month_8)
-		Ourself.RemovePerk(WLD_Perk_Month_9)
-		Ourself.RemovePerk(WLD_Perk_Month_10)	
-	endif
+
 	
 	If !Ourself.IsDead()
 		FPFP_Messages.BirthMessage(Ourself, FatherRace)

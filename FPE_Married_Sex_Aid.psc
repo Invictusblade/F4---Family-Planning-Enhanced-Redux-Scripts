@@ -13,7 +13,7 @@ Event OnEffectStart(Actor akActor, Actor akCaster)
 	GlobalVariable INVB_Global_Marriage_Command_Duration = Game.GetFormFromFile(0x01EA5B, "FP_FamilyPlanningEnhanced.esp") as GlobalVariable
 	GlobalVariable INVB_Global_Marriage_Command_Chance = Game.GetFormFromFile(0x01EA80, "FP_FamilyPlanningEnhanced.esp") as GlobalVariable
 	
-	if akActor_Target.HasPerk(WLD_Perk_Married) && PlayerREF.HasPerk(WLD_Perk_Married) || PlayerREF.HasPerk(WLD_Perk_Married_2) || PlayerREF.HasPerk(WLD_Perk_Married_Harem) || PlayerREF.HasPerk(WLD_Perk_Married_Poly)
+	if akActor_Target.HasPerk(WLD_Perk_Married) && (PlayerREF.HasPerk(WLD_Perk_Married) || PlayerREF.HasPerk(WLD_Perk_Married_2) || PlayerREF.HasPerk(WLD_Perk_Married_Harem) || PlayerREF.HasPerk(WLD_Perk_Married_Poly))
 		int random_LList = Utility.RandomInt(1, 100)
 		if (random_LList <= INVB_Global_Marriage_Command_Chance.GetValue())
 			Utility.wait(2.5 as float)

@@ -135,7 +135,7 @@ Function Perk_Remover()
 	endwhile
 	
 	if Worked == true
-		Debug.Notification("Debug: Success- Removed Perks")
+		Debug.Notification("Debug: Success- Removed " + Perk_Pregnancies.Length + " Perks")
 	else
 		Debug.Notification("Debug: Failed- Didn't have or didn't remove Perks")
 	endIf	

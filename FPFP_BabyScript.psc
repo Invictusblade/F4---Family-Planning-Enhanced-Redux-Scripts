@@ -273,6 +273,12 @@ Function GrowIntoChild()
 		Return
 	EndIf
 	
+		If IsDeleted()
+		Trace("WARNING We are deleted! shut er down")
+		StartDelete()
+		Return
+	EndIf
+			   
 	UnregisterForAllEvents()
 	
 	IsGrowingUp = True
@@ -412,6 +418,7 @@ Function StartDelete()
 	
 	UnregisterForAllEvents()
 	
+	CancelTimerGameTime()				  
 	If IsBoundGameObjectAvailable()
 		Delete()
 	EndIf

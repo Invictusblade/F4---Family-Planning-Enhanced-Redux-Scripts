@@ -94,6 +94,7 @@ Function AddBaby(Actor akMother, Race akDadRace, int aiNumChildren, float afRadi
 				theBaby.AddKeyword(Game.GetFormFromFile(0x00019bcb, "SKK476OpenWorld.esp") as Keyword)
 			EndIf 
 			
+			; the following will rename the baby and then pick a new name for the next baby if there is one
 			if (akDadRace != HumanRace && akDadRace != None && WhatsmyName_Auto(akDadRace) == 1) || (akDadRace == HumanRace && FPFP_Global_Rename_Human.GetValue() == 1)
 				RenameAnything.SetRefName(theBaby, BabyName)
 				if BabyName_Which == 1
@@ -168,6 +169,7 @@ Var Function GetBabyType(Race akDadRace, float afRadiation)
 	EndIf
 
 	If akDadRace == HumanRace  ; If the father is a human
+	
 		int random_LList = Utility.RandomInt(1, 100)
 		if (random_LList <= FPFP_Global_Gender_Select.GetValue())
 			BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
@@ -196,23 +198,23 @@ Var Function GetBabyType(Race akDadRace, float afRadiation)
 		
 		If validTypes.Length > 0 ; if there were valid race types added to the array
 		
+			; the following does the initial Baby name to be read at a later time
 			BabyName = FPFP_BabyNames.BabyNames(akDadRace)
 			BabyName_Which = 3
 			theReturn = validTypes[Utility.RandomInt(0,validTypes.Length-1)] ; set our return to one of the valid babytypeaddons
 		
-		Else ; if there were no valid types
-			
-			int random_LList = Utility.RandomInt(1, 100)
-			if (random_LList <= FPFP_Global_Gender_Select.GetValue())
-				BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
-				BabyName_Which = 1
-				Return BabyTypes_F[Utility.RandomInt(0,BabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
-			else
-				BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
-				BabyName_Which = 2
-				Return BabyTypes_M[Utility.RandomInt(0,BabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+			if BabyName == ""
+				int random_LList = Utility.RandomInt(1, 100)
+				if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+					Return BabyTypes_F[Utility.RandomInt(0,BabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+				else
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+					Return BabyTypes_M[Utility.RandomInt(0,BabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+				EndIf
 			EndIf
-			
 		EndIf
 		
 		return theReturn
@@ -220,7 +222,9 @@ Var Function GetBabyType(Race akDadRace, float afRadiation)
 	
 EndFunction
 
-bool Function FoundtheFather(Race akDadRace)
+;the Following read the already existing AddonBabyTypes Quests to receive data from each race
+
+bool Function FoundtheFather(Race akDadRace) ;bool to see if there is a father to be found
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -230,7 +234,7 @@ bool Function FoundtheFather(Race akDadRace)
 	EndWhile
 EndFunction
 
-bool Function AdultAllowed(Race akDadRace)
+bool Function AdultAllowed(Race akDadRace) ;bool to see if the creature would be harvested as an adult
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -240,7 +244,7 @@ bool Function AdultAllowed(Race akDadRace)
 	EndWhile
 EndFunction
 
-Float Function Howlongismypregnancy(Race akDadRace)
+Float Function Howlongismypregnancy(Race akDadRace) ;Float to see how long the pregnancy will be, Default is 9
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -250,7 +254,7 @@ Float Function Howlongismypregnancy(Race akDadRace)
 	EndWhile
 EndFunction
 
-Spell Function WhatColourisMyCum(Race akDadRace)
+Spell Function WhatColourisMyCum(Race akDadRace) ;Spell to choose colour of semen is used by the creature
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -260,7 +264,7 @@ Spell Function WhatColourisMyCum(Race akDadRace)
 	EndWhile
 EndFunction
 
-int Function HowMuch(Race akDadRace)
+int Function HowMuch(Race akDadRace) ;Int to see how much product(Caps or other) the birth is if it is a surrogate birth
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -270,7 +274,7 @@ int Function HowMuch(Race akDadRace)
 	EndWhile
 EndFunction
 
-bool Function WhatTwins(Race akDadRace)
+bool Function WhatTwins(Race akDadRace) ;bool to see if this is a multilevel birth (for example this is mostly used for small creatures that cannot justify the length of time used for pregnancy for a single egg or womb)
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -280,7 +284,7 @@ bool Function WhatTwins(Race akDadRace)
 	EndWhile
 EndFunction
 
-Float Function HowBig(Race akDadRace)
+Float Function HowBig(Race akDadRace) ;Float to see how big the pregnancy will be on the mother
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -290,7 +294,7 @@ Float Function HowBig(Race akDadRace)
 	EndWhile
 EndFunction
 
-Perk Function WhatsmyPerk(Race akDadRace)
+Perk Function WhatsmyPerk(Race akDadRace) ;which perk will be picked if pregnant by this race
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -300,7 +304,7 @@ Perk Function WhatsmyPerk(Race akDadRace)
 	EndWhile
 EndFunction
 
-Potion Function WhatsmyDNA(Race akDadRace)
+Potion Function WhatsmyDNA(Race akDadRace) ;which DNA will be collected when having sex with a condom
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -310,7 +314,7 @@ Potion Function WhatsmyDNA(Race akDadRace)
 	EndWhile
 EndFunction
 
-bool Function WhendoIStart(Race akDadRace)
+bool Function WhendoIStart(Race akDadRace) ;Used for WastelandBreeding or Impregnation, basically if the pregnancy starts halfway through the pregnancy
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -320,7 +324,7 @@ bool Function WhendoIStart(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine(Race akDadRace)
+String Function WhatsmyLine(Race akDadRace) ;the string for Sex Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -330,7 +334,7 @@ String Function WhatsmyLine(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine_Impreg(Race akDadRace)
+String Function WhatsmyLine_Impreg(Race akDadRace) ;the string for Impregnation Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -340,7 +344,7 @@ String Function WhatsmyLine_Impreg(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine_Birth(Race akDadRace)
+String Function WhatsmyLine_Birth(Race akDadRace) ;the string for Birth Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -350,7 +354,7 @@ String Function WhatsmyLine_Birth(Race akDadRace)
 	EndWhile
 EndFunction
 
-Perk Function WhatsmyDisease(Race akDadRace)
+Perk Function WhatsmyDisease(Race akDadRace) ;The Perk(STD) will be picked if infected by this race
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -360,7 +364,7 @@ Perk Function WhatsmyDisease(Race akDadRace)
 	EndWhile
 EndFunction
 
-int Function HowMuch_Exile(Race akDadRace)
+int Function HowMuch_Exile(Race akDadRace) ;Int to see how much product(Caps or other) if the Child or Adult is Exiled
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -370,7 +374,7 @@ int Function HowMuch_Exile(Race akDadRace)
 	EndWhile
 EndFunction
 
-int Function HowMuch_Slave(Race akDadRace)
+int Function HowMuch_Slave(Race akDadRace) ;Int to see how much product(Caps or other) if the Child or Adult is Sold
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -380,7 +384,7 @@ int Function HowMuch_Slave(Race akDadRace)
 	EndWhile
 EndFunction
 
-int Function HowMuch_Butcher(Race akDadRace)
+int Function HowMuch_Butcher(Race akDadRace) ;Int to see how much product(Meat or other) if the Child or Adult is Butchered
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -390,7 +394,7 @@ int Function HowMuch_Butcher(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine_Exile(Race akDadRace)
+String Function WhatsmyLine_Exile(Race akDadRace) ;the string for Exiled Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -400,7 +404,7 @@ String Function WhatsmyLine_Exile(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine_Slave(Race akDadRace)
+String Function WhatsmyLine_Slave(Race akDadRace) ;the string for Sold Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -410,7 +414,7 @@ String Function WhatsmyLine_Slave(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine_Butcher(Race akDadRace)
+String Function WhatsmyLine_Butcher(Race akDadRace) ;the string for Butchered Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -420,7 +424,7 @@ String Function WhatsmyLine_Butcher(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyLine_Caged(Race akDadRace)
+String Function WhatsmyLine_Caged(Race akDadRace) ;the string for Caged Messages
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -430,7 +434,7 @@ String Function WhatsmyLine_Caged(Race akDadRace)
 	EndWhile
 EndFunction
 
-form Function WhatsmyStuff_Exile(Race akDadRace)
+form Function WhatsmyStuff_Exile(Race akDadRace) ;what product(Caps or other) if the Child or Adult is Exiled
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -440,7 +444,7 @@ form Function WhatsmyStuff_Exile(Race akDadRace)
 	EndWhile
 EndFunction
 
-form Function WhatsmyStuff_Butcher(Race akDadRace)
+form Function WhatsmyStuff_Butcher(Race akDadRace) ;what product(Meat or other) if the Child or Adult is Butchered
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -450,7 +454,7 @@ form Function WhatsmyStuff_Butcher(Race akDadRace)
 	EndWhile
 EndFunction
 
-form Function WhatsmyStuff_Caged(Race akDadRace)
+form Function WhatsmyStuff_Caged(Race akDadRace) ;what product(Cage or other) if the Child or Adult is Caged
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -460,7 +464,7 @@ form Function WhatsmyStuff_Caged(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyName(Race akDadRace)
+String Function WhatsmyName(Race akDadRace) ;Unisex name for Baby
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -471,7 +475,7 @@ String Function WhatsmyName(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyName_Male(Race akDadRace)
+String Function WhatsmyName_Male(Race akDadRace) ;Male name for Baby
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -482,7 +486,7 @@ String Function WhatsmyName_Male(Race akDadRace)
 	EndWhile
 EndFunction
 
-String Function WhatsmyName_Female(Race akDadRace)
+String Function WhatsmyName_Female(Race akDadRace) ;Female name for Baby
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -493,7 +497,7 @@ String Function WhatsmyName_Female(Race akDadRace)
 	EndWhile
 EndFunction
 
-float Function WhatsmyName_Auto(Race akDadRace)
+float Function WhatsmyName_Auto(Race akDadRace) ;bool to see if the baby does get named automatically
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -503,7 +507,7 @@ float Function WhatsmyName_Auto(Race akDadRace)
 	EndWhile
 EndFunction
 
-Potion Function Wheresmy_Eggs(Race akDadRace)
+Potion Function Wheresmy_Eggs(Race akDadRace) ;what product(Egg or other) if the Child or Adult is laying
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -514,7 +518,7 @@ Potion Function Wheresmy_Eggs(Race akDadRace)
 EndFunction
 
 
-Potion Function Wheresmy_Milk(Race akDadRace)
+Potion Function Wheresmy_Milk(Race akDadRace) ;what product(Milk or other) if the Child or Adult is Milked
 	int i = 0
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
@@ -524,6 +528,25 @@ Potion Function Wheresmy_Milk(Race akDadRace)
 	EndWhile
 EndFunction
 
+Perk Function WhatBallsdoIHave(Actor akMan) ;The Perk(Balls) will be picked if injected with bah
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsPerkMatch(akMan)
+			return AddonBabyTypes[i].Creature_Balls
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+Actorbase Function NewFather(Actor akMan) ;The Actor will be spawned to impregnate the other person
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsPerkMatch(akMan)
+			return AddonBabyTypes[i].NewFather
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
 
 ;/Int Function RegisterBaby(FPFP_BabyScript akBabyRef) 
 
@@ -696,14 +719,58 @@ Function ShowRegisteredAddons()
 	If AddonBabyTypes.Length < 1
 		Debug.MessageBox("There are no registered addons currently.")
 		Return	
+	else
+		Utility.Wait(5.0)
+		Debug.MessageBox("Please press Escape to Exit MCM (if you are still in MCM)")
+		Debug.MessageBox("Please press Enter or click Ok to proceed")
+		Debug.MessageBox("You will be pressing those buttons for a while if you are using my mod")
+	
+		int i = 0
+		While i < AddonBabyTypes.length
+			Debug.MessageBox(BuildAddonDisplayInfo(AddonBabyTypes[i], i))
+			i+=1
+		Endwhile
 	EndIf
+EndFunction
+
+Function ShowRegisteredAddons_Details()
+
+	If AddonBabyTypes.Length < 1
+		Debug.MessageBox("There are no registered addons currently.")
+		Return	
+	else
+		Utility.Wait(5.0)
+		Debug.MessageBox("Please press Escape to Exit MCM (if you are still in MCM)")
+		
+		Debug.MessageBox("Please press Enter or click Ok to proceed")
+		Debug.MessageBox("You will be pressing those buttons for a while if you are using my mod")
 	
-	int i = 0
-	While i < AddonBabyTypes.length
-		Debug.MessageBox(BuildAddonDisplayInfo(AddonBabyTypes[i], i))
-		i+=1
-	Endwhile
-	
+		int i = 0
+		While i < AddonBabyTypes.length
+			Debug.MessageBox(BuildAddonDisplayInfo_Details(AddonBabyTypes[i], i))
+			i+=1
+		Endwhile
+	EndIf
+EndFunction
+
+Function ShowRegisteredAddons_Adult()
+
+	If AddonBabyTypes.Length < 1
+		Debug.MessageBox("There are no registered addons currently.")
+		Return	
+	else
+		Utility.Wait(5.0)
+		Debug.MessageBox("Please press Escape to Exit MCM (if you are still in MCM)")
+		Debug.MessageBox("Please press Enter or click Ok to proceed")
+		Debug.MessageBox("You will be pressing those buttons for a while if you are using my mod")
+		
+		
+		int i = 0
+		While i < AddonBabyTypes.length
+			Debug.MessageBox(BuildAddonDisplayInfo_Adult(AddonBabyTypes[i], i))
+			i+=1
+		Endwhile
+	EndIf
 EndFunction
 
 String Function BuildAddonDisplayInfo(FPFP_BabyTypeAddon akBabyType, int aiIndex)
@@ -732,6 +799,95 @@ String Function BuildAddonDisplayInfo(FPFP_BabyTypeAddon akBabyType, int aiIndex
 	
 	Return text
 
+EndFunction
+
+String Function BuildAddonDisplayInfo_Details(FPFP_BabyTypeAddon akBabyType, int aiIndex)
+
+	String text = "Baby Addon(More Details) "+aiIndex+" : "+akBabyType.BabyTypeAddonName+"\n"
+
+	text += "Race : " + GetArrayPropertyAsStringName(akBabyType.FatherRace as Form[], 3) +"\n"
+
+	if akBabyType.Creature_Cycle != 0
+		text += "How Long is pregnancy : " + akBabyType.Creature_Cycle as int + " FPE Months Long" +"\n"	
+	endif
+	
+	
+	if akBabyType.Creature_Morph != 0
+		text += "How big is the pregnancy : %" + (akBabyType.Creature_Morph * 100) as int +"\n"
+	endif
+	
+	if akBabyType.int_Surrogate_Worth != 0
+		text += "How much if sold at birth: " + akBabyType.int_Surrogate_Worth +" Caps \n"
+	endif
+	
+	if akBabyType.Creature_Perk != None
+		text += "What impregnation perk : " + akBabyType.Creature_Perk.getname() +"\n"
+	endif
+
+	if akBabyType.Creature_Cum != None
+		text += "What creature cum is given : " + akBabyType.Creature_Cum.getname() +"\n"
+	endif
+	
+	if akBabyType.Egg_Object != None
+		text += "What egg is given : " + akBabyType.Egg_Object.getname() +"\n"
+	endif
+	
+	if akBabyType.Milk_Object != None
+		text += "What drink is given : " + akBabyType.Milk_Object.getname() +"\n"
+	endif
+	
+	if akBabyType.Creature_STD != None
+		text += "What STD is given : " + akBabyType.Creature_STD.getname() +"\n"
+	endif
+	
+	if akBabyType.Creature_Balls != None
+		text += "What perk is required for human impregnation : " + akBabyType.Creature_Balls.getname() +"\n"
+	endif
+	
+	text += "Does the pregnancy have multiple births : " + akBabyType.Creature_Cycle_Multi +"\n"
+	
+	text += "Does this race have an advanced start : " + akBabyType.Creature_Start +"\n"
+	
+	Return text
+
+EndFunction
+
+String Function BuildAddonDisplayInfo_Adult(FPFP_BabyTypeAddon akBabyType, int aiIndex)
+
+	if akBabyType.Caps_Object != None && akBabyType.Meat_Object != None && akBabyType.Caged_Object != None
+		String text = "Baby Addon(Adult Resources) "+aiIndex+" : "+akBabyType.BabyTypeAddonName+"\n"
+
+		text += "Race : " + GetArrayPropertyAsStringName(akBabyType.FatherRace as Form[], 3) +"\n"
+
+		
+		if akBabyType.Caps_Object != None
+			text += "What payment or product : " + akBabyType.Caps_Object.getname() +"\n"
+			text += "How much : " + akBabyType.int_howmuch_Exile  +"\n"
+		endif
+
+		if akBabyType.Meat_Object != None
+			text += "What kind of meat : " + akBabyType.Meat_Object.getname() +"\n"
+			text += "How much meat : " + akBabyType.int_howmuch_Meat  +"\n"
+		endif
+		
+		if akBabyType.Caged_Object != None
+			text += "What kind of cage : " + akBabyType.Caged_Object.getname() +"\n"
+		endif
+		
+		Return text
+	
+	else
+		String text = "Baby Addon(Adult Resources) "+aiIndex+" : "+akBabyType.BabyTypeAddonName+"\n"
+
+		text += "Race : " + GetArrayPropertyAsStringName(akBabyType.FatherRace as Form[], 3) +"\n"
+		
+		text += "Doesn't contain any Adult Resource Data \n"
+		
+		text += "Because this race may be designed for Impregnation Only \n"
+		text += "\n"
+		text += "Please press OK to continue \n"
+		Return text
+	endif
 EndFunction
 
 String Function GetArrayPropertyAsStringName(Form[] akArray, int aiLimit)

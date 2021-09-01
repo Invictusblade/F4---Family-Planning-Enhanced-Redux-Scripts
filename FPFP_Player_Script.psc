@@ -74,6 +74,7 @@ EndGroup
 Group FPEQuests
 {Quests for resetting and gameplay handling}
 Quest property FPFP_Player auto const ; Oh look, it's ourself!
+
 FPFP_BabyHandlerScript property FPFP_BabyHandler auto const
 Quest property FPFP_Announce auto const
 Quest property FPFP_MCM auto const
@@ -804,7 +805,7 @@ Function PlayerDataDump()
 		
 	EndIf
 	
-	PSTrace("Is the player pregnant? : "+ I_PlayerPregnancyInfo.IsPregnant)
+	;PSTrace("Is the player pregnant? : "+ I_PlayerPregnancyInfo.IsPregnant)
 	If I_PlayerPregnancyInfo.IsPregnant
 		PSTrace("Incept date: "+ I_PlayerPregnancyInfo.IncepDate)
 		PSTrace("Current month of pregnancy: "+ ((Utility.GetCurrentGameTime() - I_PlayerPregnancyInfo.IncepDate) / FPFP_Global_Day.GetValue()))

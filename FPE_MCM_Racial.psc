@@ -19,7 +19,7 @@ EndFunction
 
 Function Remove_Perk_Race(Actor akActor)
 	int i
-	while (i <= Perk_Race.Length)
+	while (i <= Perk_Race.Length-1)
 		akActor.removePerk(Perk_Race[i])
 		i += 1
 	endwhile

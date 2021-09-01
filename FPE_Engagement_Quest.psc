@@ -42,7 +42,7 @@ Function Engagement(Actor akActor, bool bool_Submit)
 		
 			Marriage_Message(akActor)
 			
-			if INVB_Global_Marriage_Honeynoon.GetValue() == 1 && akActor != PlayerREF && akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem)
+			if INVB_Global_Marriage_Honeynoon.GetValue() == 1 && akActor != PlayerREF && (akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem))
 				Utility.wait(2.5 as float)
 				FPFP_Messages.Sex_Message(PlayerREF, akActor)
 				Utility.wait(2.5 as float)

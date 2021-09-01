@@ -14,10 +14,10 @@ FPE_Engagement_Quest Property FPFP_Engagement Auto Const Mandatory
 
 Event OnEffectStart(Actor akActor, Actor akCaster)
 	akActor = GetActorUnderCrosshairs()
-	if akActor != PlayerREF && akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem)
+	if akActor != PlayerREF && (akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem))
 		Debug.notification(akActor.GetLeveledActorBase().GetName() +" is already married to you")
 		PlayerREF.additem(potion_self, 1, true)
-	elseif akActor != PlayerREF && !akActor.HasPerk(WLD_Perk_Married) || !akActor.HasPerk(WLD_Perk_Married_2) || !akActor.HasPerk(WLD_Perk_Married_Poly) || !akActor.HasPerk(WLD_Perk_Married_Harem)
+	elseif akActor != PlayerREF && (!akActor.HasPerk(WLD_Perk_Married) || !akActor.HasPerk(WLD_Perk_Married_2) || !akActor.HasPerk(WLD_Perk_Married_Poly) || !akActor.HasPerk(WLD_Perk_Married_Harem))
 		FPFP_Engagement.Engagement(akActor, bool_Submit)
 		akActor.equipitem(Armor_Fake)
 	else

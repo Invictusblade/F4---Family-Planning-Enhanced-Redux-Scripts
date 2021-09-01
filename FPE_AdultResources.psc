@@ -48,12 +48,12 @@ Function Butchered(actor akActor)
 	String string_Message
 	bool Allowed = False
 	
-	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction)
+	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && (akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction))
 		Object_Given = FPFP_BabyHandler.WhatsmyStuff_Butcher(akActor.GetLeveledActorBase().GetRace())
 		int_Object_Given = FPFP_BabyHandler.HowMuch_Butcher(akActor.GetLeveledActorBase().GetRace())
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Butcher(akActor.GetLeveledActorBase().GetRace())
 		Allowed = True
-	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin
+	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && (akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin)
 		Object_Given = FPFP_BabyHandler.WhatsmyStuff_Butcher(akActor.GetLeveledActorBase().GetRace())
 		int_Object_Given = FPFP_BabyHandler.HowMuch_Butcher(akActor.GetLeveledActorBase().GetRace())
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Butcher(akActor.GetLeveledActorBase().GetRace())
@@ -107,11 +107,11 @@ Function SellasSlave(actor akActor)
 	String string_Message
 	bool Allowed = False
 	
-	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction)
+	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && (akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction))
 		int_Object_Given = FPFP_BabyHandler.HowMuch_Slave(akActor.GetLeveledActorBase().GetRace())
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Slave(akActor.GetLeveledActorBase().GetRace())
 		Allowed = True
-	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin
+	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && (akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin)
 		int_Object_Given = FPFP_BabyHandler.HowMuch_Slave(akActor.GetLeveledActorBase().GetRace())
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Slave(akActor.GetLeveledActorBase().GetRace())
 		Allowed = True
@@ -169,12 +169,12 @@ Function LeavingHome(actor akActor)
 	String string_Message
 	bool Allowed = False
 	
-	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction)
+	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && (akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction))
 		Object_Given = FPFP_BabyHandler.WhatsmyStuff_Exile(akActor.GetLeveledActorBase().GetRace())
 		int_Object_Given = FPFP_BabyHandler.HowMuch_Exile(akActor.GetLeveledActorBase().GetRace())
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Exile(akActor.GetLeveledActorBase().GetRace())
 		Allowed = True
-	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin
+	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && (akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin)
 		Object_Given = FPFP_BabyHandler.WhatsmyStuff_Exile(akActor.GetLeveledActorBase().GetRace())
 		int_Object_Given = FPFP_BabyHandler.HowMuch_Exile(akActor.GetLeveledActorBase().GetRace())
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Exile(akActor.GetLeveledActorBase().GetRace())
@@ -235,12 +235,12 @@ Function Caged(actor akActor)
 	String string_Message
 	bool Allowed = False
 	
-	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction)
+	if (FPFP_BabyHandler.AdultAllowed(akActor.GetLeveledActorBase().GetRace())) && (akActor.IsInFaction(FPFP_AdultResource) || akActor.IsInFaction(Game.GetFormFromFile(0x01EA39, "INVB_Wasteland_Zoo.esp") as Faction))
 		Object_Given = FPFP_BabyHandler.WhatsmyStuff_Caged(akActor.GetLeveledActorBase().GetRace())
 		int_Object_Given = 1
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Caged(akActor.GetLeveledActorBase().GetRace())
 		Allowed = True
-	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin
+	elseif FPFP_Global_AllowNONWDF.GetValue() == 1 && (akActor.GetLeveledActorBase() == WorkshopDog || akActor.GetLeveledActorBase() == WorkshopBrahmin)
 		Object_Given = FPFP_BabyHandler.WhatsmyStuff_Caged(akActor.GetLeveledActorBase().GetRace())
 		int_Object_Given = 1
 		string_Message = FPFP_BabyHandler.WhatsmyLine_Caged(akActor.GetLeveledActorBase().GetRace())
@@ -252,7 +252,7 @@ Function Caged(actor akActor)
 			Object_Given = Pokeball_Settler_Female
 		endif
 		int_Object_Given = 1
-		string_Message = "Being Caged has a habit of changing people so enjoy your looks while they last"
+		string_Message = "Being Caged has a habit of changing people, so enjoy your looks while they last"
 		Allowed = True
 	else
 		Allowed = False
