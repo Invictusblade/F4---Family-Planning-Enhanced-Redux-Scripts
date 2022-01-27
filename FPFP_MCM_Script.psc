@@ -137,45 +137,32 @@ GlobalVariable property INVB_Global_Marriage_Honeynoon_Duration Auto
 
 
 GlobalVariable property FPFP_Global_Rename_Baby Auto
-GlobalVariable property FPFP_Global_Creature_Rename_Alien Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Anglers Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Bloatfly Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Bloodworm Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_CaveCricket Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Chicken Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_FogCrawler Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Gatorclaw Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Deathclaw Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_HermitCrab Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Stingwing Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Mirelurk Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Radscorpion Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Brahmiluff Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Brahmin Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Cat Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Dog Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Dogmeat Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Gorilla Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Molerat Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_MutantHound Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_RadGaz Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_RadRabbit Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_RadRat Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_RadStag Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Supermutant Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Synth Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_ViciousDog Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Wolf Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_YaoGuai Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Gulper Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Ghoulrilla Auto Const Mandatory
-GlobalVariable property FPFP_Global_Creature_Rename_Clones Auto Const Mandatory
 GlobalVariable property FPFP_Global_Allow_ReRenaming Auto Const Mandatory
-;3.75
 
+;3.7
+GlobalVariable property INVB_Global_MessageType_Roleplay Auto Const Mandatory
 GlobalVariable property FPFP_Global_BodyType_CBBE Auto Const Mandatory
-
 GlobalVariable property FPFP_Global_BodyType_FG Auto Const Mandatory
+GlobalVariable property FPFP_Global_Creature_Faction Auto Const Mandatory
+;3.75
+GlobalVariable Property FPFP_Global_Synth_hidden Auto Const Mandatory
+GlobalVariable Property FPFP_Global_CreatureDNAOnce Auto Const Mandatory
+GlobalVariable property INVB_Global_Infect_Strength Auto Const Mandatory
+GlobalVariable property FPFP_Global_Viable Auto Const Mandatory
+GlobalVariable property FPFP_Global_Viable_Renaming Auto Const Mandatory
+
+;3.80
+GlobalVariable property FPFP_Global_Breeder_modifier Auto Const Mandatory
+GlobalVariable property FPFP_Global_Monthly_MessageType Auto Const Mandatory
+GlobalVariable property FPFP_Global_Toggle_Creature_Chances Auto Const Mandatory
+GlobalVariable property FPFP_Global_Length_Human Auto Const Mandatory
+GlobalVariable property FPFP_Global_Morph_Human Auto Const Mandatory
+GlobalVariable property FPFP_Global_Length_Ghoul Auto Const Mandatory
+GlobalVariable property FPFP_Global_Morph_Ghoul Auto Const Mandatory
+GlobalVariable property FPFP_Global_Chance_Ghoul Auto Const Mandatory
+GlobalVariable property FPFP_Global_Viable_Ghoul Auto Const Mandatory
+GlobalVariable property FPFP_Global_Cumflation_FemaletoFemale Auto Const Mandatory
+
 EndGroup
 
 String ThisMod = "FP_FamilyPlanningEnhanced"
@@ -241,7 +228,7 @@ Function UpdateSettings(bool firstLoad = false)
 	LoadSetting(FPFP_Global_SelfImpreg, "fSelfImpreg:Misc", 0.0, 1.0)
 	LoadSetting(FPFP_Global_LastingMorphs, "fLastingMorphs:Misc", 0.0, 1.0)
 	LoadSetting(FPFP_Global_NPCPlayerSexUseContraOption, "fNPCPlayerSexUseContraOption:Misc", 0.0, 1.0)
-	LoadSetting(FPFP_Global_SynthImpreg, "fSynthImpreg:Misc", 0.0, 2.0)
+	LoadSetting(FPFP_Global_SynthImpreg, "fSynthImpreg:Misc", 0.0, 1.0)
 	LoadSetting(FPFP_Global_AllowFertileNPC, "fAllowFertileNPC:Chances", 0.0, 1.0)
 	LoadSetting(FPFP_Global_FertileNPC, "fFertileNPC:Chances", 0.1, 10.0)
 	LoadSetting(FPFP_Global_Verbose, "fVerboseLogging:Debugging", 0.0, 1.0)
@@ -250,7 +237,7 @@ Function UpdateSettings(bool firstLoad = false)
 	LoadSetting(FPFP_Global_Cumflation_Power, "fCumflation_power:Cumflation", 0.1, 2.0)
 	LoadSetting(FPFP_Global_Cumflation_Time, "fCumflation_time:Cumflation", 10.0, 240.0)
 	LoadSetting(FPFP_Global_Cumflation_Toggle, "fCumflation_toggle:Cumflation", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Perks_Monthly, "fPerks_Monthly:Preg_Perks", 0.0, 1.0)
+	LoadSetting(FPFP_Global_Perks_Monthly, "fPerks_Monthly:Preg_Perks", 0.0, 2.0)
 	LoadSetting(FPFP_Global_Perks_Father, "fPerks_Father:Preg_Perks", 0.0, 1.0)
 	LoadSetting(FPFP_Global_Perks_Harem, "fPerks_Harem:Preg_Perks", 0.0, 1.0)
 	LoadSetting(FPFP_Global_PlayerClone, "fPlayerClone:Misc", 0.0, 1.0)
@@ -278,9 +265,9 @@ Function UpdateSettings(bool firstLoad = false)
 	LoadSetting(INVB_Global_MessageType_Birth_Chance, "fMessageBirth_Notif_chance:Misc", 0.0, 100.0)
 	LoadSetting(INVB_Global_MessageType_Birth, "fMessageBirth_Notif:Misc", 0.0, 2.0)
 	
-	LoadSetting(FPFP_Global_Perks_Monthly_Enable, "fPerks_Monthly_Enable:Preg_Perks", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Perks_Father_Enable, "fPerks_Father_Enable:Preg_Perks", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Perks_Harem_Enable, "fPerks_Harem_Enable:Preg_Perks", 0.0, 1.0)
+	LoadSetting(FPFP_Global_Perks_Monthly_Enable, "fPerks_Monthly_Enable:Preg_Perks", 0.0, 2.0)
+	LoadSetting(FPFP_Global_Perks_Father_Enable, "fPerks_Father_Enable:Preg_Perks", 0.0, 2.0)
+	LoadSetting(FPFP_Global_Perks_Harem_Enable, "fPerks_Harem_Enable:Preg_Perks", 0.0, 2.0)
 	
 	LoadSetting(INVB_Global_Male_Player_Dominant, "fMale_Dominant_NPC:Misc", 0.0, 1.0)
 	LoadSetting(INVB_Global_Female_Player_Dominant, "fFemale_Dominant_NPC:Misc", 0.0, 1.0)
@@ -303,7 +290,7 @@ Function UpdateSettings(bool firstLoad = false)
 	LoadSetting(FPFP_Global_MultiBirth, "fMultiBirth:Multiple", 0.0, 1.0)
 	LoadSetting(FPFP_Global_MultiBirth_Modifier, "fMultiBirth_Mod:Multiple", 0.0, 5.0)
 	LoadSetting(FPFP_Global_Cumshot, "fCumshot:Misc", 0.0, 1.0)
-	LoadSetting(FPFP_Global_BloodyBirth, "fBloodBirth:Misc", 0.0, 1.0)
+	LoadSetting(FPFP_Global_BloodyBirth, "fBloodyBirth:Misc", 0.0, 1.0)
 	LoadSetting(FPFP_Global_Rename, "fRename:Baby", 0.0, 1.0)
 	LoadSetting(FPFP_Global_Rename_Baby, "fRename_Baby:Baby", 0.0, 1.0)
 	LoadSetting(FPFP_Global_CondomOutcome, "fCondomOutcome:Misc", 0.0, 4.0)
@@ -325,44 +312,45 @@ Function UpdateSettings(bool firstLoad = false)
 	LoadSetting(INVB_Global_Marriage_Command_Chance, "fMarriageSex_Chances:Marriage", 1.0, 100.0)
 	
 	
-	LoadSetting(FPFP_Global_Creature_Rename_Alien, "fCreature_Rename_Alien:Creature", 0.0, 1.0)	
-	LoadSetting(FPFP_Global_Creature_Rename_Anglers, "fCreature_Rename_Anglers:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Bloatfly, "fCreature_Rename_Bloatfly:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Bloodworm, "fCreature_Rename_Bloodworm:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_CaveCricket, "fCreature_Rename_CaveCricket:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Chicken, "fCreature_Rename_Chicken:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_FogCrawler, "fCreature_Rename_FogCrawler:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Gatorclaw, "fCreature_Rename_Gatorclaw:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Deathclaw, "fCreature_Rename_Deathclaw:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_HermitCrab, "fCreature_Rename_HermitCrab:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Stingwing, "fCreature_Rename_Stingwing:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Mirelurk, "fCreature_Rename_Mirelurk:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Radscorpion, "fCreature_Rename_Radscorpion:Creature", 0.0, 1.0)
-	
-	LoadSetting(FPFP_Global_Creature_Rename_Brahmiluff, "fCreature_Rename_Brahmiluff:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Brahmin, "fCreature_Rename_Brahmin:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Cat, "fCreature_Rename_Cat:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Dog, "fCreature_Rename_Dog:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Dogmeat, "fCreature_Rename_Dogmeat:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Gorilla, "fCreature_Rename_Gorilla:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Molerat, "fCreature_Rename_Molerat:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_MutantHound, "fCreature_Rename_MutantHound:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_RadGaz, "fCreature_Rename_RadGaz:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_RadRabbit, "fCreature_Rename_RadRabbit:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_RadRat, "fCreature_Rename_RadRat:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_RadStag, "fCreature_Rename_RadStag:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Supermutant, "fCreature_Rename_Supermutant:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Synth, "fCreature_Rename_Synth:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_ViciousDog, "fCreature_Rename_ViciousDog:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Wolf, "fCreature_Rename_Wolf:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_YaoGuai, "fCreature_Rename_Yaoguai:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Gulper, "fCreature_Rename_Gulper:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Ghoulrilla, "fCreature_Rename_Ghoulrilla:Creature", 0.0, 1.0)
-	LoadSetting(FPFP_Global_Creature_Rename_Clones, "fCreature_Rename_Clones:Creature", 0.0, 1.0)
+
 	LoadSetting(FPFP_Global_Allow_ReRenaming, "fAllow_ReRenaming:Baby", 0.0, 1.0)
 	
+	
+	
+	LoadSetting(INVB_Global_MessageType_Roleplay, "fMessageRoleplay:Misc", 0.0, 5.0)
 	LoadSetting(FPFP_Global_BodyType_CBBE, "fBodyType_CBBE:Misc", 0.0, 1.0)
 	LoadSetting(FPFP_Global_BodyType_FG, "fBodyType_FG:Misc", 0.0, 1.0)
+	LoadSetting(FPFP_Global_Creature_Faction, "fCreature_Faction:Creature", 0.0, 4.0)
+	
+	
+	LoadSetting(FPFP_Global_Synth_hidden, "fSynthHidden:Misc", 0.0, 1.0)
+	LoadSetting(FPFP_Global_CreatureDNAOnce, "fCreature_DNA:Creature", 0.0, 1.0)
+	
+	LoadSetting(INVB_Global_Infect_Strength, "fInfect_Strength:Misc", 0.0, 2.0)
+	
+	LoadSetting(FPFP_Global_Viable, "fChance_Viable:Chances", 0.0, 100.0)
+	
+	LoadSetting(FPFP_Global_Viable_Renaming, "fChance_Viable_Renaming:Baby", 0.0, 2.0)
+	
+	
+	LoadSetting(FPFP_Global_Breeder_modifier, "fBreeder_modifier:Preg_Perks", 0.0, 4.0)
+	LoadSetting(FPFP_Global_Monthly_MessageType, "fMonthNotif:Notifs", 0.0, 2.0)
+	
+	
+	
+	
+	
+	LoadSetting(FPFP_Global_Toggle_Creature_Chances, "fCreature_Chances_Toggle:Chances", 0.0, 1.0)
+	LoadSetting(FPFP_Global_Length_Human, "fPregnancyLength_Human:Misc", 1.0, 20.0)
+	LoadSetting(FPFP_Global_Morph_Human, "fMorph_Human:Misc", 0.0, 2.0)
+	
+	LoadSetting(FPFP_Global_Length_Ghoul, "fPregnancyLength_Ghoul:Misc", 1.0, 20.0)
+	LoadSetting(FPFP_Global_Morph_Ghoul, "fMorph_Ghoul:Misc", 0.0, 2.0)	
+	LoadSetting(FPFP_Global_Chance_Ghoul, "fChance_Ghoul:Chances", 0.0, 100.0)
+	LoadSetting(FPFP_Global_Viable_Ghoul, "fChance_Viable_Ghoul:Chances", 0.0, 100.0)
+	
+	LoadSetting(FPFP_Global_Cumflation_FemaletoFemale, "fCumflation_FemaletoFemale:Cumflation", 0.0, 1.0)
+	
 EndFunction
 
 Function LoadSetting(GlobalVariable akGlobal, string asSetting, float afMin, float afMax)

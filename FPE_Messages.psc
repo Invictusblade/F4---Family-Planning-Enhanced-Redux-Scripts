@@ -2,6 +2,7 @@ Scriptname FPE_Messages extends Quest
 
 Actor Property PlayerREF Auto Const Mandatory
 GlobalVariable property INVB_Global_MessageType_Impreg Auto Const Mandatory
+GlobalVariable property INVB_Global_MessageType_Roleplay Auto Const Mandatory
 GlobalVariable property INVB_Global_MessageType_Impreg_Chance Auto Const Mandatory
 GlobalVariable property INVB_Global_MessageType_sex Auto Const Mandatory
 GlobalVariable property INVB_Global_MessageType_sex_Chance Auto Const Mandatory
@@ -18,6 +19,23 @@ GlobalVariable property INVB_Global_MessageType_Wedding Auto Const
 String[] Property Sex_Movement_Player Auto Const
 String[] Property Sex_Movement_NPC Auto Const
 
+String[] Property Impregnation_Heather Auto Const
+String[] Property Impregnation_Ellen Auto Const
+String[] Property Impregnation_Cass Auto Const
+String[] Property Impregnation_Arcade Auto Const
+String[] Property Impregnation_Boone Auto Const
+String[] Property Impregnation_Raul Auto Const
+String[] Property Impregnation_Veronica Auto Const
+String[] Property Impregnation_Roxy Auto Const
+String[] Property Impregnation_Raven Auto Const
+String[] Property Impregnation_Taryn Auto Const
+String[] Property Impregnation_Sloan Auto Const
+String[] Property Impregnation_Sadie Auto Const
+String[] Property Impregnation_Raina Auto Const
+String[] Property Impregnation_Alerios Auto Const
+String[] Property Impregnation_Tina Auto Const
+String[] Property Impregnation_Eden Auto Const
+String[] Property Impregnation_Cruz Auto Const
 String[] Property Impregnation_Piper Auto Const
 String[] Property Impregnation_Dogmeat Auto Const
 String[] Property Impregnation_Cait Auto Const
@@ -41,8 +59,35 @@ String[] Property Impregnation_Harley Auto Const
 String[] Property Impregnation_Valkyrie Auto Const
 String[] Property Impregnation_Player_M Auto Const
 String[] Property Impregnation_Player_F Auto Const
+String[] Property Impregnation_Player_M_NotNate Auto Const
+String[] Property Impregnation_Player_F_NotNora Auto Const
+String[] Property Impregnation_Player_M_Violent Auto Const
+String[] Property Impregnation_Player_F_Violent Auto Const
+String[] Property Impregnation_Player_M_Enclave Auto Const
+String[] Property Impregnation_Player_F_Enclave Auto Const
+String[] Property Impregnation_Player_M_BoS Auto Const
+String[] Property Impregnation_Player_F_BoS Auto Const
+String[] Property Impregnation_Player_M_Swinger Auto Const
+String[] Property Impregnation_Player_F_Swinger Auto Const
 String[] Property Impregnation_NPC Auto Const
 
+String[] Property Marriage_Heather_M Auto Const
+String[] Property Marriage_Ellen_M Auto Const
+String[] Property Marriage_Cass_M Auto Const
+String[] Property Marriage_Arcade_M Auto Const
+String[] Property Marriage_Boone_M Auto Const
+String[] Property Marriage_Raul_M Auto Const
+String[] Property Marriage_Veronica_M Auto Const
+String[] Property Marriage_Raven_M Auto Const
+String[] Property Marriage_Taryn_M Auto Const
+String[] Property Marriage_Sloan_M Auto Const
+String[] Property Marriage_Sadie_M Auto Const
+String[] Property Marriage_Raina_M Auto Const
+String[] Property Marriage_Alerios_M Auto Const
+String[] Property Marriage_Tina_M Auto Const
+String[] Property Marriage_Eden_M Auto Const
+String[] Property Marriage_Cruz_M Auto Const
+String[] Property Marriage_Roxy_M Auto Const
 String[] Property Marriage_Piper_M Auto Const
 String[] Property Marriage_Dogmeat_M Auto Const
 String[] Property Marriage_Cait_M Auto Const
@@ -66,6 +111,23 @@ String[] Property Marriage_Harley_M Auto Const
 String[] Property Marriage_Valkyrie_M Auto Const
 String[] Property Marriage_NPC_M Auto Const
 
+String[] Property Marriage_Heather_F Auto Const
+String[] Property Marriage_Ellen_F Auto Const
+String[] Property Marriage_Cass_F Auto Const
+String[] Property Marriage_Arcade_F Auto Const
+String[] Property Marriage_Boone_F Auto Const
+String[] Property Marriage_Raul_F Auto Const
+String[] Property Marriage_Veronica_F Auto Const
+String[] Property Marriage_Raven_F Auto Const
+String[] Property Marriage_Taryn_F Auto Const
+String[] Property Marriage_Sloan_F Auto Const
+String[] Property Marriage_Sadie_F Auto Const
+String[] Property Marriage_Raina_F Auto Const
+String[] Property Marriage_Alerios_F Auto Const
+String[] Property Marriage_Tina_F Auto Const
+String[] Property Marriage_Eden_F Auto Const
+String[] Property Marriage_Cruz_F Auto Const
+String[] Property Marriage_Roxy_F Auto Const
 String[] Property Marriage_Piper_F Auto Const
 String[] Property Marriage_Dogmeat_F Auto Const
 String[] Property Marriage_Cait_F Auto Const
@@ -89,6 +151,23 @@ String[] Property Marriage_Harley_F Auto Const
 String[] Property Marriage_Valkyrie_F Auto Const
 String[] Property Marriage_NPC_F Auto Const
 
+String[] Property SexMessage_Heather Auto Const
+String[] Property SexMessage_Ellen Auto Const
+String[] Property SexMessage_Cass Auto Const
+String[] Property SexMessage_Arcade Auto Const
+String[] Property SexMessage_Boone Auto Const
+String[] Property SexMessage_Raul Auto Const
+String[] Property SexMessage_Veronica Auto Const
+String[] Property SexMessage_Raven Auto Const
+String[] Property SexMessage_Taryn Auto Const
+String[] Property SexMessage_Sloan Auto Const
+String[] Property SexMessage_Sadie Auto Const
+String[] Property SexMessage_Raina Auto Const
+String[] Property SexMessage_Alerios Auto Const
+String[] Property SexMessage_Tina Auto Const
+String[] Property SexMessage_Eden Auto Const
+String[] Property SexMessage_Cruz Auto Const
+String[] Property SexMessage_Roxy Auto Const
 String[] Property SexMessage_Piper Auto Const
 String[] Property SexMessage_Dogmeat Auto Const
 String[] Property SexMessage_Cait Auto Const
@@ -112,8 +191,31 @@ String[] Property SexMessage_Harley Auto Const
 String[] Property SexMessage_Valkyrie Auto Const
 String[] Property SexMessage_Player_M Auto Const
 String[] Property SexMessage_Player_F Auto Const
+String[] Property SexMessage_Player_M_NotNate Auto Const
+String[] Property SexMessage_Player_F_NotNora Auto Const
+String[] Property SexMessage_Player_M_Violent Auto Const
+String[] Property SexMessage_Player_F_Violent Auto Const
+String[] Property SexMessage_Player_M_Enclave Auto Const
+String[] Property SexMessage_Player_F_Enclave Auto Const
+String[] Property SexMessage_Player_M_BoS Auto Const
+String[] Property SexMessage_Player_F_BoS Auto Const
+String[] Property SexMessage_Player_M_Swinger Auto Const
+String[] Property SexMessage_Player_F_Swinger Auto Const
 String[] Property SexMessage_NPC Auto Const
 
+String[] Property Birth_Heather Auto Const
+String[] Property Birth_Ellen Auto Const
+String[] Property Birth_Cass Auto Const
+String[] Property Birth_Veronica Auto Const
+String[] Property Birth_Raven Auto Const
+String[] Property Birth_Taryn Auto Const
+String[] Property Birth_Sloan Auto Const
+String[] Property Birth_Sadie Auto Const
+String[] Property Birth_Raina Auto Const
+String[] Property Birth_Tina Auto Const
+String[] Property Birth_Eden Auto Const
+String[] Property Birth_Cruz Auto Const
+String[] Property Birth_Roxy Auto Const
 String[] Property Birth_Piper Auto Const
 String[] Property Birth_Cait Auto Const
 String[] Property Birth_Curie Auto Const
@@ -123,6 +225,16 @@ String[] Property Birth_Harley Auto Const
 String[] Property Birth_Valkyrie Auto Const
 String[] Property Birth_Player_F Auto Const
 String[] Property Birth_NPC Auto Const
+
+
+String[] Property Birth_Player_F_NotNora Auto Const
+String[] Property Birth_Player_F_Violent Auto Const
+String[] Property Birth_Player_F_Enclave Auto Const
+String[] Property Birth_Player_F_BoS Auto Const
+String[] Property Birth_Player_F_Swinger Auto Const
+
+
+
 
 
 ;Vanilla
@@ -140,6 +252,7 @@ Actor Property NickValentine Auto Const
 Actor Property Strong Auto Const
 Actor Property X688 Auto Const
 Actor Property Codsworth Auto Const
+Actor Property V81_TinaDeLuca Auto Const
 
 Function Sex_Movement(Actor akActor, Actor akMan)
 	int random_LList = Utility.RandomInt(1, 100)
@@ -156,7 +269,8 @@ EndFunction
 
 Function Impregnation_Message(Actor akActor, Actor akMan)
 	;DLC_Automatron
-	Actor Ada = Game.GetFormFromFile(0x00FF12, "Fallout4.esm") as Actor
+	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
+	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
 	;DLC_Farharbour
 	Actor LongFellow = Game.GetFormFromFile(0x014602, "DLCCoast.esm") as Actor
 	;DLC_Nukaworld
@@ -166,9 +280,29 @@ Function Impregnation_Message(Actor akActor, Actor akMan)
 	;OutcastsAndRemnants
 	Actor SarahLyons = Game.GetFormFromFile(0x094153, "OutcastsAndRemnants.esp") as Actor
 	;Depravity
-	Actor Harley = Game.GetFormFromFile(0x08598C, "Depravity.esp") as Actor
+	Actor Harley = Game.GetFormFromFile(0x215F51, "Depravity.esp") as Actor
+	Actor Roxy = Game.GetFormFromFile(0x0A5BA2, "Depravity.esp") as Actor
+	Actor Eden = Game.GetFormFromFile(0x1EB177, "Depravity.esp") as Actor
+	Actor Raven = Game.GetFormFromFile(0x21A3CE, "Depravity.esp") as Actor
+	Actor Taryn = Game.GetFormFromFile(0x21E820, "Depravity.esp") as Actor
+	Actor Sloan = Game.GetFormFromFile(0x21E821, "Depravity.esp") as Actor
+	Actor Sadie = Game.GetFormFromFile(0x222C72, "Depravity.esp") as Actor
+	Actor Raina = Game.GetFormFromFile(0x26FC4F, "Depravity.esp") as Actor
+	Actor Cruz_DP = Game.GetFormFromFile(0x933115, "Depravity.esp") as Actor
+	Actor Tina_DP = Game.GetFormFromFile(0x9733D1, "Depravity.esp") as Actor
+	Actor Alerios = Game.GetFormFromFile(0x341458, "Depravity.esp") as Actor
 	;ProjectValkyrie
 	Actor Valkyrie = Game.GetFormFromFile(0x001EEB, "ProjectValkyrie.esp") as Actor
+	;FNVCompanions
+	Actor Cass = Game.GetFormFromFile(0x00180D, "FNVCompanions.esp") as Actor
+	Actor Arcade = Game.GetFormFromFile(0x004177, "FNVCompanions.esp") as Actor
+	Actor Boone = Game.GetFormFromFile(0x003980, "FNVCompanions.esp") as Actor
+	Actor Raul = Game.GetFormFromFile(0x007266, "FNVCompanions.esp") as Actor
+	Actor Veronica = Game.GetFormFromFile(0x00A57A, "FNVCompanions.esp") as Actor
+	;Ellen
+	Actor Ellen = Game.GetFormFromFile(0x002864, "ellen.esp") as Actor
+	;llamaCompanionHeather
+	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
 	
 	NPC_String = ""
 	
@@ -180,6 +314,39 @@ Function Impregnation_Message(Actor akActor, Actor akMan)
 		elseif akMan == PlayerREF && akActor == Valkyrie ;have no idea about the lore of the NPC, so Norse shit
 			int random_Name = Utility.RandomInt(0, Impregnation_Valkyrie.Length-1)
 			NPC_String = Impregnation_Valkyrie[random_Name]
+		elseif akMan == PlayerREF && akActor == Harley
+			int random_Name = Utility.RandomInt(0, Impregnation_Harley.Length-1)
+			NPC_String = Impregnation_Harley[random_Name]
+		elseif akMan == PlayerREF && akActor == Roxy
+			int random_Name = Utility.RandomInt(0, Impregnation_Roxy.Length-1)
+			NPC_String = Impregnation_Roxy[random_Name]
+		elseif akMan == PlayerREF && akActor == Eden
+			int random_Name = Utility.RandomInt(0, Impregnation_Eden.Length-1)
+			NPC_String = Impregnation_Eden[random_Name]
+		elseif akMan == PlayerREF && akActor == Raven
+			int random_Name = Utility.RandomInt(0, Impregnation_Raven.Length-1)
+			NPC_String = Impregnation_Raven[random_Name]
+		elseif akMan == PlayerREF && akActor == Taryn
+			int random_Name = Utility.RandomInt(0, Impregnation_Taryn.Length-1)
+			NPC_String = Impregnation_Taryn[random_Name]
+		elseif akMan == PlayerREF && akActor == Sloan
+			int random_Name = Utility.RandomInt(0, Impregnation_Sloan.Length-1)
+			NPC_String = Impregnation_Sloan[random_Name]
+		elseif akMan == PlayerREF && akActor == Sadie
+			int random_Name = Utility.RandomInt(0, Impregnation_Sadie.Length-1)
+			NPC_String = Impregnation_Sadie[random_Name]
+		elseif akMan == PlayerREF && akActor == Raina
+			int random_Name = Utility.RandomInt(0, Impregnation_Raina.Length-1)
+			NPC_String = Impregnation_Raina[random_Name]
+		elseif akMan == PlayerREF && akActor == Alerios
+			int random_Name = Utility.RandomInt(0, Impregnation_Alerios.Length-1)
+			NPC_String = Impregnation_Alerios[random_Name]
+		elseif akMan == PlayerREF && akActor == Cruz || akActor == Cruz_DP
+			int random_Name = Utility.RandomInt(0, Impregnation_Cruz.Length-1)
+			NPC_String = Impregnation_Cruz[random_Name]
+		elseif akMan == PlayerREF && akActor == V81_TinaDeLuca || akActor == Tina_DP
+			int random_Name = Utility.RandomInt(0, Impregnation_Tina.Length-1)
+			NPC_String = Impregnation_Tina[random_Name]
 		elseif akMan == PlayerREF && akActor == Piper
 			int random_Name = Utility.RandomInt(0, Impregnation_Piper.Length-1)
 			NPC_String = Impregnation_Piper[random_Name]
@@ -231,12 +398,63 @@ Function Impregnation_Message(Actor akActor, Actor akMan)
 		elseif akMan == Gage && akActor == PlayerREF
 			int random_Name = Utility.RandomInt(0, Impregnation_Gage.Length-1)
 			NPC_String = Impregnation_Gage[random_Name]
-		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace
+		elseif akMan == PlayerREF && akActor == Cass
+			int random_Name = Utility.RandomInt(0, Impregnation_Cass.Length-1)
+			NPC_String = Impregnation_Cass[random_Name]
+		elseif akMan == Arcade && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, Impregnation_Arcade.Length-1)
+			NPC_String = Impregnation_Arcade[random_Name]
+		elseif akMan == Boone && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, Impregnation_Boone.Length-1)
+			NPC_String = Impregnation_Boone[random_Name]
+		elseif akMan == Raul && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, Impregnation_Raul.Length-1)
+			NPC_String = Impregnation_Raul[random_Name]
+		elseif akMan == PlayerREF && akActor == Veronica 
+			int random_Name = Utility.RandomInt(0, Impregnation_Veronica.Length-1)
+			NPC_String = Impregnation_Veronica[random_Name]
+		elseif akMan == PlayerREF && akActor == Ellen
+			int random_Name = Utility.RandomInt(0, Impregnation_Ellen.Length-1)
+			NPC_String = Impregnation_Ellen[random_Name]
+		elseif akMan == PlayerREF && akActor == Heather
+			int random_Name = Utility.RandomInt(0, Impregnation_Heather.Length-1)
+			NPC_String = Impregnation_Heather[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 0
 			int random_Name = Utility.RandomInt(0, Impregnation_Player_F.Length-1)
 			NPC_String = Impregnation_Player_F[random_Name]
-		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 0
 			int random_Name = Utility.RandomInt(0, Impregnation_Player_M.Length-1)
 			NPC_String = Impregnation_Player_M[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 1
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_F.Length-1)
+			NPC_String = Impregnation_Player_F_NotNora[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 1
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_M.Length-1)
+			NPC_String = Impregnation_Player_M_NotNate[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 2
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_F.Length-1)
+			NPC_String = Impregnation_Player_F_Violent[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 2
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_M.Length-1)
+			NPC_String = Impregnation_Player_M_Violent[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 3
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_F.Length-1)
+			NPC_String = Impregnation_Player_F_Enclave[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 3
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_M.Length-1)
+			NPC_String = Impregnation_Player_M_Enclave[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 4
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_F.Length-1)
+			NPC_String = Impregnation_Player_F_BoS[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 4
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_M.Length-1)
+			NPC_String = Impregnation_Player_M_BoS[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 5
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_F.Length-1)
+			NPC_String = Impregnation_Player_F_Swinger[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 5
+			int random_Name = Utility.RandomInt(0, Impregnation_Player_M.Length-1)
+			NPC_String = Impregnation_Player_M_Swinger[random_Name]
 		elseif akMan.GetLeveledActorBase().GetRace() == HumanRace && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_NPC.GetValue() == 1
 			int random_Name = Utility.RandomInt(0, Impregnation_NPC.Length-1)
 			NPC_String = Impregnation_NPC[random_Name]		
@@ -264,7 +482,8 @@ EndFunction
 
 Function Marriage_Message_Male(Actor akActor)
 	;DLC_Automatron
-	Actor Ada = Game.GetFormFromFile(0x00FF12, "Fallout4.esm") as Actor
+	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
+	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
 	;DLC_Farharbour
 	Actor LongFellow = Game.GetFormFromFile(0x014602, "DLCCoast.esm") as Actor
 	;DLC_Nukaworld
@@ -274,9 +493,31 @@ Function Marriage_Message_Male(Actor akActor)
 	;OutcastsAndRemnants
 	Actor SarahLyons = Game.GetFormFromFile(0x094153, "OutcastsAndRemnants.esp") as Actor
 	;Depravity
-	Actor Harley = Game.GetFormFromFile(0x08598C, "Depravity.esp") as Actor
+	Actor Harley = Game.GetFormFromFile(0x215F51, "Depravity.esp") as Actor
+	Actor Roxy = Game.GetFormFromFile(0x0A5BA2, "Depravity.esp") as Actor
+	Actor Eden = Game.GetFormFromFile(0x1EB177, "Depravity.esp") as Actor
+	Actor Raven = Game.GetFormFromFile(0x21A3CE, "Depravity.esp") as Actor
+	Actor Taryn = Game.GetFormFromFile(0x21E820, "Depravity.esp") as Actor
+	Actor Sloan = Game.GetFormFromFile(0x21E821, "Depravity.esp") as Actor
+	Actor Sadie = Game.GetFormFromFile(0x222C72, "Depravity.esp") as Actor
+	Actor Raina = Game.GetFormFromFile(0x26FC4F, "Depravity.esp") as Actor
+	Actor Cruz_DP = Game.GetFormFromFile(0x933115, "Depravity.esp") as Actor
+	Actor Tina_DP = Game.GetFormFromFile(0x9733D1, "Depravity.esp") as Actor
+	Actor Alerios = Game.GetFormFromFile(0x341458, "Depravity.esp") as Actor
 	;ProjectValkyrie
 	Actor Valkyrie = Game.GetFormFromFile(0x001EEB, "ProjectValkyrie.esp") as Actor
+	
+	;FNVCompanions
+	Actor Cass = Game.GetFormFromFile(0x00180D, "FNVCompanions.esp") as Actor
+	Actor Arcade = Game.GetFormFromFile(0x004177, "FNVCompanions.esp") as Actor
+	Actor Boone = Game.GetFormFromFile(0x003980, "FNVCompanions.esp") as Actor
+	Actor Raul = Game.GetFormFromFile(0x007266, "FNVCompanions.esp") as Actor
+	Actor Veronica = Game.GetFormFromFile(0x00A57A, "FNVCompanions.esp") as Actor
+	;Ellen
+	Actor Ellen = Game.GetFormFromFile(0x002864, "ellen.esp") as Actor
+	;llamaCompanionHeather
+	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
+	
 	
 		NPC_String = ""
 		if akActor == SarahLyons
@@ -285,6 +526,39 @@ Function Marriage_Message_Male(Actor akActor)
 		elseif akActor == Valkyrie ;have no idea about the lore of the NPC, so Norse shit
 			int random_Name = Utility.RandomInt(0, Marriage_Valkyrie_M.Length-1)
 			NPC_String = Marriage_Valkyrie_M[random_Name]
+		elseif akActor == Harley
+			int random_Name = Utility.RandomInt(0, Marriage_Harley_M.Length-1)
+			NPC_String = Marriage_Harley_M[random_Name]
+		elseif akActor == Roxy
+			int random_Name = Utility.RandomInt(0, Marriage_Roxy_M.Length-1)
+			NPC_String = Marriage_Roxy_M[random_Name]
+		elseif akActor == Eden
+			int random_Name = Utility.RandomInt(0, Marriage_Eden_M.Length-1)
+			NPC_String = Marriage_Eden_M[random_Name]
+		elseif akActor == Raven
+			int random_Name = Utility.RandomInt(0, Marriage_Raven_M.Length-1)
+			NPC_String = Marriage_Raven_M[random_Name]
+		elseif akActor == Taryn
+			int random_Name = Utility.RandomInt(0, Marriage_Taryn_M.Length-1)
+			NPC_String = Marriage_Taryn_M[random_Name]
+		elseif akActor == Sloan
+			int random_Name = Utility.RandomInt(0, Marriage_Sloan_M.Length-1)
+			NPC_String = Marriage_Sloan_M[random_Name]
+		elseif akActor == Sadie
+			int random_Name = Utility.RandomInt(0, Marriage_Sadie_M.Length-1)
+			NPC_String = Marriage_Sadie_M[random_Name]
+		elseif akActor == Raina
+			int random_Name = Utility.RandomInt(0, Marriage_Raina_M.Length-1)
+			NPC_String = Marriage_Raina_M[random_Name]
+		elseif akActor == Alerios
+			int random_Name = Utility.RandomInt(0, Marriage_Alerios_M.Length-1)
+			NPC_String = Marriage_Alerios_M[random_Name]
+		elseif akActor == Cruz || akActor == Cruz_DP
+			int random_Name = Utility.RandomInt(0, Marriage_Cruz_M.Length-1)
+			NPC_String = Marriage_Cruz_M[random_Name]
+		elseif akActor == V81_TinaDeLuca || akActor == Tina_DP
+			int random_Name = Utility.RandomInt(0, Marriage_Tina_M.Length-1)
+			NPC_String = Marriage_Tina_M[random_Name]
 		elseif akActor == Piper
 			int random_Name = Utility.RandomInt(0, Marriage_Piper_M.Length-1)
 			NPC_String = Marriage_Piper_M[random_Name]
@@ -336,6 +610,27 @@ Function Marriage_Message_Male(Actor akActor)
 		elseif akActor == Gage
 			int random_Name = Utility.RandomInt(0, Marriage_Gage_M.Length-1)
 			NPC_String = Marriage_Gage_M[random_Name]
+		elseif akActor == Cass
+			int random_Name = Utility.RandomInt(0, Marriage_Cass_M.Length-1)
+			NPC_String = Marriage_Cass_M[random_Name]
+		elseif akActor == Arcade 
+			int random_Name = Utility.RandomInt(0, Marriage_Arcade_M.Length-1)
+			NPC_String = Marriage_Arcade_M[random_Name]
+		elseif akActor == Boone
+			int random_Name = Utility.RandomInt(0, Marriage_Boone_M.Length-1)
+			NPC_String = Marriage_Boone_M[random_Name]
+		elseif akActor == Raul
+			int random_Name = Utility.RandomInt(0, Marriage_Raul_M.Length-1)
+			NPC_String = Marriage_Raul_M[random_Name]
+		elseif akActor == Veronica 
+			int random_Name = Utility.RandomInt(0, Marriage_Veronica_M.Length-1)
+			NPC_String = Marriage_Veronica_M[random_Name]
+		elseif akActor == Ellen
+			int random_Name = Utility.RandomInt(0, Marriage_Ellen_M.Length-1)
+			NPC_String = Marriage_Ellen_M[random_Name]
+		elseif akActor == Heather
+			int random_Name = Utility.RandomInt(0, Marriage_Heather_M.Length-1)
+			NPC_String = Marriage_Heather_M[random_Name]
 		elseif akActor.GetLeveledActorBase().GetRace() == HumanRace
 			int random_Name = Utility.RandomInt(0, Marriage_NPC_M.Length-1)
 			NPC_String = Marriage_NPC_M[random_Name]
@@ -355,7 +650,8 @@ EndFunction
 
 Function Marriage_Message_Female(Actor akActor)
 	;DLC_Automatron
-	Actor Ada = Game.GetFormFromFile(0x00FF12, "Fallout4.esm") as Actor
+	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
+	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
 	;DLC_Farharbour
 	Actor LongFellow = Game.GetFormFromFile(0x014602, "DLCCoast.esm") as Actor
 	;DLC_Nukaworld
@@ -365,9 +661,29 @@ Function Marriage_Message_Female(Actor akActor)
 	;OutcastsAndRemnants
 	Actor SarahLyons = Game.GetFormFromFile(0x094153, "OutcastsAndRemnants.esp") as Actor
 	;Depravity
-	Actor Harley = Game.GetFormFromFile(0x08598C, "Depravity.esp") as Actor
+	Actor Harley = Game.GetFormFromFile(0x215F51, "Depravity.esp") as Actor
+	Actor Roxy = Game.GetFormFromFile(0x0A5BA2, "Depravity.esp") as Actor
+	Actor Eden = Game.GetFormFromFile(0x1EB177, "Depravity.esp") as Actor
+	Actor Raven = Game.GetFormFromFile(0x21A3CE, "Depravity.esp") as Actor
+	Actor Taryn = Game.GetFormFromFile(0x21E820, "Depravity.esp") as Actor
+	Actor Sloan = Game.GetFormFromFile(0x21E821, "Depravity.esp") as Actor
+	Actor Sadie = Game.GetFormFromFile(0x222C72, "Depravity.esp") as Actor
+	Actor Raina = Game.GetFormFromFile(0x26FC4F, "Depravity.esp") as Actor
+	Actor Cruz_DP = Game.GetFormFromFile(0x933115, "Depravity.esp") as Actor
+	Actor Tina_DP = Game.GetFormFromFile(0x9733D1, "Depravity.esp") as Actor
+	Actor Alerios = Game.GetFormFromFile(0x341458, "Depravity.esp") as Actor
 	;ProjectValkyrie
 	Actor Valkyrie = Game.GetFormFromFile(0x001EEB, "ProjectValkyrie.esp") as Actor
+	;FNVCompanions
+	Actor Cass = Game.GetFormFromFile(0x00180D, "FNVCompanions.esp") as Actor
+	Actor Arcade = Game.GetFormFromFile(0x004177, "FNVCompanions.esp") as Actor
+	Actor Boone = Game.GetFormFromFile(0x003980, "FNVCompanions.esp") as Actor
+	Actor Raul = Game.GetFormFromFile(0x007266, "FNVCompanions.esp") as Actor
+	Actor Veronica = Game.GetFormFromFile(0x00A57A, "FNVCompanions.esp") as Actor
+	;Ellen
+	Actor Ellen = Game.GetFormFromFile(0x002864, "ellen.esp") as Actor
+	;llamaCompanionHeather
+	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
 	
 		NPC_String = ""
 		if akActor == SarahLyons
@@ -376,6 +692,39 @@ Function Marriage_Message_Female(Actor akActor)
 		elseif akActor == Valkyrie ;have no idea about the lore of the NPC, so Norse shit
 			int random_Name = Utility.RandomInt(0, Marriage_Valkyrie_F.Length-1)
 			NPC_String = Marriage_Valkyrie_F[random_Name]
+		elseif akActor == Harley
+			int random_Name = Utility.RandomInt(0, Marriage_Harley_F.Length-1)
+			NPC_String = Marriage_Harley_F[random_Name]
+		elseif akActor == Roxy
+			int random_Name = Utility.RandomInt(0, Marriage_Roxy_F.Length-1)
+			NPC_String = Marriage_Roxy_F[random_Name]
+		elseif akActor == Eden
+			int random_Name = Utility.RandomInt(0, Marriage_Eden_F.Length-1)
+			NPC_String = Marriage_Eden_F[random_Name]
+		elseif akActor == Raven
+			int random_Name = Utility.RandomInt(0, Marriage_Raven_F.Length-1)
+			NPC_String = Marriage_Raven_F[random_Name]
+		elseif akActor == Taryn
+			int random_Name = Utility.RandomInt(0, Marriage_Taryn_F.Length-1)
+			NPC_String = Marriage_Taryn_F[random_Name]
+		elseif akActor == Sloan
+			int random_Name = Utility.RandomInt(0, Marriage_Sloan_F.Length-1)
+			NPC_String = Marriage_Sloan_F[random_Name]
+		elseif akActor == Sadie
+			int random_Name = Utility.RandomInt(0, Marriage_Sadie_F.Length-1)
+			NPC_String = Marriage_Sadie_F[random_Name]
+		elseif akActor == Raina
+			int random_Name = Utility.RandomInt(0, Marriage_Raina_F.Length-1)
+			NPC_String = Marriage_Raina_F[random_Name]
+		elseif akActor == Alerios
+			int random_Name = Utility.RandomInt(0, Marriage_Alerios_F.Length-1)
+			NPC_String = Marriage_Alerios_F[random_Name]
+		elseif akActor == Cruz || akActor == Cruz_DP
+			int random_Name = Utility.RandomInt(0, Marriage_Cruz_F.Length-1)
+			NPC_String = Marriage_Cruz_F[random_Name]
+		elseif akActor == V81_TinaDeLuca || akActor == Tina_DP
+			int random_Name = Utility.RandomInt(0, Marriage_Tina_F.Length-1)
+			NPC_String = Marriage_Tina_F[random_Name]
 		elseif akActor == Piper
 			int random_Name = Utility.RandomInt(0, Marriage_Piper_F.Length-1)
 			NPC_String = Marriage_Piper_F[random_Name]
@@ -427,6 +776,27 @@ Function Marriage_Message_Female(Actor akActor)
 		elseif akActor == Gage
 			int random_Name = Utility.RandomInt(0, Marriage_Gage_F.Length-1)
 			NPC_String = Marriage_Gage_F[random_Name]
+		elseif akActor == Cass
+			int random_Name = Utility.RandomInt(0, Marriage_Cass_F.Length-1)
+			NPC_String = Marriage_Cass_F[random_Name]
+		elseif akActor == Arcade 
+			int random_Name = Utility.RandomInt(0, Marriage_Arcade_F.Length-1)
+			NPC_String = Marriage_Arcade_F[random_Name]
+		elseif akActor == Boone
+			int random_Name = Utility.RandomInt(0, Marriage_Boone_F.Length-1)
+			NPC_String = Marriage_Boone_F[random_Name]
+		elseif akActor == Raul
+			int random_Name = Utility.RandomInt(0, Marriage_Raul_F.Length-1)
+			NPC_String = Marriage_Raul_F[random_Name]
+		elseif akActor == Veronica 
+			int random_Name = Utility.RandomInt(0, Marriage_Veronica_F.Length-1)
+			NPC_String = Marriage_Veronica_F[random_Name]
+		elseif akActor == Ellen
+			int random_Name = Utility.RandomInt(0, Marriage_Ellen_F.Length-1)
+			NPC_String = Marriage_Ellen_F[random_Name]
+		elseif akActor == Heather
+			int random_Name = Utility.RandomInt(0, Marriage_Heather_F.Length-1)
+			NPC_String = Marriage_Heather_F[random_Name]
 		elseif akActor.GetLeveledActorBase().GetRace() == HumanRace
 			int random_Name = Utility.RandomInt(0, Marriage_NPC_F.Length-1)
 			NPC_String = Marriage_NPC_F[random_Name]
@@ -448,7 +818,8 @@ EndFunction
 
 Function Sex_Message(Actor akActor, Actor akMan)
 	;DLC_Automatron
-	Actor Ada = Game.GetFormFromFile(0x00FF12, "Fallout4.esm") as Actor
+	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
+	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
 	;DLC_Farharbour
 	Actor LongFellow = Game.GetFormFromFile(0x014602, "DLCCoast.esm") as Actor
 	;DLC_Nukaworld
@@ -458,9 +829,30 @@ Function Sex_Message(Actor akActor, Actor akMan)
 	;OutcastsAndRemnants
 	Actor SarahLyons = Game.GetFormFromFile(0x094153, "OutcastsAndRemnants.esp") as Actor
 	;Depravity
-	Actor Harley = Game.GetFormFromFile(0x08598C, "Depravity.esp") as Actor
+	Actor Harley = Game.GetFormFromFile(0x215F51, "Depravity.esp") as Actor
+	Actor Roxy = Game.GetFormFromFile(0x0A5BA2, "Depravity.esp") as Actor
+	Actor Eden = Game.GetFormFromFile(0x1EB177, "Depravity.esp") as Actor
+	Actor Raven = Game.GetFormFromFile(0x21A3CE, "Depravity.esp") as Actor
+	Actor Taryn = Game.GetFormFromFile(0x21E820, "Depravity.esp") as Actor
+	Actor Sloan = Game.GetFormFromFile(0x21E821, "Depravity.esp") as Actor
+	Actor Sadie = Game.GetFormFromFile(0x222C72, "Depravity.esp") as Actor
+	Actor Raina = Game.GetFormFromFile(0x26FC4F, "Depravity.esp") as Actor
+	Actor Cruz_DP = Game.GetFormFromFile(0x933115, "Depravity.esp") as Actor
+	Actor Tina_DP = Game.GetFormFromFile(0x9733D1, "Depravity.esp") as Actor
+	Actor Alerios = Game.GetFormFromFile(0x341458, "Depravity.esp") as Actor
 	;ProjectValkyrie
 	Actor Valkyrie = Game.GetFormFromFile(0x001EEB, "ProjectValkyrie.esp") as Actor
+	;FNVCompanions
+	Actor Cass = Game.GetFormFromFile(0x00180D, "FNVCompanions.esp") as Actor
+	Actor Arcade = Game.GetFormFromFile(0x004177, "FNVCompanions.esp") as Actor
+	Actor Boone = Game.GetFormFromFile(0x003980, "FNVCompanions.esp") as Actor
+	Actor Raul = Game.GetFormFromFile(0x007266, "FNVCompanions.esp") as Actor
+	Actor Veronica = Game.GetFormFromFile(0x00A57A, "FNVCompanions.esp") as Actor
+	;Ellen
+	Actor Ellen = Game.GetFormFromFile(0x002864, "ellen.esp") as Actor
+	;llamaCompanionHeather
+	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
+	
 	
 		NPC_String = ""
 	int random_LList = Utility.RandomInt(1, 100)
@@ -471,6 +863,39 @@ Function Sex_Message(Actor akActor, Actor akMan)
 		elseif akMan == PlayerREF && akActor == Valkyrie ;have no idea about the lore of the NPC, so Norse shit
 			int random_Name = Utility.RandomInt(0, SexMessage_Valkyrie.Length-1)
 			NPC_String = SexMessage_Valkyrie[random_Name]
+		elseif akMan == PlayerREF && akActor == Harley
+			int random_Name = Utility.RandomInt(0, SexMessage_Harley.Length-1)
+			NPC_String = SexMessage_Harley[random_Name]
+		elseif akMan == PlayerREF && akActor == Roxy
+			int random_Name = Utility.RandomInt(0, SexMessage_Roxy.Length-1)
+			NPC_String = SexMessage_Roxy[random_Name]
+		elseif akMan == PlayerREF && akActor == Eden
+			int random_Name = Utility.RandomInt(0, SexMessage_Eden.Length-1)
+			NPC_String = SexMessage_Eden[random_Name]
+		elseif akMan == PlayerREF && akActor == Raven
+			int random_Name = Utility.RandomInt(0, SexMessage_Raven.Length-1)
+			NPC_String = SexMessage_Raven[random_Name]
+		elseif akMan == PlayerREF && akActor == Taryn
+			int random_Name = Utility.RandomInt(0, SexMessage_Taryn.Length-1)
+			NPC_String = SexMessage_Taryn[random_Name]
+		elseif akMan == PlayerREF && akActor == Sloan
+			int random_Name = Utility.RandomInt(0, SexMessage_Sloan.Length-1)
+			NPC_String = SexMessage_Sloan[random_Name]
+		elseif akMan == PlayerREF && akActor == Sadie
+			int random_Name = Utility.RandomInt(0, SexMessage_Sadie.Length-1)
+			NPC_String = SexMessage_Sadie[random_Name]
+		elseif akMan == PlayerREF && akActor == Raina
+			int random_Name = Utility.RandomInt(0, SexMessage_Raina.Length-1)
+			NPC_String = SexMessage_Raina[random_Name]
+		elseif akMan == Alerios && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Alerios.Length-1)
+			NPC_String = SexMessage_Alerios[random_Name]
+		elseif akMan == PlayerREF && akActor == Cruz || akActor == Cruz_DP
+			int random_Name = Utility.RandomInt(0, SexMessage_Cruz.Length-1)
+			NPC_String = SexMessage_Cruz[random_Name]
+		elseif akMan == PlayerREF && akActor == V81_TinaDeLuca || akActor == Tina_DP
+			int random_Name = Utility.RandomInt(0, SexMessage_Tina.Length-1)
+			NPC_String = SexMessage_Tina[random_Name]
 		elseif akMan == PlayerREF && akActor == Piper
 			int random_Name = Utility.RandomInt(0, SexMessage_Piper.Length-1)
 			NPC_String = SexMessage_Piper[random_Name]
@@ -522,12 +947,63 @@ Function Sex_Message(Actor akActor, Actor akMan)
 		elseif akMan == Gage && akActor == PlayerREF
 			int random_Name = Utility.RandomInt(0, SexMessage_Gage.Length-1)
 			NPC_String = SexMessage_Gage[random_Name]
-		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace
+		elseif akActor == Cass && akMan == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Cass.Length-1)
+			NPC_String = SexMessage_Cass[random_Name]
+		elseif akMan == Arcade  && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Arcade.Length-1)
+			NPC_String = SexMessage_Arcade[random_Name]
+		elseif akMan == Boone && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Boone.Length-1)
+			NPC_String = SexMessage_Boone[random_Name]
+		elseif akMan == Raul && akActor == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Raul.Length-1)
+			NPC_String = SexMessage_Raul[random_Name]
+		elseif akActor == Veronica  && akMan == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Veronica.Length-1)
+			NPC_String = SexMessage_Veronica[random_Name]
+		elseif akActor == Ellen && akMan == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Ellen.Length-1)
+			NPC_String = SexMessage_Ellen[random_Name]
+		elseif akActor == Heather && akMan == PlayerREF
+			int random_Name = Utility.RandomInt(0, SexMessage_Heather.Length-1)
+			NPC_String = SexMessage_Heather[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 0
 			int random_Name = Utility.RandomInt(0, SexMessage_Player_F.Length-1)
 			NPC_String = SexMessage_Player_F[random_Name]
-		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 0
 			int random_Name = Utility.RandomInt(0, SexMessage_Player_M.Length-1)
 			NPC_String = SexMessage_Player_M[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 1
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_F.Length-1)
+			NPC_String = SexMessage_Player_F_NotNora[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 1
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_M.Length-1)
+			NPC_String = SexMessage_Player_M_NotNate[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 2
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_F.Length-1)
+			NPC_String = SexMessage_Player_F_Violent[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 2
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_M.Length-1)
+			NPC_String = SexMessage_Player_M_Violent[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 3
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_F.Length-1)
+			NPC_String = SexMessage_Player_F_Enclave[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 3
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_M.Length-1)
+			NPC_String = SexMessage_Player_M_Enclave[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 4
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_F.Length-1)
+			NPC_String = SexMessage_Player_F_BoS[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 4
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_M.Length-1)
+			NPC_String = SexMessage_Player_M_BoS[random_Name]
+		elseif akActor == PlayerREF && akMan.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 5
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_F.Length-1)
+			NPC_String = SexMessage_Player_F_Swinger[random_Name]
+		elseif akMan == PlayerREF && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_Roleplay.GetValue() == 5
+			int random_Name = Utility.RandomInt(0, SexMessage_Player_M.Length-1)
+			NPC_String = SexMessage_Player_M_Swinger[random_Name]
 		elseif akMan.GetLeveledActorBase().GetRace() == HumanRace && akActor.GetLeveledActorBase().GetRace() == HumanRace && INVB_Global_MessageType_NPC.GetValue() == 1
 			int random_Name = Utility.RandomInt(0, SexMessage_NPC.Length-1)
 			NPC_String = SexMessage_NPC[random_Name]		
@@ -565,7 +1041,8 @@ EndFunction
 
 Function BirthMessage(Actor akActor, Race akDadRace)
 	;DLC_Automatron
-	Actor Ada = Game.GetFormFromFile(0x00FF12, "Fallout4.esm") as Actor
+	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
+	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
 	;DLC_Farharbour
 	Actor LongFellow = Game.GetFormFromFile(0x014602, "DLCCoast.esm") as Actor
 	;DLC_Nukaworld
@@ -575,9 +1052,27 @@ Function BirthMessage(Actor akActor, Race akDadRace)
 	;OutcastsAndRemnants
 	Actor SarahLyons = Game.GetFormFromFile(0x094153, "OutcastsAndRemnants.esp") as Actor
 	;Depravity
-	Actor Harley = Game.GetFormFromFile(0x08598C, "Depravity.esp") as Actor
+	Actor Harley = Game.GetFormFromFile(0x215F51, "Depravity.esp") as Actor
+	Actor Roxy = Game.GetFormFromFile(0x0A5BA2, "Depravity.esp") as Actor
+	Actor Eden = Game.GetFormFromFile(0x1EB177, "Depravity.esp") as Actor
+	Actor Raven = Game.GetFormFromFile(0x21A3CE, "Depravity.esp") as Actor
+	Actor Taryn = Game.GetFormFromFile(0x21E820, "Depravity.esp") as Actor
+	Actor Sloan = Game.GetFormFromFile(0x21E821, "Depravity.esp") as Actor
+	Actor Sadie = Game.GetFormFromFile(0x222C72, "Depravity.esp") as Actor
+	Actor Raina = Game.GetFormFromFile(0x26FC4F, "Depravity.esp") as Actor
+	Actor Cruz_DP = Game.GetFormFromFile(0x933115, "Depravity.esp") as Actor
+	Actor Tina_DP = Game.GetFormFromFile(0x9733D1, "Depravity.esp") as Actor
 	;ProjectValkyrie
 	Actor Valkyrie = Game.GetFormFromFile(0x001EEB, "ProjectValkyrie.esp") as Actor
+	;FNVCompanions
+	Actor Cass = Game.GetFormFromFile(0x00180D, "FNVCompanions.esp") as Actor
+	Actor Veronica = Game.GetFormFromFile(0x00A57A, "FNVCompanions.esp") as Actor
+	;Ellen
+	Actor Ellen = Game.GetFormFromFile(0x002864, "ellen.esp") as Actor
+	;llamaCompanionHeather
+	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
+	
+	
 	
 		NPC_String = ""
 	int random_LList = Utility.RandomInt(1, 100)
@@ -588,6 +1083,39 @@ Function BirthMessage(Actor akActor, Race akDadRace)
 		elseif akActor == Piper
 			int random_Name = Utility.RandomInt(0, Birth_Piper.Length-1)
 			NPC_String = Birth_Piper[random_Name]
+		elseif akActor == Valkyrie
+			int random_Name = Utility.RandomInt(0, Birth_Valkyrie.Length-1)
+			NPC_String = Birth_Valkyrie[random_Name]
+		elseif akActor == Harley
+			int random_Name = Utility.RandomInt(0, Birth_Harley.Length-1)
+			NPC_String = Birth_Harley[random_Name]
+		elseif akActor == Roxy
+			int random_Name = Utility.RandomInt(0, Birth_Roxy.Length-1)
+			NPC_String = Birth_Roxy[random_Name]
+		elseif akActor == Eden
+			int random_Name = Utility.RandomInt(0, Birth_Eden.Length-1)
+			NPC_String = Birth_Eden[random_Name]
+		elseif akActor == Raven
+			int random_Name = Utility.RandomInt(0, Birth_Raven.Length-1)
+			NPC_String = Birth_Raven[random_Name]
+		elseif akActor == Taryn
+			int random_Name = Utility.RandomInt(0, Birth_Taryn.Length-1)
+			NPC_String = Birth_Taryn[random_Name]
+		elseif akActor == Sloan
+			int random_Name = Utility.RandomInt(0, Birth_Sloan.Length-1)
+			NPC_String = Birth_Sloan[random_Name]
+		elseif akActor == Sadie
+			int random_Name = Utility.RandomInt(0, Birth_Sadie.Length-1)
+			NPC_String = Birth_Sadie[random_Name]
+		elseif akActor == Raina
+			int random_Name = Utility.RandomInt(0, Birth_Raina.Length-1)
+			NPC_String = Birth_Raina[random_Name]
+		elseif akActor == Cruz || akActor == Cruz_DP
+			int random_Name = Utility.RandomInt(0, Birth_Cruz.Length-1)
+			NPC_String = Birth_Cruz[random_Name]
+		elseif akActor == V81_TinaDeLuca || akActor == Tina_DP
+			int random_Name = Utility.RandomInt(0, Birth_Tina.Length-1)
+			NPC_String = Birth_Tina[random_Name]
 		elseif akActor == Cait
 			int random_Name = Utility.RandomInt(0, Birth_Cait.Length-1)
 			NPC_String = Birth_Cait[random_Name]
@@ -597,9 +1125,36 @@ Function BirthMessage(Actor akActor, Race akDadRace)
 		elseif akActor == Ivy
 			int random_Name = Utility.RandomInt(0, Birth_Ivy.Length-1)
 			NPC_String = Birth_Ivy[random_Name]
-		elseif akActor == PlayerREF
+		elseif akActor == Cass
+			int random_Name = Utility.RandomInt(0, Birth_Cass.Length-1)
+			NPC_String = Birth_Cass[random_Name]
+		elseif akActor == Veronica 
+			int random_Name = Utility.RandomInt(0, Birth_Veronica.Length-1)
+			NPC_String = Birth_Veronica[random_Name]
+		elseif akActor == Ellen
+			int random_Name = Utility.RandomInt(0, Birth_Ellen.Length-1)
+			NPC_String = Birth_Ellen[random_Name]
+		elseif akActor == Heather
+			int random_Name = Utility.RandomInt(0, Birth_Heather.Length-1)
+			NPC_String = Birth_Heather[random_Name]
+		elseif akActor == PlayerREF && INVB_Global_MessageType_Roleplay.GetValue() == 0
 			int random_Name = Utility.RandomInt(0, Birth_Player_F.Length-1)
 			NPC_String = Birth_Player_F[random_Name]
+		elseif akActor == PlayerREF && INVB_Global_MessageType_Roleplay.GetValue() == 1
+			int random_Name = Utility.RandomInt(0, Birth_Player_F_NotNora.Length-1)
+			NPC_String = Birth_Player_F_NotNora[random_Name]
+		elseif akActor == PlayerREF && INVB_Global_MessageType_Roleplay.GetValue() == 2
+			int random_Name = Utility.RandomInt(0, Birth_Player_F_Violent.Length-1)
+			NPC_String = Birth_Player_F_Violent[random_Name]
+		elseif akActor == PlayerREF && INVB_Global_MessageType_Roleplay.GetValue() == 3
+			int random_Name = Utility.RandomInt(0, Birth_Player_F_Enclave.Length-1)
+			NPC_String = Birth_Player_F_Enclave[random_Name]
+		elseif akActor == PlayerREF && INVB_Global_MessageType_Roleplay.GetValue() == 4
+			int random_Name = Utility.RandomInt(0, Birth_Player_F_BoS.Length-1)
+			NPC_String = Birth_Player_F_BoS[random_Name]
+		elseif akActor == PlayerREF && INVB_Global_MessageType_Roleplay.GetValue() == 5
+			int random_Name = Utility.RandomInt(0, Birth_Player_F_Swinger.Length-1)
+			NPC_String = Birth_Player_F_Swinger[random_Name]
 		elseif akDadRace != HumanRace && akDadRace != None
 			NPC_String = FPFP_BabyHandler.WhatsmyLine_Birth(akDadRace)	
 		else

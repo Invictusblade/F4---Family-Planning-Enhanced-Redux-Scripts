@@ -7,8 +7,8 @@ GlobalVariable property FPFP_Global_Cumflation_Toggle Auto Const Mandatory
 GlobalVariable property FPFP_Global_Cumflation_Notif Auto Const Mandatory
 GlobalVariable property FPFP_Global_Cumflation_Notif_Chance Auto Const Mandatory
 
+GlobalVariable property FPFP_Global_BodyType Auto Const Mandatory
 Keyword Property FPFP_Cum_Keyword Auto Const Mandatory
-
 
 Race Property HumanRace Auto
 Actor Property PlayerREF Auto Const Mandatory
@@ -27,10 +27,13 @@ String[] Property Message_End_Male Auto Const
 Function Cumflation_Up(Actor akActor, Actor akMan) 
 	int random_LList_infect = Utility.RandomInt(1, 100)
 	if (random_LList_infect <= FPFP_Global_Cumflation_Chance.GetValue())
-				
-		Cumflation_Bodymorph_Up(akActor, akMan)
+		if !akMan.GetLeveledActorBase().GetRace() == HumanRace
+			Power_Modifier = FPFP_BabyHandler.HowBig(akMan.GetLeveledActorBase().GetRace())
+		endif
 		
-		Utility.Wait(1.0)
+		Cumflation_Bodymorph_Up(akActor)
+		
+		Utility.Wait(FPFP_Global_Cumflation_Time.GetValue() / FPFP_Global_Cumflation_Time.GetValue())
 		
 		If akActor.GetLeveledActorBase().GetSex() == 1
 			If (Game.IsPluginInstalled("Zaz Particles.esp") == TRUE)
@@ -99,8 +102,13 @@ Function Cumflation_Up(Actor akActor, Actor akMan)
 EndFunction
 
 Function Cumflation_Down(Actor akActor, Actor akMan) 
-	
-	Cumflation_Bodymorph_Down(akActor, akMan)
+	if FPFP_Global_Cumflation_Notif.GetValue() == 1
+		random_LList = Utility.RandomInt(1, 100)
+		if (random_LList <= FPFP_Global_Cumflation_Notif_Chance.GetValue())
+			Cumflation_Message_Middle(akActor, akMan)
+		endif	
+	endif
+	Cumflation_Bodymorph_Down(akActor)
 	Utility.Wait(FPFP_Global_Cumflation_Time.GetValue() / 10)
 	Cumflation_ResetBody(akActor)
 	if FPFP_Global_Cumflation_Notif.GetValue() == 1
@@ -113,58 +121,50 @@ Function Cumflation_Down(Actor akActor, Actor akMan)
 	akActor.removeitem(Dripping, 1, true)
 EndFunction
 
-Function Cumflation_Bodymorph_Up(Actor akActor, Actor akMan)
+Function Cumflation_Bodymorph_Up(Actor Ourself)
 	float power = (Utility.RandomFloat(FPFP_Global_Cumflation_Power.getValue() - 0.2, FPFP_Global_Cumflation_Power.getValue() + 0.2))
-	
-	if akMan.GetLeveledActorBase().GetRace() != HumanRace
-		Power_Modifier = FPFP_BabyHandler.HowBig(akMan.GetLeveledActorBase().GetRace())
-	endif
+	int i
 	
 	if Power_Modifier != 1
 		power = power * Power_Modifier
 	endif	
 	
-	if power == 0
-		power = (Utility.RandomFloat(FPFP_Global_Cumflation_Power.getValue() - 0.1, FPFP_Global_Cumflation_Power.getValue() + 0.1))
-	endif
-	
-	
-	BodyGen.SetMorph(akActor, true, "BigBelly", FPFP_Cum_Keyword, power)
-	BodyGen.SetMorph(akActor, true, "Belly Big", FPFP_Cum_Keyword, power)
-	BodyGen.SetMorph(akActor, true, "BellyFatty", FPFP_Cum_Keyword, power)
-	BodyGen.UpdateMorphs(akActor)
+	If (FPFP_Global_BodyType.GetValue() == 0) ; CBBE Original
+		BodyGen.SetMorph(Ourself, true, "BigBelly", FPFP_Cum_Keyword, power)
+	ElseIf (FPFP_Global_BodyType.GetValue() == 1) ; CBBE Redux
+		BodyGen.SetMorph(Ourself, true, "BigBelly", FPFP_Cum_Keyword, power)
+	ElseIf (FPFP_Global_BodyType.GetValue() == 2) ; Fusion Girl Original
+		BodyGen.SetMorph(Ourself, true, "Belly Big", FPFP_Cum_Keyword, power)
+	ElseIf (FPFP_Global_BodyType.GetValue() == 3) ; Fusion Girl Redux
+		bodygen.SetMorph(Ourself, True, "Belly Big", FPFP_Cum_Keyword, power)
+	Else ; JaneBod
+		BodyGen.SetMorph(Ourself, true, "BellyFatty", FPFP_Cum_Keyword, power)
+	EndIf
+	BodyGen.UpdateMorphs(Ourself)
 		
 EndFunction
 
-Function Cumflation_Bodymorph_Down(Actor akActor, Actor akMan)
+Function Cumflation_Bodymorph_Down(Actor Ourself)
 	float power = (Utility.RandomFloat(FPFP_Global_Cumflation_Power.getValue() - 0.1, FPFP_Global_Cumflation_Power.getValue() + 0.1))
 	int i
-	if akMan.GetLeveledActorBase().GetRace() != HumanRace
-		Power_Modifier = FPFP_BabyHandler.HowBig(akMan.GetLeveledActorBase().GetRace())
-	endif
 	
 	if Power_Modifier != 1
 		power = power * Power_Modifier
-	endif
-	
-	if power == 0
-		power = (Utility.RandomFloat(FPFP_Global_Cumflation_Power.getValue() - 0.1, FPFP_Global_Cumflation_Power.getValue() + 0.1))
-	endif
+	endif	
 	
 	while i < FPFP_Global_Cumflation_Time.GetValueint()
-		BodyGen.SetMorph(akActor, true, "BigBelly", FPFP_Cum_Keyword, power)
-		BodyGen.SetMorph(akActor, true, "Belly Big", FPFP_Cum_Keyword, power)
-		BodyGen.SetMorph(akActor, true, "BellyFatty", FPFP_Cum_Keyword, power)
-		BodyGen.UpdateMorphs(akActor)
-		
-		if i == (FPFP_Global_Cumflation_Time.GetValueint() / 2)
-			if FPFP_Global_Cumflation_Notif.GetValue() == 1
-				random_LList = Utility.RandomInt(1, 100)
-				if (random_LList <= FPFP_Global_Cumflation_Notif_Chance.GetValue())
-					Cumflation_Message_Middle(akActor, akMan)
-				endif	
-			endif
-		endif
+		If (FPFP_Global_BodyType.GetValue() == 0) ; CBBE Original
+			BodyGen.SetMorph(Ourself, true, "BigBelly", FPFP_Cum_Keyword, power)
+		ElseIf (FPFP_Global_BodyType.GetValue() == 1) ; CBBE Redux
+			BodyGen.SetMorph(Ourself, true, "BigBelly", FPFP_Cum_Keyword, power)
+		ElseIf (FPFP_Global_BodyType.GetValue() == 2) ; Fusion Girl Original
+			BodyGen.SetMorph(Ourself, true, "Belly Big", FPFP_Cum_Keyword, power)
+		ElseIf (FPFP_Global_BodyType.GetValue() == 3) ; Fusion Girl Redux
+			bodygen.SetMorph(Ourself, True, "Belly Big", FPFP_Cum_Keyword, power)
+		Else ; JaneBod
+			BodyGen.SetMorph(Ourself, true, "BellyFatty", FPFP_Cum_Keyword, power)
+		EndIf
+		BodyGen.UpdateMorphs(Ourself)
 		
 		Utility.Wait(FPFP_Global_Cumflation_Time.GetValue() / FPFP_Global_Cumflation_Time.GetValue())
 		
@@ -178,11 +178,20 @@ Function Cumflation_Bodymorph_Down(Actor akActor, Actor akMan)
 	endwhile
 EndFunction
 
-Function Cumflation_ResetBody(Actor akActor)
-	BodyGen.SetMorph(akActor, true, "BigBelly", FPFP_Cum_Keyword, 0)
-	BodyGen.SetMorph(akActor, true, "Belly Big", FPFP_Cum_Keyword, 0)
-	BodyGen.SetMorph(akActor, true, "BellyFatty", FPFP_Cum_Keyword, 0)
-	BodyGen.UpdateMorphs(akActor)
+Function Cumflation_ResetBody(Actor Ourself)
+	If (FPFP_Global_BodyType.GetValue() == 0) ; CBBE Original
+		BodyGen.SetMorph(Ourself, true, "BigBelly", FPFP_Cum_Keyword, 0)
+	ElseIf (FPFP_Global_BodyType.GetValue() == 1) ; CBBE Redux
+		BodyGen.SetMorph(Ourself, true, "BigBelly", FPFP_Cum_Keyword, 0)
+	ElseIf (FPFP_Global_BodyType.GetValue() == 2) ; Fusion Girl Original
+		BodyGen.SetMorph(Ourself, true, "Belly Big", FPFP_Cum_Keyword, 0)
+	ElseIf (FPFP_Global_BodyType.GetValue() == 3) ; Fusion Girl Redux
+		bodygen.SetMorph(Ourself, True, "Belly Big", FPFP_Cum_Keyword, 0)
+	Else ; JaneBod
+		BodyGen.SetMorph(Ourself, true, "BellyFatty", FPFP_Cum_Keyword, 0)
+
+	EndIf
+	BodyGen.UpdateMorphs(Ourself)
 EndFunction
 
 Function Cumflation_Message_Start(Actor akActor, Actor akMan)

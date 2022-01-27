@@ -9,9 +9,6 @@ Bool Property OtherRace_bool = false Auto
 String SummonName
 
 Event OnEffectStart(Actor akActor, Actor akCaster)
-	Game.FadeOutGame(true, true, 0, 1, true)
-	Utility.Wait(1)
-	Debug.notification("Ten Minutes Later.")
 	if Has_Array == false
 		Utility.Wait(2.5)
 			
@@ -53,6 +50,5 @@ Event OnEffectStart(Actor akActor, Actor akCaster)
 		endif
 		
 		RenameAnything.SetRefName(tempActor, SummonName)
-	endif
-	Game.FadeOutGame(false, true, 0, 1)	
+	endif	
 EndEvent

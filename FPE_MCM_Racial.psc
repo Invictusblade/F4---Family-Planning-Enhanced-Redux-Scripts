@@ -7,6 +7,7 @@ Perk Property WLD_Perk_Racial_Asian Auto
 Perk Property WLD_Perk_Racial_Black Auto
 Perk Property WLD_Perk_Racial_Hispanic Auto
 Perk Property WLD_Perk_Racial_White Auto
+Keyword Property fpfp_DNATransfer Auto
 
 Actor Function GetActorUnderCrosshairs()
 	Actor ScannedActor = LL_FourPlay.LastCrossHairActor()
@@ -29,27 +30,32 @@ Function GiveNPCUnderCrosshairs_Racial_Asian()
 	Actor akActor = GetActorUnderCrosshairs()
 	Remove_Perk_Race(akActor)
 	akActor.addperk(WLD_Perk_Racial_Asian)
+	akActor.addkeyword(fpfp_DNATransfer)
 EndFunction
 
 Function GiveNPCUnderCrosshairs_Racial_Black()
 	Actor akActor = GetActorUnderCrosshairs()
 	Remove_Perk_Race(akActor)
 	akActor.addperk(WLD_Perk_Racial_Black)
+	akActor.addkeyword(fpfp_DNATransfer)
 EndFunction
 
 Function GiveNPCUnderCrosshairs_Racial_Hispanic()
 	Actor akActor = GetActorUnderCrosshairs()
 	Remove_Perk_Race(akActor)
 	akActor.addperk(WLD_Perk_Racial_Hispanic)
+	akActor.addkeyword(fpfp_DNATransfer)
 EndFunction
 
 Function GiveNPCUnderCrosshairs_Racial_White()
 	Actor akActor = GetActorUnderCrosshairs()
 	Remove_Perk_Race(akActor)
 	akActor.addperk(WLD_Perk_Racial_White)
+	akActor.addkeyword(fpfp_DNATransfer)
 EndFunction
 
 Function GiveNPCUnderCrosshairs_Racial_Reset()
 	Actor akActor = GetActorUnderCrosshairs()
 	Remove_Perk_Race(akActor)
+	akActor.removekeyword(fpfp_DNATransfer)
 EndFunction

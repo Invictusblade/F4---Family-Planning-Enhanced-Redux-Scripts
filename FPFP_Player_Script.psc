@@ -69,6 +69,10 @@ GlobalVariable property INVB_Global_ForceFatherQuest Auto Const Mandatory
 GlobalVariable property INVB_Global_ForceAbortQuest Auto Const Mandatory
 GlobalVariable property INVB_Global_ForceLossQuest Auto Const Mandatory
 GlobalVariable property FPFP_Global_MessageType Auto Const Mandatory
+
+;3.8
+GlobalVariable property FPFP_Global_Breeder_modifier Auto Const Mandatory
+
 EndGroup
 
 Group FPEQuests
@@ -131,6 +135,18 @@ EndFunction
 Float Function GetUpdateTime()
 	
 	float UpdateTime = FPFP_Internal_UpdateTime.GetValue()
+	If UpdateTime > 0
+		return UpdateTime
+	Else
+		return 24.0
+	EndIf
+	
+EndFunction
+
+Float Function GetUpdateTime_Breeder()
+	
+	float UpdateTime = FPFP_Internal_UpdateTime.GetValue() / FPFP_Global_Breeder_modifier.GetValue()
+	
 	If UpdateTime > 0
 		return UpdateTime
 	Else

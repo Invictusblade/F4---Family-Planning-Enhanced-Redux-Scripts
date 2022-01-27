@@ -8,6 +8,7 @@ Keyword Property fpfp_noDaddy Auto
 FPFP_Player_Script FPE
 Form[] Property Armor_Baby Auto Const Mandatory
 Perk[] Property Perk_Pregnancies Auto Const Mandatory
+Perk[] Property Perk_Months Auto Const Mandatory
 Perk[] Property Perk_STD Auto Const Mandatory
 Quest property FPFP_Labour auto const
 
@@ -17,6 +18,12 @@ Perk Property WLD_Perk_Surrogate_3 Auto
 Keyword Property kw_Surrogate02_perk Auto
 Keyword Property kw_Surrogate03_perk Auto
 Perk Property WLD_Perk_Pregnancy_Freezing Auto
+
+GlobalVariable property FPFP_Global_Current_Births Auto Const Mandatory
+GlobalVariable property FPFP_Global_Current_Births_Player Auto Const Mandatory
+
+Faction[] Property Creature_Factions Auto Const
+Perk Property WLD_Perk_Pheromones Auto
 
 
 Function GiveNPCUnderCrosshairs_Surrogate()
@@ -62,6 +69,16 @@ Actor Function GetActorUnderCrosshairs()
 	Return ScannedActor
 EndFunction
 
+
+Function GiveNPCUnderCrosshairs_Ghost()
+	Actor akActor = GetActorUnderCrosshairs()
+	if akActor.IsGhost()
+		akActor.SetGhost(false)
+	else
+		akActor.SetGhost(true)
+	endIf	
+EndFunction
+
 Function GiveNPCUnderCrosshairs_Impregnate()
 	Actor akActor = GetActorUnderCrosshairs()
 	ObjectImpregnate(akActor)
@@ -103,6 +120,87 @@ Function GiveNPCUnderCrosshairs_LeaveHome()
 	Debug.Notification("Debug: Exiling NPC")
 EndFunction
 
+Function GiveNPCUnderCrosshairs_Reset()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Reset(akActor)
+	Debug.Notification("Debug: Reset Body Morphs")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Regenerate()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodygen.RegenerateMorphs(akActor)
+	FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akActor)
+	tmpData.UpdateBody(tmpData.GetCurrentMonth())
+	Debug.Notification("Debug: Regenerating Body Morphs")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Reduce()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Reduce(akActor)
+	Debug.Notification("Debug: Reduce Body Morphs")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_Auto() 
+	Actor akActor = GetActorUnderCrosshairs()
+	FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akActor)
+	tmpData.UpdateBody(tmpData.GetCurrentMonth())
+	Debug.Notification("Debug: Bodymorphed to Pregnancy point")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_1()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_1(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 01")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_2()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_2(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 02")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_3()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_3(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 03")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_4()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_4(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 04")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_5()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_5(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 05")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_6()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_6(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 06")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_7()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_7(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 07")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_8()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_8(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 08")
+EndFunction
+
+Function GiveNPCUnderCrosshairs_Month_9()
+	Actor akActor = GetActorUnderCrosshairs()
+	Bodymorph_Rebuild_9(akActor)
+	Debug.Notification("Debug: Rebuild Bodymorph 09")
+EndFunction
+
 Function GiveNPCUnderCrosshairs_Butcher()
 	Actor akActor = GetActorUnderCrosshairs()
 	Butcher_NPC(akActor)
@@ -121,6 +219,32 @@ Function GiveNPCUnderCrosshairs_Abort()
 	Debug.Notification("Debug: Aborted Pregnancy")
 EndFunction
 
+Function Clear_Factions()
+	Actor akActor = GetActorUnderCrosshairs()
+	bool Worked = false
+	int i
+	int int_end = Creature_Factions.Length
+	while (i <= Creature_Factions.Length)
+		if akActor.IsInFaction(Creature_Factions[i])
+			akActor.removeFromFaction(Creature_Factions[i])
+			Worked = true
+		endIf
+		i += 1
+	endwhile
+	
+	if akActor.HasPerk(WLD_Perk_Pheromones)
+		akActor.RemovePerk(WLD_Perk_Pheromones)
+	endif
+	
+	if Worked == true
+		Debug.Notification("Debug: Success- Removed " + int_end + " Factions")
+	else
+		Debug.Notification("Debug: Failed- Didn't have or didn't remove Factions")
+	endIf	
+EndFunction
+
+
+
 Function Perk_Remover() 
 	Actor akActor = GetActorUnderCrosshairs()
 	bool Worked = false
@@ -135,7 +259,27 @@ Function Perk_Remover()
 	endwhile
 	
 	if Worked == true
-		Debug.Notification("Debug: Success- Removed " + Perk_Pregnancies.Length + " Perks")
+		Debug.Notification("Debug: Success- Removed " + int_end + " Perks")
+	else
+		Debug.Notification("Debug: Failed- Didn't have or didn't remove Perks")
+	endIf	
+EndFunction
+
+Function Perk_Remover_Month() 
+	Actor akActor = GetActorUnderCrosshairs()
+	bool Worked = false
+	int i
+	int int_end = Perk_Months.Length
+	while (i <= Perk_Months.Length)
+		If akActor.HasPerk(Perk_Months[i])
+			akActor.RemovePerk(Perk_Months[i])
+			Worked = true
+		endIf
+		i += 1
+	endwhile
+	
+	if Worked == true
+		Debug.Notification("Debug: Success- Removed " + int_end + " Perks")
 	else
 		Debug.Notification("Debug: Failed- Didn't have or didn't remove Perks")
 	endIf	
@@ -220,6 +364,60 @@ Function Instant_Abort(actor akFemale)
 	tmpData.GiveBirth(false)
 EndFunction
 
+Function Bodymorph_Reset(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.ResetBody()
+EndFunction
+
+Function Bodymorph_Reduce(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.ReduceBelly()
+EndFunction
+
+Function Bodymorph_Rebuild_1(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(1)
+EndFunction
+
+Function Bodymorph_Rebuild_2(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(2)
+EndFunction
+
+Function Bodymorph_Rebuild_3(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(3)
+EndFunction
+
+Function Bodymorph_Rebuild_4(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(4)
+EndFunction
+
+Function Bodymorph_Rebuild_5(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(5)
+EndFunction
+
+Function Bodymorph_Rebuild_6(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(6)
+EndFunction
+
+Function Bodymorph_Rebuild_7(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(7)
+EndFunction
+
+Function Bodymorph_Rebuild_8(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(8)
+EndFunction
+
+Function Bodymorph_Rebuild_9(actor akFemale)
+    FPFP_BasePregData tmpData = FPE.GetPregnancyInfo(akFemale)
+	tmpData.UpdateBody(9)
+EndFunction
 
 Function Instant_Birth(actor akFemale)
 	bool Worked = false
@@ -307,9 +505,17 @@ Function ObjectImpregnate(Actor akActor)
 EndFunction
 
 
+Function Reset_Current_Births_Player()
+	Debug.notification("Current Player Births is " + FPFP_Global_Current_Births_Player.getvalue())
+	FPFP_Global_Current_Births_Player.setvalue(0)
+	Debug.notification("Current Player Births is " + FPFP_Global_Current_Births_Player.getvalue())
+EndFunction
 
-
-
+Function Reset_Current_Births()
+	Debug.notification("Current NPC Births is " + FPFP_Global_Current_Births.getvalue())
+	FPFP_Global_Current_Births.setvalue(0)
+	Debug.notification("Current NPC Births is " + FPFP_Global_Current_Births.getvalue())
+EndFunction
 
 Event OnInit()
 	LogMessage("FPE_MCM_Debug OnInit")

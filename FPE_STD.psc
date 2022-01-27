@@ -10,6 +10,7 @@ Perk Property WLD_STD_SoftCock Auto
 Perk Property WLD_STD_BlueEye Auto
 Perk Property WLD_STD_DeathBreath Auto
 Perk Property WLD_STD_Tripod Auto
+Perk Property WLD_Perk_Breeder Auto
 
 Race Property HumanRace Auto 
 Actor Property PlayerREF Auto Const Mandatory
@@ -22,7 +23,10 @@ Function Infect(Actor akActor, Actor akMan)
 	if (random_LList_infect <= INVB_Global_Infect_Chance.GetValue()) && akMan.GetLeveledActorBase().GetRace() == HumanRace
 		int random_Gender = Utility.RandomInt(1, 4)
 		if (random_Gender == 1) 
-			if akActor.HasPerk(WLD_STD_SoftCock) ;Strength
+		
+			if akActor.HasPerk(WLD_Perk_Breeder) ;Breeder
+				akMan.addperk(WLD_Perk_Breeder)
+			elseif akActor.HasPerk(WLD_STD_SoftCock) ;Strength
 				akMan.addperk(WLD_STD_SoftCock)
 			elseif akActor.HasPerk(WLD_STD_BlueEye) ;Perception
 				akMan.addperk(WLD_STD_BlueEye)
@@ -60,7 +64,9 @@ Function Infect(Actor akActor, Actor akMan)
 			endif
 			Debug.notification(akMan.GetLeveledActorBase().GetName() +" has been infected with something")
 		else	
-			if akMan.HasPerk(WLD_STD_SoftCock) ;Strength
+			if akMan.HasPerk(WLD_Perk_Breeder) ;Breeder
+				akActor.addperk(WLD_Perk_Breeder)
+			elseif akMan.HasPerk(WLD_STD_SoftCock) ;Strength
 				akActor.addperk(WLD_STD_SoftCock)
 			elseif akMan.HasPerk(WLD_STD_BlueEye) ;Perception
 				akActor.addperk(WLD_STD_BlueEye)

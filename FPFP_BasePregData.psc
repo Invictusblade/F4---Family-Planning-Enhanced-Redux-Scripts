@@ -112,6 +112,7 @@ SPELL SP_Cumshot_Extra
 Actor TheFather
 
 
+
 FPE_Messages Property FPFP_Messages Auto Const Mandatory
 FPE_Cumflation Property FPFP_Cumflation Auto Const Mandatory
 FPE_STD Property FPFP_STD Auto Const Mandatory
@@ -158,6 +159,32 @@ Race Property GhoulRace Auto
 
 GlobalVariable property FPFP_Global_BodyType_CBBE Auto Const Mandatory
 GlobalVariable property FPFP_Global_BodyType_FG Auto Const Mandatory
+
+
+GlobalVariable property FPFP_Global_Creature_Faction Auto Const Mandatory
+Faction Creature_Faction
+
+Perk Property WLD_Perk_Pheromones Auto
+GlobalVariable Property FPFP_Global_Synth_hidden Auto Const Mandatory
+GlobalVariable Property FPFP_Global_CreatureDNAOnce Auto Const Mandatory
+
+Keyword Property fpfp_DNATransfer Auto
+Perk Property WLD_Perk_Breeder Auto
+GlobalVariable property FPFP_Global_Breeder_modifier Auto Const Mandatory
+GlobalVariable property FPFP_Global_Monthly_MessageType Auto Const Mandatory
+int Breeder_mod
+
+GlobalVariable property FPFP_Global_Toggle_Creature_Chances Auto Const Mandatory
+GlobalVariable property FPFP_Global_Length_Human Auto Const Mandatory
+GlobalVariable property FPFP_Global_Morph_Human Auto Const Mandatory
+GlobalVariable property FPFP_Global_Chance_Ghoul Auto Const Mandatory
+GlobalVariable property FPFP_Global_Length_Ghoul Auto Const Mandatory
+GlobalVariable property FPFP_Global_Morph_Ghoul Auto Const Mandatory
+
+
+GlobalVariable property FPFP_Global_Cumflation_FemaletoFemale Auto Const Mandatory
+
+
 Function Initialize(Actor akTarget) ; Make sure player's version of this is DIFFERENT
 	akTarget.AddKeyword(FPFP_HasData)
 	Ourself = akTarget
@@ -489,18 +516,34 @@ EndFunction
 
 Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the actor with this active magic effect get's cummed in
 	float chance
-	If akMan == PlayerREF
-		chance = FPFP_Global_Chance_Player_M.getValue()
+	if akMan.GetLeveledActorBase().GetRace() == GhoulRace
+		chance = FPFP_Global_Chance_Ghoul.getValue()	
+	elseif FPFP_Global_Toggle_Creature_Chances.GetValue() == 1 && !akMan.GetLeveledActorBase().GetRace() == HumanRace
+		chance = FPFP_BabyHandler.WhatsmyChances(akMan.GetLeveledActorBase().GetRace())
+	elseIf akMan == PlayerREF
+		chance = FPFP_Global_Chance_Player_M.getValue() ;Sender
 	elseIf Ourself == PlayerREF
-		chance = FPFP_Global_Chance_Player_F.getValue()	
+		chance = FPFP_Global_Chance_Player_F.getValue() ;Receiver
 	else
 		chance = FPFP_Global_Chance.getValue()	
 	endif
 	
+	If akMan.HasPerk(WLD_Perk_Breeder) || Ourself.HasPerk(WLD_Perk_Breeder)
+		chance *= FPFP_Global_Breeder_modifier.GetValue()
+	endIf
+	
 	bool impregnated = false
+	
 	if !akMan.GetLeveledActorBase().GetRace() == HumanRace
 		Creature_Cum = FPFP_BabyHandler.WhatsmyDNA(akMan.GetLeveledActorBase().GetRace())	
 	endif
+	
+	if FPFP_BabyHandler.WhatBallsdoIHave(akMan) && akMan.HasKeyword(fpfp_DNATransfer)
+		Actor SemenDonor = akMan.PlaceAtMe(FPFP_BabyHandler.NewFather(akMan), abInitiallyDisabled = true) as Actor
+		Creature_Cum = FPFP_BabyHandler.WhatsmyDNA(SemenDonor.GetLeveledActorBase().GetRace())
+		SemenDonor.delete()
+	endIf		
+	
 	If akMan == PlayerREF || Ourself == PlayerREF; involves player, more extreme checks can happen
 		
 		If Ourself.HasMagicEffect(FPFP_ME_Fertile) ; Is the woman fertile?
@@ -527,6 +570,19 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 					elseif FPFP_Global_CondomOutcome.GetValue() == 1 || FPFP_Global_CondomOutcome.GetValue() == 2 ;drops
 						Ourself.placeatme(FullCondom, 1)
 					endif
+					
+				elseif akMan.GetLeveledActorBase().GetRace() == HumanRace && Creature_Cum != None
+					if FPFP_Global_CondomOutcome.GetValue() == 4 ;Adds to NPC if Creature
+						Ourself.addItem(Creature_Cum, 1)
+					elseif FPFP_Global_CondomOutcome.GetValue() == 2 ;drops
+						Ourself.placeatme(Creature_Cum, 1)
+					endif	
+						
+					if FPFP_Global_CreatureDNAOnce.GetValue() == 1
+						akMan.RemovePerk(FPFP_BabyHandler.WhatBallsdoIHave(akMan))
+						akMan.RemoveKeyword(fpfp_DNATransfer)
+					endIf
+					
 				elseif !akMan.GetLeveledActorBase().GetRace() == HumanRace && Creature_Cum != None
 					if FPFP_Global_CondomOutcome.GetValue() == 4 ;Adds to NPC if Creature
 						Ourself.addItem(Creature_Cum, 1)
@@ -552,6 +608,19 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 					elseif FPFP_Global_CondomOutcome.GetValue() == 1 || FPFP_Global_CondomOutcome.GetValue() == 2 ;drops
 						akMan.placeatme(FullCondom, 1)
 					endif
+					
+				elseif akMan.GetLeveledActorBase().GetRace() == HumanRace && Creature_Cum != None
+					if FPFP_Global_CondomOutcome.GetValue() == 4 ;Adds to NPC if Creature
+						akMan.addItem(Creature_Cum, 1)
+					elseif FPFP_Global_CondomOutcome.GetValue() == 2 ;drops
+						akMan.placeatme(Creature_Cum, 1)
+					endif				
+				
+					if FPFP_Global_CreatureDNAOnce.GetValue() == 1
+						akMan.RemovePerk(FPFP_BabyHandler.WhatBallsdoIHave(akMan))
+						akMan.RemoveKeyword(fpfp_DNATransfer)
+					endIf
+					
 				elseif !akMan.GetLeveledActorBase().GetRace() == HumanRace && Creature_Cum != None
 					if FPFP_Global_CondomOutcome.GetValue() == 4 ;Adds to NPC if Creature
 						akMan.addItem(Creature_Cum, 1)
@@ -580,11 +649,16 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 				endif
 			endif
 			
-			if FPFP_Global_Cumflation_Toggle.GetValue() == 1 && FPFP_Global_Cumflation_Notif_boolean.GetValue() == 0
-				FPFP_Global_Cumflation_Notif_boolean.SetValue(1)
-					FPFP_Cumflation.Cumflation_Up(Ourself, akMan)
-				FPFP_Global_Cumflation_Notif_boolean.SetValue(0)
-			endif
+			
+			if FPFP_Global_Cumflation_FemaletoFemale.GetValue() == 1 || (FPFP_Global_Cumflation_FemaletoFemale.GetValue() == 0 && akMan.GetLeveledActorBase().GetSex() == 0)
+				if FPFP_Global_Cumflation_Toggle.GetValue() == 1 && FPFP_Global_Cumflation_Notif_boolean.GetValue() == 0
+					FPFP_Global_Cumflation_Notif_boolean.SetValue(1)
+						FPFP_Cumflation.Cumflation_Up(Ourself, akMan)
+					FPFP_Global_Cumflation_Notif_boolean.SetValue(0)
+				endif
+			endIf
+			
+			
 			
 			if INVB_Global_Infect.GetValue() == 1
 				FPFP_STD.Infect(Ourself, akMan)
@@ -675,11 +749,13 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 				endif
 			endif
 			
-			if FPFP_Global_Cumflation_Toggle.GetValue() == 1 && FPFP_Global_Cumflation_Notif_boolean.GetValue() == 0
-				FPFP_Global_Cumflation_Notif_boolean.SetValue(1)
-					FPFP_Cumflation.Cumflation_Up(Ourself, akMan)
-				FPFP_Global_Cumflation_Notif_boolean.SetValue(0)
-			endif
+			if FPFP_Global_Cumflation_FemaletoFemale.GetValue() == 1 || (FPFP_Global_Cumflation_FemaletoFemale.GetValue() == 0 && akMan.GetLeveledActorBase().GetSex() == 0)
+				if FPFP_Global_Cumflation_Toggle.GetValue() == 1 && FPFP_Global_Cumflation_Notif_boolean.GetValue() == 0
+					FPFP_Global_Cumflation_Notif_boolean.SetValue(1)
+						FPFP_Cumflation.Cumflation_Up(Ourself, akMan)
+					FPFP_Global_Cumflation_Notif_boolean.SetValue(0)
+				endif
+			endIf
 			
 			if INVB_Global_Infect.GetValue() == 1
 				FPFP_STD.Infect(Ourself, akMan)
@@ -694,6 +770,7 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 			impregnated = true
 		elseIf (FPFP_Global_Current_Births.GetValue() >= FPFP_Global_Total_Births.GetValue()) && FPFP_Global_BirthLimit.GetValue() == 1 && (FPFP_Global_Total_Freeze.GetValue() == 1 || FPFP_Global_Total_Freeze.GetValue() == 2)
 			impregnated = false
+			Debug.notification("Birth Limit has been reached, Will not Impregnate")
 		elseif FPFP_Global_BirthLimit.GetValue() == 0
 			impregnated = true
 		else
@@ -701,7 +778,14 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 		endif
 	Endif
 
-	If Impregnated && FPFP_Global_SynthImpreg.GetValue() == 0 && akMan.GetLeveledActorBase().GetRace() == GhoulRace
+	workshopnpcscript Ourself_Synth = Ourself as workshopnpcscript
+	workshopnpcscript akMan_Synth = akMan as workshopnpcscript
+
+	If Impregnated && FPFP_Global_Synth_hidden.GetValue() == 0 && (Ourself_Synth.bIsSynth || akMan_Synth.bIsSynth)
+		impregnated = false
+	endIf
+	
+	if Impregnated && FPFP_Global_SynthImpreg.GetValue() == 0 && akMan.GetLeveledActorBase().GetRace() == GhoulRace
 		impregnated = false
 	elseif Impregnated && FPFP_Global_AllowNonNPC.GetValue() <= 1 && !akMan.GetLeveledActorBase().GetRace() == HumanRace 
 		impregnated = false	
@@ -739,15 +823,21 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 		FPFP_Global_Impregnation_Notif_boolean.SetValue(0)
 	endif
 	
-	if FPFP_Global_Cumflation_Toggle.GetValue() == 1 && FPFP_Global_Cumflation_Notif_boolean.GetValue() == 0
-		FPFP_Global_Cumflation_Notif_boolean.SetValue(1)
-		FPFP_Cumflation.Cumflation_Down(Ourself, akMan)
-		FPFP_Global_Cumflation_Notif_boolean.SetValue(0)
+	if impregnated == false
+		FPE.ConceptionNotifications(Ourself, akMan, chance, impregnated, NumChildren) 
 	endif
+	
+	if FPFP_Global_Cumflation_FemaletoFemale.GetValue() == 1 || (FPFP_Global_Cumflation_FemaletoFemale.GetValue() == 0 && akMan.GetLeveledActorBase().GetSex() == 0)
+		if FPFP_Global_Cumflation_Toggle.GetValue() == 1 && FPFP_Global_Cumflation_Notif_boolean.GetValue() == 0
+			FPFP_Global_Cumflation_Notif_boolean.SetValue(1)
+			FPFP_Cumflation.Cumflation_Down(Ourself, akMan)
+			FPFP_Global_Cumflation_Notif_boolean.SetValue(0)
+		endif
+	endIf
 	
 	If impregnated && !Ourself.IsInFaction(FPFP_Preggo)
 		int random_seed = Utility.RandomInt(1, 100)
-		if (random_seed <= INVB_Global_Racial_Baby_Chance.GetValue())
+		if (random_seed <= INVB_Global_Racial_Baby_Chance.GetValue()) && akMan.HasKeyword(fpfp_DNATransfer)
 			if FPFP_BabyHandler.WhatBallsdoIHave(akMan)
 				Actor tempActor = akMan.PlaceAtMe(FPFP_BabyHandler.NewFather(akMan), abInitiallyDisabled = true) as Actor
 				if akMan == PlayerREF
@@ -758,6 +848,11 @@ Bool Function TrySpermFrom(Actor akMan) ; This should only be called when the ac
 				endif
 				Impregnate(tempActor)
 				tempActor.delete()
+				
+				if FPFP_Global_CreatureDNAOnce.GetValue() == 1
+					akMan.RemovePerk(FPFP_BabyHandler.WhatBallsdoIHave(akMan))
+					akMan.RemoveKeyword(fpfp_DNATransfer)
+				endIf
 			else
 				Impregnate(akMan)
 			Endif
@@ -805,7 +900,12 @@ Function Impregnate(Actor akMan) ; akMan is the father of the baby
 	EndWhile
 	
 	FirstCheck = True
-	StartTimerGameTime(FPE.GetUpdateTime())
+	
+	if Ourself.HasPerk(WLD_Perk_Breeder)
+		StartTimerGameTime(FPE.GetUpdateTime_Breeder())
+	else
+		StartTimerGameTime(FPE.GetUpdateTime())
+	endif
 	
 	FPE.SendPregEvent(Ourself, akMan, NumChildren)
 	
@@ -832,8 +932,9 @@ Function BecomePreggo(Actor akMan)
 				Ourself.AddPerk(WLD_Perk_Impregnated_Player)
 			endif
 			
-			Creature_Cycle = 9
-			Creature_Morph = 1
+			Creature_Cycle = FPFP_Global_Length_Human.GetValue()
+			Creature_Morph = FPFP_Global_Morph_Ghoul.GetValue()
+			
 		elseif akMan.GetLeveledActorBase().GetRace() == HumanRace
 			INVB_Global_Preggo_Count_Cuck.SetValue(INVB_Global_Preggo_Count_Cuck.getValue() + 1)
 			
@@ -841,8 +942,17 @@ Function BecomePreggo(Actor akMan)
 				Ourself.AddPerk(WLD_Perk_Impregnated)
 			endif
 			
-			Creature_Cycle = 9
-			Creature_Morph = 1
+			Creature_Cycle = FPFP_Global_Length_Human.GetValue()
+			Creature_Morph = FPFP_Global_Morph_Human.GetValue()
+		elseif akMan.GetLeveledActorBase().GetRace() == GhoulRace
+			INVB_Global_Preggo_Count_Cuck.SetValue(INVB_Global_Preggo_Count_Cuck.getValue() + 1)
+			
+			if FPFP_Global_Perks_Father.GetValue() == 1
+				Ourself.AddPerk(WLD_Perk_Impregnated)
+			endif
+			
+			Creature_Cycle = FPFP_Global_Length_Ghoul.GetValue()
+			Creature_Morph = FPFP_Global_Morph_Ghoul.GetValue()	
 		else
 			
 			bool FoundFather = false
@@ -855,6 +965,12 @@ Function BecomePreggo(Actor akMan)
 				Creature_Cycle_Multi = FPFP_BabyHandler.WhatTwins(akMan.GetLeveledActorBase().GetRace())
 				Creature_Morph = FPFP_BabyHandler.HowBig(akMan.GetLeveledActorBase().GetRace())
 				
+				if FPFP_Global_Creature_Faction.GetValue() == 1 || FPFP_Global_Creature_Faction.GetValue() == 3
+					Creature_Faction = FPFP_BabyHandler.WhatFaction(akMan.GetLeveledActorBase().GetRace())
+				elseif FPFP_Global_Creature_Faction.GetValue() == 2 || FPFP_Global_Creature_Faction.GetValue() == 4
+					Creature_Faction = FPFP_BabyHandler.WhatFaction_Friendly(akMan.GetLeveledActorBase().GetRace())
+				endIf
+				
 				if Creature_Start == 0
 					Creature_Start_1st = FPFP_BabyHandler.WhendoIStart(akMan.GetLeveledActorBase().GetRace())
 					if Creature_Start_1st == true
@@ -864,17 +980,27 @@ Function BecomePreggo(Actor akMan)
 				endif
 			elseIf FoundFather == false
 				Creature_Perk = WLD_Perk_Impregnated
-				Creature_Cycle = 9
-				Creature_Morph = 1
+				Creature_Cycle = FPFP_Global_Length_Human.GetValue()
+				Creature_Morph = FPFP_Global_Morph_Human.GetValue()
 			EndIf
 			
 			if FPFP_Global_Perks_Father.GetValue() == 1 && Creature_Perk != None
 				Ourself.AddPerk(Creature_Perk)
-			endif	
+			endif
+
+			if FPFP_Global_Creature_Faction.GetValue() >= 1
+				if Creature_Faction != None
+					Ourself.setFactionRank(Creature_Faction, 0)
+					if Ourself.IsInFaction(Creature_Faction)
+						Ourself.AddPerk(WLD_Perk_Pheromones)
+					endIf
+				endIf
+			endif
+
 		endif
 	else
 		if akMan.GetLeveledActorBase().GetRace() == HumanRace
-			Creature_Morph = 1
+			Creature_Morph = FPFP_Global_Morph_Human.GetValue()
 		else
 			bool FoundFather = false
 			
@@ -883,21 +1009,13 @@ Function BecomePreggo(Actor akMan)
 			if FoundFather
 				Creature_Morph = FPFP_BabyHandler.HowBig(akMan.GetLeveledActorBase().GetRace())
 			else
-				Creature_Morph = 1
+				Creature_Morph = FPFP_Global_Morph_Human.GetValue()
 			EndIf
 			
 			INVB_Global_Preggo_Count_Player_Babies.SetValue(INVB_Global_Preggo_Count_Player_Babies.getValue() + 1)
 			
 		endif
 	endif
-	
-	Perk Perk_Breeder = Game.GetFormFromFile(0x0059D0, "INVB_WastelandDairy.esp") as Perk
-	if Ourself.HasPerk(Perk_Breeder)
-			Creature_Cycle = (Creature_Cycle / 1.5)
-			Creature_Morph = (Creature_Morph * 1.5)
-	endif
-	
-	
 	
 	if FPFP_Global_Perks_Harem.GetValue() == 1 && Ourself != NONE	
 		if (INVB_Global_Preggo_Count_Player.getValue() >= 30)
@@ -932,6 +1050,7 @@ EndFunction
 Function UnBecomePreggo()
 	IsPregnant = False
 	Ourself.removeFromFaction(FPFP_Preggo)
+	
 	Trace("Pregnancy Removed from " + Ourself.GetActorBase().GetName())
 EndFunction
 
@@ -943,6 +1062,17 @@ Function RemovePerks(Race akDadRace)
 	
 	if FPFP_BabyHandler.FoundtheFather(akDadRace)
 		Creature_Perk = FPFP_BabyHandler.WhatsmyPerk(akDadRace)
+		
+		Creature_Faction = FPFP_BabyHandler.WhatFaction(akDadRace)
+		
+		if Ourself.IsInFaction(Creature_Faction)
+			Ourself.removeFromFaction(Creature_Faction)
+		endIf
+		
+		if Ourself.HasPerk(WLD_Perk_Pheromones)
+			Ourself.RemovePerk(WLD_Perk_Pheromones)
+		endif
+		
 		if Ourself.HasPerk(Creature_Perk)
 			Ourself.RemovePerk(Creature_Perk)
 		endif
@@ -980,8 +1110,15 @@ EndFunction
 
 Event OnTimerGameTime(int aiTID)
 if !Ourself.HasPerk(WLD_Perk_Pregnancy_Freezing)
-	float currentMonth = GetCurrentMonth() + Creature_Start
-		
+	
+	float currentMonth
+	if Ourself.HasPerk(WLD_Perk_Breeder)
+		currentMonth = GetCurrentMonth() + Creature_Start + Breeder_mod
+	else
+		currentMonth = GetCurrentMonth() + Creature_Start
+	endif
+	
+
 	If Ourself.IsDeleted()
 		GiveBirth(false)
 	ElseIf IsPregnant
@@ -1036,12 +1173,17 @@ if !Ourself.HasPerk(WLD_Perk_Pregnancy_Freezing)
 			EndIf
 		ElseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births.GetValue() < FPFP_Global_Total_Births.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1
 			FPFP_Global_Current_Births.setValue(FPFP_Global_Current_Births.GetValue() + 1)
+			Breeder_mod = 0
 			GiveBirth()
 		elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births.GetValue() >= FPFP_Global_Total_Births.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 0 || FPFP_Global_Total_Freeze.GetValue() == 2
 			Ourself.AddPerk(WLD_Perk_Pregnancy_Freezing)
+			Breeder_mod = 0
+			Debug.notification("Birth Limit has been reached, Applying Frozen Pregnancy Perk")
 		elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births.GetValue() >= FPFP_Global_Total_Births.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 3
+			Breeder_mod = 0
 			FPFP_Surrogate.Surrogate(false, Ourself, FatherRace, NumChildren)
 		ElseIf currentMonth >= Creature_Cycle && FPFP_Global_BirthLimit.GetValue() == 0
+			Breeder_mod = 0
 			GiveBirth()
 		EndIf
 		
@@ -1062,17 +1204,24 @@ if !Ourself.HasPerk(WLD_Perk_Pregnancy_Freezing)
 	Endif
 	
 	If IsPregnant ; If we're still pregnant, start a new timer
-		StartTimerGameTime(FPE.GetUpdateTime())
+		if Ourself.HasPerk(WLD_Perk_Breeder)
+			Breeder_mod += 1
+			StartTimerGameTime(FPE.GetUpdateTime_Breeder())
+		else
+			StartTimerGameTime(FPE.GetUpdateTime())
+		endif
 	EndIf
 else
-	StartTimerGameTime(FPE.GetUpdateTime())
+	if Ourself.HasPerk(WLD_Perk_Breeder)
+		StartTimerGameTime(FPE.GetUpdateTime_Breeder())
+	else
+		StartTimerGameTime(FPE.GetUpdateTime())
+	endif
 EndIf	
 EndEvent
 
 Float Function GetCurrentMonth()
-
 	Return ((Utility.GetCurrentGameTime() - IncepDate) / FPFP_Global_Day.GetValue())
-
 EndFunction
 
 Bool Function GiveBirth_Multi()
@@ -1094,6 +1243,7 @@ Bool Function GiveBirth(bool akBirth = True)
 	
 	UnBecomePreggo()
 	
+	
 	if FPFP_Global_BloodyBirth.GetValue() == 1
 		SP_BloodyBirth.Cast(Ourself, Ourself)
 	endif
@@ -1103,9 +1253,7 @@ Bool Function GiveBirth(bool akBirth = True)
 	if Enable_Lactation.getValue() == 1 && akBirth && !Ourself.HasPerk(Perk_Lactation)
 		Ourself.AddPerk(Perk_Lactation)
 	endif
-	
 
-	
 	If !Ourself.IsDead()
 		FPFP_Messages.BirthMessage(Ourself, FatherRace)
 	EndIf

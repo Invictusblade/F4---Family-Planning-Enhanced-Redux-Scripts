@@ -42,6 +42,8 @@ Perk Property WLD_Perk_Impregnated_Special Auto
 Float Creature_Cycle
 bool Creature_Cycle_Multi
 Perk Creature_Perk
+Faction Creature_Faction
+int Breeder_mod
 
 GlobalVariable property INVB_Global_ForceLabourQuest Auto Const Mandatory
 Event OnInit() ; just tell us to initialize
@@ -139,7 +141,7 @@ Function Impregnate(Actor akMan) ; When called, akWoman is PlayerREF. animation_
 	FPE.SetDaddy(akMan) ; Moved setdaddy over to impregnate, as it makes the most sense to record the dad in the incep process then the testing sperm process
 	
 	if akMan.GetLeveledActorBase().GetRace() == HumanRace
-		Creature_Cycle = 9
+		Creature_Cycle = FPFP_Global_Length_Human.GetValue()
 		Creature_Perk = WLD_Perk_Impregnated_Special
 	else
 		bool FoundFather_Player = false
@@ -149,15 +151,17 @@ Function Impregnate(Actor akMan) ; When called, akWoman is PlayerREF. animation_
 			Creature_Perk = FPFP_BabyHandler.WhatsmyPerk(akMan.GetLeveledActorBase().GetRace())
 			Creature_Cycle = FPFP_BabyHandler.Howlongismypregnancy(akMan.GetLeveledActorBase().GetRace())
 			Creature_Cycle_Multi = FPFP_BabyHandler.WhatTwins(akMan.GetLeveledActorBase().GetRace())
-			Perk Perk_Breeder = Game.GetFormFromFile(0x0059D0, "INVB_WastelandDairy.esp") as Perk
 			
-			if PlayerREF.HasPerk(Perk_Breeder)
-				Creature_Cycle = (Creature_Cycle / 1.5)
-			endif
+			if FPFP_Global_Creature_Faction.GetValue() == 1 || FPFP_Global_Creature_Faction.GetValue() == 3
+				Creature_Faction = FPFP_BabyHandler.WhatFaction(akMan.GetLeveledActorBase().GetRace())
+			elseif FPFP_Global_Creature_Faction.GetValue() == 2 || FPFP_Global_Creature_Faction.GetValue() == 4
+				Creature_Faction = FPFP_BabyHandler.WhatFaction_Friendly(akMan.GetLeveledActorBase().GetRace())
+			endIf
+			
 			
 		elseIf FoundFather_Player == false
 			Creature_Perk = WLD_Perk_Impregnated_Special
-			Creature_Cycle = 9
+			Creature_Cycle = FPFP_Global_Length_Human.GetValue()
 		EndIf
 			
 	EndIf
@@ -166,6 +170,7 @@ Function Impregnate(Actor akMan) ; When called, akWoman is PlayerREF. animation_
 		impregnated = true
 	elseIf (FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue()) && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() > 1
 		impregnated = false
+		Debug.notification("Birth Limit has been reached, Will not Impregnate")
 	elseif FPFP_Global_BirthLimit.GetValue() == 0
 		impregnated = true
 	else
@@ -182,6 +187,17 @@ Function Impregnate(Actor akMan) ; When called, akWoman is PlayerREF. animation_
 			PlayerREF.AddPerk(Creature_Perk)
 			Creature_Perk = NONE
 		endif
+		
+		if FPFP_Global_Creature_Faction.GetValue() >= 1
+			if Creature_Faction != None
+				PlayerREF.setFactionRank(Creature_Faction, 0)
+				if PlayerREF.IsInFaction(Creature_Faction)
+					PlayerREF.AddPerk(WLD_Perk_Pheromones)
+				endIf
+			endIf
+		endif
+			
+			
 		parent.Impregnate(akMan) ; Do everything that is done by default
 
 		;Register for radiation damages and attack damage
@@ -227,7 +243,13 @@ If !PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 		Return
 	EndIf
 	
-	float currentMonth = GetCurrentMonth()
+	float currentMonth
+	
+	if Ourself.HasPerk(WLD_Perk_Breeder)
+		currentMonth = GetCurrentMonth() + Breeder_mod
+	else
+		currentMonth = GetCurrentMonth()
+	endif
 	
 	If currentMonth < Creature_Cycle
 		UpdateBody(currentMonth)
@@ -280,20 +302,41 @@ If !PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 			StartFPEPlayerQuests()
 			FirstCheck = False
 		EndIf
-		debug.notification("It's the "+ GetMonthString(currentMonth) +" month of my pregnancy.")
+		
+		if PlayerREF.HasPerk(WLD_Perk_Breeder)
+			if FPFP_Global_Monthly_MessageType.GetValue() == 1
+				debug.notification("It now looks like I am in the "+ GetMonthString(currentMonth) +" month of my pregnancy because of the Breeder Virus [The pregnancy is expected to be "+ Creature_Cycle as int +" Months Long].")
+			elseif FPFP_Global_Monthly_MessageType.GetValue() == 2
+				debug.MessageBox("It now looks like I am in the "+ GetMonthString(currentMonth) +" month of my pregnancy because of the Breeder Virus [The pregnancy is expected to be "+ Creature_Cycle as int +" Months Long].")
+			endIf
+		else
+			if FPFP_Global_Monthly_MessageType.GetValue() == 1		
+				debug.notification("It's the "+ GetMonthString(currentMonth) +" month of my pregnancy [The pregnancy is expected to be "+ Creature_Cycle as int +" Months Long].")
+			elseif FPFP_Global_Monthly_MessageType.GetValue() == 2
+				debug.MessageBox("It's the "+ GetMonthString(currentMonth) +" month of my pregnancy [The pregnancy is expected to be "+ Creature_Cycle as int +" Months Long].")
+			endIf
+		endIf
+		
 		If currentMonth >= (Creature_Cycle / 3)
 			FPE.TooLateToAbort()
 		EndIf
+		
 		UpdateBabyHealth()
+		
 	ElseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() < FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1
 		FPFP_Global_Current_Births_Player.setValue(FPFP_Global_Current_Births_Player.GetValue() + 1)
+		Breeder_mod = 0
 		DoLabour()
 		;Sthan:  I am adding these parentheses
 	elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && (FPFP_Global_Total_Freeze.GetValue() == 0 || FPFP_Global_Total_Freeze.GetValue() == 2)
 		PlayerREF.AddPerk(WLD_Perk_Pregnancy_Freezing)
+		Breeder_mod = 0
+		Debug.notification("Birth Limit has been reached, Applying Frozen Pregnancy Perk")
 	elseIf currentMonth >= Creature_Cycle && FPFP_Global_Current_Births_Player.GetValue() >= FPFP_Global_Total_Births_Player.GetValue() && FPFP_Global_BirthLimit.GetValue() == 1 && FPFP_Global_Total_Freeze.GetValue() == 3
+		Breeder_mod = 0
 		FPFP_Surrogate.Surrogate(false, PlayerREF, FatherRace, NumChildren)
 	ElseIf currentMonth >= Creature_Cycle && FPFP_Global_BirthLimit.GetValue() == 0
+		Breeder_mod = 0
 		DoLabour()	
 	EndIf
 	
@@ -314,7 +357,12 @@ If !PlayerREF.HasPerk(WLD_Perk_Pregnancy_Freezing)
 	endif
 	
 	If IsPregnant && !IsGivingBirth
-		StartTimerGameTime(FPE.GetUpdateTime())
+		if PlayerREF.HasPerk(WLD_Perk_Breeder)
+			Breeder_mod += 1
+			StartTimerGameTime(FPE.GetUpdateTime_Breeder())
+		else
+			StartTimerGameTime(FPE.GetUpdateTime())
+		endif
 	EndIf
 EndIf
 EndEvent
@@ -362,6 +410,31 @@ Function RemovePerks(Race akDadRace)
 	
 	if FPFP_BabyHandler.FoundtheFather(akDadRace)
 		Creature_Perk = FPFP_BabyHandler.WhatsmyPerk(akDadRace)
+		
+		if FPFP_Global_Creature_Faction.GetValue() == 1
+			Creature_Faction = FPFP_BabyHandler.WhatFaction(akDadRace)
+			
+			if PlayerREF.IsInFaction(Creature_Faction)
+				PlayerREF.removeFromFaction(Creature_Faction)
+			endIf
+			
+			if PlayerREF.HasPerk(WLD_Perk_Pheromones)
+				PlayerREF.RemovePerk(WLD_Perk_Pheromones)
+			endif
+			
+		elseif FPFP_Global_Creature_Faction.GetValue() == 2
+			Creature_Faction = FPFP_BabyHandler.WhatFaction_Friendly(akDadRace)
+			
+			if PlayerREF.IsInFaction(Creature_Faction)
+				PlayerREF.removeFromFaction(Creature_Faction)
+			endIf
+			
+			if PlayerREF.HasPerk(WLD_Perk_Pheromones)
+				PlayerREF.RemovePerk(WLD_Perk_Pheromones)
+			endif
+			
+		endIf
+
 		if PlayerREF.HasPerk(Creature_Perk)
 			PlayerREF.RemovePerk(Creature_Perk)
 		endif
