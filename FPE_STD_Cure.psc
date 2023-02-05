@@ -30,7 +30,7 @@ Actor Function GetActorUnderCrosshairs()
 	Actor ScannedActor = LL_FourPlay.LastCrossHairActor()
 	
 	If ScannedActor == NONE || ScannedActor.GetDistance(PlayerRef) > 256.000
-		return PlayerRef
+		return PlayerREF
 	EndIf
 	Return ScannedActor
 EndFunction

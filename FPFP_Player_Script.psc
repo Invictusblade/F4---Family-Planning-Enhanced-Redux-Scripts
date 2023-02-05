@@ -71,8 +71,12 @@ GlobalVariable property INVB_Global_ForceLossQuest Auto Const Mandatory
 GlobalVariable property FPFP_Global_MessageType Auto Const Mandatory
 
 ;3.8
-GlobalVariable property FPFP_Global_Breeder_modifier Auto Const Mandatory
+GlobalVariable property FPFP_Internal_UpdateTime_Breeder Auto Const Mandatory
+GlobalVariable property FPFP_Internal_UpdateTime_Player Auto Const Mandatory 
+GlobalVariable property FPFP_Internal_UpdateTime_PostPartum Auto Const Mandatory 
 
+;4.0
+GlobalVariable property FPFP_Global_Sterile Auto Const Mandatory
 EndGroup
 
 Group FPEQuests
@@ -107,6 +111,33 @@ Actor Property Daddy auto
 Actor[] property Partners auto
 Bool property BlockDaddyQuest auto
 EndGroup
+
+Group Perks
+;4.00
+Perk Property WLD_Perk_Month_1 Auto
+Perk Property WLD_Perk_Month_2 Auto
+Perk Property WLD_Perk_Month_3 Auto
+Perk Property WLD_Perk_Month_4 Auto
+Perk Property WLD_Perk_Month_5 Auto
+Perk Property WLD_Perk_Month_6 Auto
+Perk Property WLD_Perk_Month_7 Auto
+Perk Property WLD_Perk_Month_8 Auto
+Perk Property WLD_Perk_Month_9 Auto
+Perk Property WLD_Perk_Month_10 Auto
+Perk Property WLD_Perk_Birth_Nothing Auto Const Mandatory
+Perk Property WLD_Perk_Birth_PoorLifestyle Auto Const Mandatory
+Perk Property WLD_Perk_Birth_Stillborn Auto Const Mandatory
+Perk Property WLD_Perk_Surrogate_1 Auto
+Perk Property WLD_Perk_Surrogate_2 Auto
+Perk Property WLD_Perk_Surrogate_3 Auto
+Perk Property WLD_Perk_Pregnancy_Freezing Auto
+Perk Property WLD_Perk_Sterile Auto
+EndGroup
+
+
+ActorValue Property FPFP_AV_RemainingPregnancy Auto Const
+ActorValue Property FPFP_AV_PregnancyStage Auto Const
+
 
 Race Property HumanRace Auto 
 
@@ -143,9 +174,31 @@ Float Function GetUpdateTime()
 	
 EndFunction
 
+Float Function GetUpdateTime_Player()
+	
+	float UpdateTime = FPFP_Internal_UpdateTime_Player.GetValue()
+	If UpdateTime > 0
+		return UpdateTime
+	Else
+		return 24.0
+	EndIf
+	
+EndFunction
+
+Float Function GetUpdateTime_PostPartum()
+	
+	float UpdateTime = FPFP_Internal_UpdateTime_PostPartum.GetValue()
+	If UpdateTime > 0
+		return UpdateTime
+	Else
+		return 24.0
+	EndIf
+	
+EndFunction
+
 Float Function GetUpdateTime_Breeder()
 	
-	float UpdateTime = FPFP_Internal_UpdateTime.GetValue() / FPFP_Global_Breeder_modifier.GetValue()
+	float UpdateTime = FPFP_Internal_UpdateTime_Breeder.GetValue()
 	
 	If UpdateTime > 0
 		return UpdateTime
@@ -718,15 +771,69 @@ Function ShowNPCUnderCrosshairsPregnancyInfo()
 	
 	If (akActor)
 		FPFP_BasePregData akPregData = GetPregnancyInfo(akActor)
-		
+		String ActorName = RenameAnything.GetRefName(akActor)
 		If (akPregData)
 			If !akPregData.IsPregnant
-				Debug.MessageBox(akActor.GetActorBase().GetName() + " isn't pregnant right now.")
+				String Message_NotPregNPC
+				String gender_pronoun
+				String gender_pronoun_2
+				
+				if akActor.GetLeveledActorBase().GetSex() == 0
+					gender_pronoun = "his"
+					gender_pronoun_2 = "he"
+				else	
+					gender_pronoun = "her"
+					gender_pronoun_2 = "she"
+				endif
+				
+				
+				
+				Message_NotPregNPC = ActorName + " isn't pregnant right now.\n"
+				
+				Message_NotPregNPC += "However "+gender_pronoun_2+" "	
+				
+				if akActor.HasPerk(WLD_Perk_Birth_Nothing)
+					Message_NotPregNPC += "has serious(really serious) issues with raising children, so "+gender_pronoun_2+" might do something bad to the baby.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Birth_PoorLifestyle)
+					Message_NotPregNPC += "has a poor lifestyle with a very poor diet, so "+gender_pronoun+" health might not be able to support a baby.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Birth_Stillborn)
+					Message_NotPregNPC += "has a history of Stillbirths so the baby might not survive if one is conceived.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Surrogate_1) || akActor.HasPerk(WLD_Perk_Surrogate_2) || akActor.HasPerk(WLD_Perk_Surrogate_3)
+					Message_NotPregNPC += "is a paid surrogate, so any babies will be sold to third parties.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Pregnancy_Freezing)
+					Message_NotPregNPC += "has an unique condition that seems to freeze pregnancies.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Sterile)
+					if FPFP_Global_Sterile.GetValue() == 0
+						Message_NotPregNPC += "is sterile so it is impossible to conceive any children. (Disabled)\n"
+					else
+						Message_NotPregNPC += "is sterile so it is impossible to conceive any children. (Enabled).\n"
+					endif
+				else
+					Message_NotPregNPC += "is healthy and has a stable lifestyle so any children borned will be raised in a loving environment.\n"	
+				endif
+				
+				Debug.MessageBox(Message_NotPregNPC)
 			Else
 				Race FatherRace = akPregData.FatherRace
 				float NumChildren = akPregData.NumChildren
 				float PregnancyProgress = ((Utility.GetCurrentGameTime() - akPregData.IncepDate) / FPFP_Global_Day.GetValue())
-
+				String Message_PregNPC
+				String gender_pronoun
+				String gender_pronoun_2
+				float Creature_Length = akPregData.Creature_Cycle
+				;int Total_left = Creature_Length as Int - PregnancyProgress as Int
+				float Total_left = akActor.getValue(FPFP_AV_RemainingPregnancy) as float
+				int Pregnant_Stage = akActor.getValue(FPFP_AV_PregnancyStage) as int
+				
+				
+				if akActor.GetLeveledActorBase().GetSex() == 0
+					gender_pronoun = "his"
+					gender_pronoun_2 = "he"
+				else	
+					gender_pronoun = "her"
+					gender_pronoun_2 = "she"
+				endif
+				
 				String babyNoun
 				If NumChildren == 1
 					babyNoun = "baby"
@@ -745,18 +852,106 @@ Function ShowNPCUnderCrosshairsPregnancyInfo()
 				
 				String fatherRaceString = akPregData.FatherRace.GetName()
 				If fatherRaceString == ""
-					fatherRaceString = "Creature"
+					fatherRaceString = "Unknown Creature"
 				EndIf
 				
-				Debug.MessageBox(akActor.GetActorBase().GetName() + " is pregnant with " + NumChildren as Int + " " + babyNoun + " and is " + progressString + " along.  The father is a " + fatherRaceString +  ".")
+				Message_PregNPC = ActorName + " is pregnant with " + NumChildren as Int + " " + babyNoun + ".\n"
+				
+				if akActor.HasPerk(WLD_Perk_Month_1)
+					Message_PregNPC += ActorName + " is in Month 1 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_2)
+					Message_PregNPC += ActorName + " is in Month 2 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_3)
+					Message_PregNPC += ActorName + " is in Month 3 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_4)
+					Message_PregNPC += ActorName + " is in Month 4 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_5)
+					Message_PregNPC += ActorName + " is in Month 5 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_6)
+					Message_PregNPC += ActorName + " is in Month 6 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_7)
+					Message_PregNPC += ActorName + " is in Month 7 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_8)
+					Message_PregNPC += ActorName + " is in Month 8 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_9)
+					Message_PregNPC += ActorName + " is in Month 9 of "+gender_pronoun+" Pregnancy.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Month_10)
+					Message_PregNPC += ActorName + " is in Month 9+ of "+gender_pronoun+" Pregnancy.\n"
+				else
+					Message_PregNPC += gender_pronoun_2+" is " + progressString + " along.\n"
+				endif	
+				
+				If (Total_left == 0)
+					Message_PregNPC += ActorName + " is in Labour, right around now.\n"
+				ElseIf (Total_left < 1)
+					Message_PregNPC += "The due date is in less than 1 month time.\n"
+				Else
+					Message_PregNPC += "The due date is in "+Total_left as int+" months time.\n"
+				EndIf
+				
+				If (Pregnant_Stage == 1)
+					Message_PregNPC += "The Pregnancy is its First Stage (Abortion is possible).\n"
+				ElseIf (Pregnant_Stage == 2)
+					Message_PregNPC += "The Pregnancy is its Middle Stage (Abortion is impossible).\n"
+				ElseIf (Pregnant_Stage == 3)
+					Message_PregNPC += "The Pregnancy is its Final Stage (Premature Birth is now possible).\n"
+				ElseIf (Pregnant_Stage == 4)
+					Message_PregNPC += ActorName + " is in Labour, right now.\n"
+				EndIf
+				
+				Message_PregNPC += "\n"	
+				
+				Message_PregNPC += "The father is a " + fatherRaceString +  "."	
+				
+				Message_PregNPC += "\n"				
+				
+				if akActor.HasPerk(WLD_Perk_Birth_Nothing)
+					Message_PregNPC += "Worryingly, "+ ActorName + " has no plans whatsoever.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Birth_PoorLifestyle)
+					Message_PregNPC += ActorName + " has a poor lifestyle so it is hard to say if the baby will live or die.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Birth_Stillborn)
+					Message_PregNPC += ActorName + " has a history of Stillbirths so the baby might not survive.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Surrogate_1) || akActor.HasPerk(WLD_Perk_Surrogate_2) || akActor.HasPerk(WLD_Perk_Surrogate_3)
+					Message_PregNPC += ActorName + " is giving away this baby for Money.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Pregnancy_Freezing)
+					Message_PregNPC += ActorName + " has a pregnancy that seems to last forever.\n"	
+				elseif akActor.HasPerk(WLD_Perk_Sterile)
+					Message_PregNPC += ActorName + " looks like "+ gender_pronoun_2 +" has a pregnancy that will damage to "+gender_pronoun+" reproductive system. \n This may be her only pregnancy.\n"	
+				else
+					Message_PregNPC += ActorName + " is fine with raising this baby.\n"	
+				endif
+				
+				if (Game.IsPluginInstalled("INVB_WastelandDairy.esp") == TRUE)
+					Message_PregNPC += ActorName + LactationMessage(akActor)
+				endif
+				
+				Debug.MessageBox(Message_PregNPC)
+				
 			EndIf
 		Else
-			Debug.MessageBox("No pregnancy data available for " + akActor.GetActorBase().GetName())
+			Debug.MessageBox("No pregnancy data available for " + ActorName)
 		EndIf
 	Else
 		Debug.MessageBox("There is no NPC to report on.")
 	EndIf
 EndFunction	
+
+String Function LactationMessage(actor akActor) 
+	
+	If akActor.HasPerk(Game.GetFormFromFile(0x01012357, "INVB_WastelandDairy.esp") as perk) ;WLD_Perk_Lactation
+		return " actively produces Milk in her Breasts.\n"
+	elseif akActor.HasPerk(Game.GetFormFromFile(0x0101235A, "INVB_WastelandDairy.esp") as perk) ;WLD_Perk_Lactation_Inactive
+		return "s Milk Production is reduced at the Moment."
+	elseif akActor.HasPerk(Game.GetFormFromFile(0x0101235C, "INVB_WastelandDairy.esp") as perk) ;WLD_Perk_Lactation_LowMilk
+		return " cannot produce enough Milk in her Breasts to feed.\n"
+	elseIf akActor.HasPerk(Game.GetFormFromFile(0x01012358, "INVB_WastelandDairy.esp") as perk) ;WLD_Perk_Lactation_Critical
+		return " cannot produce Milk in her Breasts whatsoever.\n"
+	elseif akActor.HasPerk(Game.GetFormFromFile(0x01012359, "INVB_WastelandDairy.esp") as perk) ;WLD_Perk_Lactation_Forever
+		return " actively produces Milk in her Breasts.\n and will also produce milk forever.\n"
+	else
+		return " is not lactating.\n"	
+	Endif
+EndFunction
 
 ;-----------------------------------------------------------------------------------------------------------------
 ;-----------------------------------------------------------------------------------------------------------------
@@ -871,7 +1066,7 @@ Function CallFunctionFor(Actor akActor, string theFunction, Actor akOptionalFath
 		If !akOptionalFather
 			akOptionalFather = akActor
 		EndIf
-		theData.Impregnate(akOptionalFather) 
+		theData.Impregnate(akOptionalFather, false) 
 	ElseIf theFunction == "GiveBirth" && theData.IsPregnant
 		theData.GiveBirth()
 	ElseIf theFunction == "Abortion" && theData.IsPregnant
@@ -917,7 +1112,7 @@ Function CallPlayerFunction(string theFunction, Actor akOptionalFather = NONE)
 		If !akOptionalFather
 			akOptionalFather = PlayerREF
 		EndIf
-		I_PlayerPregnancyInfo.Impregnate(akOptionalFather)
+		I_PlayerPregnancyInfo.Impregnate(akOptionalFather, false) 
 	ElseIf (theFunction == "MakeFertile" || theFunction == "MakeVirile" ) && !I_PlayerPregnancyInfo.IsPregnant
 		I_PlayerPregnancyInfo.MakeFertile()
 	; Begin pregnancy reliant function calls

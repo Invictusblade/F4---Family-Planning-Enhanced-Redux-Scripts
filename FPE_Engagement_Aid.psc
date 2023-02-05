@@ -18,8 +18,12 @@ Event OnEffectStart(Actor akActor, Actor akCaster)
 		Debug.notification(akActor.GetLeveledActorBase().GetName() +" is already married to you")
 		PlayerREF.additem(potion_self, 1, true)
 	elseif akActor != PlayerREF && (!akActor.HasPerk(WLD_Perk_Married) || !akActor.HasPerk(WLD_Perk_Married_2) || !akActor.HasPerk(WLD_Perk_Married_Poly) || !akActor.HasPerk(WLD_Perk_Married_Harem))
-		FPFP_Engagement.Engagement(akActor, bool_Submit)
-		akActor.equipitem(Armor_Fake)
+		if FPFP_Engagement.CheckRomance(akActor)
+			FPFP_Engagement.Engagement(akActor, bool_Submit)
+			akActor.equipitem(Armor_Fake)
+		else
+			PlayerREF.additem(potion_self, 1, true)	
+		endif
 	else
 		PlayerREF.additem(potion_self, 1, true)	
 	endif

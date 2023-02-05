@@ -1,27 +1,13 @@
-ScriptName FPFP_GrowingChildScript Extends Actor
+ScriptName FPFP_EvolvingAdult Extends Actor
 
 Group ChildProperties
 ActorBase[] property AdultAB auto const mandatory
-ActorBase[] property AdultAB_Hostile auto const mandatory
 ActorBase[] property Adult_Sideways auto const
-ActorBase[] property Adult_Sideways_Hostile auto const
 {The associated Adults for this child NPC}
-
-Float property GrowthTimeMultiplier = 1.0 Auto Const
-{This value will be multiplied into the child's growth time, so a lower value means faster growth.
-If this child actor has a BabyScript Form that creates it, this value will be ignored, and this child will inherit the BabyScript's GrowthTimeMultiplier}
 
 Bool Property IsWorkshopActor = False Auto Const
 {This value determines if the adult that the child will grow up to be can be in a workshop.}
 
-Float Property AddedSize = 0.125 Auto Const
-{This value is the amount of size growth the child will receive during their growing process. 
-Default is 0.125. That means that the max size the child will be 0.125 more than the initial size.
-If you want to set the initial size of the child actor, use the "height" options in the creation kit.}
-
-Sound Property BirthSound Auto Const
-{This object determines what the baby noise will be when born. 
-If set to nothing, then default noises are played.}
 EndGroup
 
 FPFP_Player_Script FPE ; holds the main quest for getting FPE global variables without needing FPE as an esp master
@@ -43,42 +29,38 @@ int Property int_howmuch_Meat auto
 int Property int_howmuch_Caps auto
 Bool Property Child_Allowed = true Auto Const	;if Creature is allowed to be grow up
 Bool Property bool_Evolution = false Auto Const	;if Creature is allowed to keep cycling
-Bool Property bool_Child = true Auto Const	;if Creature is allowed to keep cycling
 Keyword Property kw_Sideways Auto Const 
 
-GlobalVariable property INVB_Global_ChildToAdult Auto Const Mandatory ;Length of Child To Adult Growth
-GlobalVariable property INVB_Global_AllowEvolution Auto Const ;Length of Adult Evolution
-GlobalVariable property INVB_Global_Creature_Hostile Auto Const Mandatory
-GlobalVariable property INVB_Global_AllowHostile Auto Const Mandatory
+GlobalVariable property INVB_Global_AdultEvolve Auto Const Mandatory ;Length of Adult Evolution
+GlobalVariable property INVB_Global_AllowEvolution Auto Const Mandatory ;Length of Adult Evolution
 
 Function Initialize()
 
-	if (bool_Evolution == true && INVB_Global_AllowEvolution.GetValue() == 1) || bool_Evolution == false
-		FPE = FPFP_Player_Script.GetAPI()
-		BabyHandler = FPFP_Player_Script.GetBabyAPI()
-		If !FPE || !BabyHandler
-		
-			Debug.MessageBox("WARNING: FPE API(s) HAVE NOT BEEN PROPERLY SET. QUIT THE GAME AND GO TO THE FAMILY PLANNING ENHANCED THREAD TO REPORT THIS ISSUE WITH YOUR PAPYRUS LOGS READY.")
-		
-		EndIf
-		
-		RegisterForCustomEvent(BabyHandler, "FPEBabyUpdateGameTimer")
-		RegisterForCustomEvent(FPE, "DoUpdate")
-		RegisterForCustomEvent(FPE, "DoCleaning")
-		RegisterForCustomEvent(FPE, "DoReset")
-		
-		CheckForGrowing()
-		If !IsGrowing
-			StartTimerGameTime(GetUpdateTime())
-		EndIf
-	endif
+	FPE = FPFP_Player_Script.GetAPI()
+	BabyHandler = FPFP_Player_Script.GetBabyAPI()
+	If !FPE || !BabyHandler
+	
+		Debug.MessageBox("WARNING: FPE API(s) HAVE NOT BEEN PROPERLY SET. QUIT THE GAME AND GO TO THE FAMILY PLANNING ENHANCED THREAD TO REPORT THIS ISSUE WITH YOUR PAPYRUS LOGS READY.")
+	
+	EndIf
+	
+	RegisterForCustomEvent(BabyHandler, "FPEBabyUpdateGameTimer")
+	RegisterForCustomEvent(FPE, "DoUpdate")
+	RegisterForCustomEvent(FPE, "DoCleaning")
+	RegisterForCustomEvent(FPE, "DoReset")
+	
+	CheckForGrowing()
+	If !IsGrowing
+		StartTimerGameTime(GetUpdateTime())
+	EndIf
+	
 EndFunction
 
 Float Function GetUpdateTime() ; returns game hours
 
 	float FPETimer = FPE.GetUpdateTime()
 	
-	float childToAdultInHours = INVB_Global_ChildToAdult.GetValue() * FPE.FPFP_Global_Day.GetValue() * GetGrowthMultiplier() * 24
+	float childToAdultInHours = INVB_Global_AdultEvolve.GetValue() * FPE.FPFP_Global_Day.GetValue() * 24
 	
 	float SinceChildStartInHours = ((Utility.GetCurrentGameTime() - GetValue(BabyHandler.FPFP_AV_BirthDate))) * 24
 	
@@ -92,21 +74,11 @@ Float Function GetUpdateTime() ; returns game hours
 
 EndFunction
 
-Sound Function GetBabyBirthSound()
-	
-	If BirthSound
-		Return BirthSound
-	EndIf
-	
-	Return BabyHandler.VOCShaun
-	
-EndFunction
-
 Event OnActivate(ObjectReference akActivator)
 
 	If akActivator == Game.GetPlayer() && !IsDead()
 	
-		BabyHandler.ShowChildInfo(self)
+		BabyHandler.ShowAdultInfo(self)
 
 		TryToSetWorkshopOnActivate()
 	
@@ -194,12 +166,12 @@ Function CheckForGrowing()
 		Return
 	EndIf
 
-	float childToAdult = INVB_Global_ChildToAdult.GetValue() * GetGrowthMultiplier()
+	float AdultEvolution = INVB_Global_AdultEvolve.GetValue()
 	
 	float monthsSinceChildStart = ((Utility.GetCurrentGameTime() - GetValue(BabyHandler.FPFP_AV_BirthDate)) / FPE.FPFP_Global_Day.GetValue())
 	
 	
-	If monthsSinceChildStart >= childToAdult
+	If monthsSinceChildStart >= AdultEvolution
 		if Child_Allowed == true
 			If Self.HasKeyword(kw_Outcome)
 				GrowUp()
@@ -224,34 +196,6 @@ Function CheckForGrowing()
 			GrowUp()
 		endif
 		
-	ElseIf monthsSinceChildStart > 0
-	
-		Trace("Setting scale")
-	
-		float scaleToSetTo = 1 + ((monthsSinceChildStart / childToAdult) * AddedSize)
-	
-		SetScale(scaleToSetTo)
-	
-		QueueUpdate(flags = 0xC)
-	
-	EndIf
-
-EndFunction
-
-Float Function GetGrowthMultiplier()
-
-	float avGrowthTimeMult = GetValue(BabyHandler.FPFP_AV_GrowthTimeMult) ; first check for the actor value
-
-	If avGrowthTimeMult > 0 ; if the actor value was valid
-		Return avGrowthTimeMult ; return with it
-	EndIf
-	
-	; If we made it this far, that means that we don't have a valid growth multiplier yet, do another check for the script property
-	
-	If GrowthTimeMultiplier > 0 ; if the float property was valid
-		Return GrowthTimeMultiplier ; return it
-	Else
-		Return 1.0 ; return a normal number if it was not normal
 	EndIf
 
 EndFunction
@@ -388,40 +332,21 @@ Function GrowUp()
 
 	If FPE.FPFP_Global_CGNotif.GetValue() == 1.0
 	
-		if (bool_Child)
-			If GetCurrentLocation().GetName() == "Commonwealth"
+		If GetCurrentLocation().GetName() == "Commonwealth"
 		
-				if FPE.FPFP_Global_MessageType.GetValue() == 0
-					Debug.MessageBox("A child has grown into an adult in the Commonwealth")
-				else
-					Debug.Notification("A child has grown into an adult in the Commonwealth")
-				endif
+			if FPE.FPFP_Global_MessageType.GetValue() == 0
+				Debug.MessageBox("An adult has evolved in the Commonwealth")
+			else
+				Debug.Notification("An adult has evolved in the Commonwealth")
+			endif
 				
-			ElseIf GetCurrentLocation()
+		ElseIf GetCurrentLocation()
 		
-				if FPE.FPFP_Global_MessageType.GetValue() == 0
-					Debug.MessageBox("A child has grown into an adult at "+ GetCurrentLocation().GetName())
-				else
-					Debug.Notification("A child has grown into an adult at "+ GetCurrentLocation().GetName())
-				endif
-			EndIf
-		else
-			If GetCurrentLocation().GetName() == "Commonwealth"
-		
-				if FPE.FPFP_Global_MessageType.GetValue() == 0
-					Debug.MessageBox("An adult has evolved in the Commonwealth")
-				else
-					Debug.Notification("An adult has evolved in the Commonwealth")
-				endif
-				
-			ElseIf GetCurrentLocation()
-		
-				if FPE.FPFP_Global_MessageType.GetValue() == 0
-					Debug.MessageBox("An adult has evolved at "+ GetCurrentLocation().GetName())
-				else
-					Debug.Notification("An adult has evolved at "+ GetCurrentLocation().GetName())
-				endif
-			EndIf
+			if FPE.FPFP_Global_MessageType.GetValue() == 0
+				Debug.MessageBox("An adult has evolved at "+ GetCurrentLocation().GetName())
+			else
+				Debug.Notification("An adult has evolved at "+ GetCurrentLocation().GetName())
+			endif
 		EndIf
 	EndIf
 
@@ -451,9 +376,8 @@ Function GrowUp()
 	
 	TryToAddToWorkshopOnGrow(newAdult)
 
-	if bool_Evolution == true && INVB_Global_AllowEvolution.GetValue() == 1
+	if bool_Evolution == true || INVB_Global_AllowEvolution.GetValue() == 1.0
 		newAdult.SetValue(BabyHandler.FPFP_AV_BirthDate, Utility.GetCurrentGameTime())
-		newAdult.SetValue(BabyHandler.FPFP_AV_GrowthTimeMult, GetGrowthMultiplier())
 		
 		If newAdult as FPFP_GrowingChildScript ; init the child now that everything should be set up
 			(newAdult as FPFP_GrowingChildScript).Initialize()
@@ -469,34 +393,17 @@ Function GrowUp()
 EndFunction
 
 ActorBase Function GetAdultAB()
-	int random_LList = Utility.RandomInt(1, 100)
+
+	If Adult_Sideways.Length > 1
 	
-	If Adult_Sideways.Length >= 0 && Self.HasKeyword(kw_Sideways) && (random_LList <= INVB_Global_Creature_Hostile.GetValue()) && INVB_Global_AllowHostile.GetValue() == 1
-		
 		Return Adult_Sideways[Utility.RandomInt(0, Adult_Sideways.Length-1)]
-
-	ElseIf Adult_Sideways_Hostile.Length >= 1 && INVB_Global_AllowHostile.GetValue() == 1 && Self.HasKeyword(kw_Sideways)
-		
-		Return Adult_Sideways_Hostile[Utility.RandomInt(0, Adult_Sideways_Hostile.Length-1)]
-
-	ElseIf AdultAB.Length >= 0 && (random_LList <= INVB_Global_Creature_Hostile.GetValue() && INVB_Global_AllowHostile.GetValue() == 1)
 	
-		Return AdultAB[Utility.RandomInt(0, AdultAB.Length-1)]
-
-	ElseIf AdultAB_Hostile.Length >= 0 && INVB_Global_AllowHostile.GetValue() == 1
-		
-		Return AdultAB_Hostile[Utility.RandomInt(0, AdultAB_Hostile.Length-1)]
-
-	ElseIf Adult_Sideways.Length >= 0 && Self.HasKeyword(kw_Sideways)
-		
-		Return Adult_Sideways[Utility.RandomInt(0, Adult_Sideways.Length-1)]
-
 	ElseIf AdultAB.Length > 1
-
+	
 		Return AdultAB[Utility.RandomInt(0, AdultAB.Length-1)]
 	
 	Else
-		
+	
 		return AdultAB[0]
 	
 	EndIf
@@ -533,7 +440,7 @@ EndFunction
 
 Function StartDelete()
 
-	if (bool_Evolution == true && INVB_Global_AllowEvolution.GetValue() == 0) || bool_Evolution == false
+	if bool_Evolution == false || INVB_Global_AllowEvolution.GetValue() == 0
 		UnregisterForAllEvents()
 	
 		If (self as Actor) as WorkshopChildScript

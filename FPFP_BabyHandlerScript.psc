@@ -16,7 +16,25 @@ Form[] property BabyTypes_F auto ; Default baby types
 Form[] property BabyTypes_M auto ; Default baby types
 Form[] property RadBabyTypes_F auto ; Default radiation baby types
 Form[] property RadBabyTypes_M auto ; Default radiation baby types
+
+Form[] property BabyTypes_nongrowing_F auto ; Default baby types
+Form[] property BabyTypes_nongrowing_M auto ; Default baby types
+Form[] property RadBabyTypes_nongrowing_F auto ; Default radiation baby types
+Form[] property RadBabyTypes_nongrowing_M auto ; Default radiation baby types
+
 Form[] Property BabyTypeItem_dead Auto Const
+
+Form[] Property HumanChildActors_F Auto Const
+Form[] Property HumanChildActors_M Auto Const
+
+Form[] Property HumanAdultActors_F Auto Const
+Form[] Property HumanAdultActors_M Auto Const
+
+Form[] Property GhoulChildActors_F Auto Const
+Form[] Property GhoulChildActors_M Auto Const
+
+Form[] Property GhoulAdultActors_F Auto Const
+Form[] Property GhoulAdultActors_M Auto Const
 
 Actor property Piper auto const
 Quest property FPFP_Crib auto const
@@ -46,9 +64,22 @@ GlobalVariable property FPFP_Global_Viable Auto Const Mandatory
 GlobalVariable property FPFP_Global_Viable_Renaming Auto Const Mandatory
 
 Perk Property WLD_Perk_Breeder Auto
-GlobalVariable property FPFP_Global_Breeder_modifier Auto Const Mandatory
+GlobalVariable property FPFP_Global_Breeder_Viable Auto Const Mandatory
 
 GlobalVariable property FPFP_Global_Viable_Ghoul Auto Const Mandatory
+FPE_Messages Property FPFP_Messages Auto Const Mandatory
+Perk Property WLD_Perk_DeadBaby Auto
+Potion property aid_DeadBaby Auto Const
+
+GlobalVariable property FPFP_Global_Ghoul_Birth Auto Const
+GlobalVariable property FPFP_Global_Human_Birth Auto Const
+
+
+GlobalVariable property FPFP_Global_Length_Human Auto Const Mandatory
+GlobalVariable property FPFP_Global_Morph_Human Auto Const Mandatory
+GlobalVariable property FPFP_Global_Chance Auto Const Mandatory
+Perk Property WLD_Perk_Impregnated Auto
+
 
 Event OnInit()
 
@@ -82,11 +113,12 @@ Function AddBaby(Actor akMother, Race akDadRace, int aiNumChildren, float afRadi
 	
 		While iteration <= aiNumChildren 
 			BHTrace("AddBaby started on iteration "+iteration+" of "+aiNumChildren+" total children")
+			Debug.Trace("AddBaby started on iteration "+iteration+" of "+aiNumChildren+" total children")
 			
 			Form babyTypeToSpawn = babyType as Form
 			
 			If babyType as FPFP_BabyTypeAddon && akMother.HasPerk(WLD_Perk_Breeder)
-				babyTypeToSpawn = (babyType as FPFP_BabyTypeAddon).GetBabyType(true, FPFP_Global_Breeder_modifier.GetValue()) as Form ; causes the baby item or actor to be different each while loop iteration, so that there are varied babies.
+				babyTypeToSpawn = (babyType as FPFP_BabyTypeAddon).GetBabyType(false, FPFP_Global_Breeder_Viable.GetValue()) as Form ; causes the baby item or actor to be different each while loop iteration, so that there are varied babies.
 			elseIf babyType as FPFP_BabyTypeAddon
 				babyTypeToSpawn = (babyType as FPFP_BabyTypeAddon).GetBabyType(false, 1) as Form ; causes the baby item or actor to be different each while loop iteration, so that there are varied babies.
 			EndIf
@@ -124,30 +156,16 @@ Function AddBaby(Actor akMother, Race akDadRace, int aiNumChildren, float afRadi
 				endif
 				RenameAnything.SetRefName(theBaby, BabyName)
 			endif
-			
-			If (Game.IsPluginInstalled("Lootman.esp") == TRUE)
-				FormList Blacklist = Game.GetFormFromFile(0x001EF3, "Lootman.esp") as FormList
-				Blacklist.AddForm(theBaby)
-			EndIf 
-			
+									
 			If theBaby as FPFP_BabyScript ; if we're a baby object rather than anything else
 				BHTrace("AddBaby found that the baby spawned was a misc object with FPFP_BabyScript applied onto it. Registering it into the array to keep it persistent")
-				;int index = RegisterBaby(theBaby as FPFP_BabyScript) 2.1 deprecated
 				
 				If akMother.Is3DLoaded()
 					(theBaby as FPFP_BabyScript).GetBabyBirthSound().Play(akMother)
 				EndIf
 				
 				akMother.AddItem(theBaby, 1)
-				;/If index > -1 ; If baby was properly added
-					BHTrace("AddBaby found that the baby registered successfully")
-					akMother.AddItem(theBaby, 1) ; put the baby in the mother's inventory
-				
-				Else ; For some reason, we couldn't add the baby, abort
-					BHTrace("AddBaby found that the baby registered unsuccessfully")
-					UnregisterBaby(theBaby as FPFP_BabyScript)
-				
-				EndIf; 2.1 deprecated: should always be persistent now, no need to record/;
+
 			ElseIf theBaby as Actor
 			
 				BHTrace("AddBaby found that the baby spawned was an actor. Setting its bday")
@@ -170,6 +188,110 @@ Function AddBaby(Actor akMother, Race akDadRace, int aiNumChildren, float afRadi
 	BHTrace("AddBaby has finished")
 EndFunction
 
+
+
+Function AddBaby_dead(Actor akMother, Race akDadRace, int aiNumChildren, float afRadiation = -1.0) 
+
+	If akMother == PlayerREF
+		FPFP_Messages.Birth_Baby_Death()
+	elseif akMother.GetDistance(PlayerRef) < 256.000
+		Debug.notification(RenameAnything.GetRefName(akMother) +": Crying uncontrollably. \n While her baby isn't")
+	endif
+
+	Var babyType = GetBabyType_Dead(akDadRace, afRadiation, akMother)
+	
+	If babyType
+		Form babyTypeToSpawn = babyType as Form
+			
+		If babyType as FPFP_BabyTypeAddon
+			babyTypeToSpawn = (babyType as FPFP_BabyTypeAddon).GetBabyType(false, 1) as Form ; causes the baby item or actor to be different each while loop iteration, so that there are varied babies.
+		EndIf
+			
+		ObjectReference theBaby = akMother.PlaceAtMe(babyTypeToSpawn, aiCount = 1, abForcePersist = False, abInitiallyDisabled = false, abDeleteWhenAble = false)
+		akMother.AddItem(theBaby, aiNumChildren)
+	EndIf
+	
+EndFunction
+
+Function AddBaby_nongrowing(Actor akMother, Race akDadRace, int aiNumChildren, float afRadiation = -1.0) 
+
+	Var babyType = GetBabyType_nongrowing(akDadRace, afRadiation, akMother)
+	
+	If babyType
+		BHTrace("AddBaby has found a baby type")
+		
+		If babyType as FPFP_BabyTypeAddon
+			BHTrace("AddBaby has found a baby type that was FPFP_BabyTypeAddon. Setting appropriate variables")
+			aiNumChildren += (babyType as FPFP_BabyTypeAddon).AdditionalBabies()
+		EndIf
+		Debug.Trace("(babyType as FPFP_BabyTypeAddon).AdditionalBabies()")
+		Debug.Trace((babyType as FPFP_BabyTypeAddon).AdditionalBabies())
+		
+		int iteration = 1
+	
+		While iteration <= aiNumChildren 
+			BHTrace("AddBaby started on iteration "+iteration+" of "+aiNumChildren+" total children")
+			Debug.Trace("AddBaby started on iteration "+iteration+" of "+aiNumChildren+" total children")
+			
+			Form babyTypeToSpawn = babyType as Form
+			
+			If babyType as FPFP_BabyTypeAddon && akMother.HasPerk(WLD_Perk_Breeder)
+				babyTypeToSpawn = (babyType as FPFP_BabyTypeAddon).GetBabyType(true, FPFP_Global_Breeder_Viable.GetValue()) as Form ; causes the baby item or actor to be different each while loop iteration, so that there are varied babies.
+			elseIf babyType as FPFP_BabyTypeAddon
+				babyTypeToSpawn = (babyType as FPFP_BabyTypeAddon).GetBabyType(true, 1) as Form ; causes the baby item or actor to be different each while loop iteration, so that there are varied babies.
+			EndIf
+			
+			if babyTypeToSpawn == ismybabydead(akDadRace)
+				If akMother == PlayerREF && FPFP_Global_Viable_Renaming.GetValue() == 1
+					BabyName_Which = Utility.RandomInt(1, 2)
+				elseif FPFP_Global_Viable_Renaming.GetValue() == 2
+					BabyName_Which = Utility.RandomInt(1, 2)
+				else
+					BabyName = ""
+					BabyName_Which = 5
+				endif	
+			endif
+			
+			ObjectReference theBaby = akMother.PlaceAtMe(babyTypeToSpawn, aiCount = 1, abForcePersist = False, abInitiallyDisabled = false, abDeleteWhenAble = false)
+			
+			If akMother == PlayerREF
+				theBaby.AddKeyword(FPFP_KW_IsPlayersChild)
+			EndIf
+			
+			; for SKK50's Fallout 4-76
+			If (Game.IsPluginInstalled("SKK476OpenWorld.esp") == TRUE)
+				theBaby.AddKeyword(Game.GetFormFromFile(0x00019bcb, "SKK476OpenWorld.esp") as Keyword)
+			EndIf 
+			
+			; the following will rename the baby and then pick a new name for the next baby if there is one
+			if BabyName_Which != 5 && (akDadRace != HumanRace && akDadRace != None && WhatsmyName_Auto(akDadRace) == 1) || (akDadRace == HumanRace && FPFP_Global_Rename_Human.GetValue() == 1)
+				if BabyName_Which == 1
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+				elseif BabyName_Which == 2
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+				elseif BabyName_Which == 3
+					BabyName = FPFP_BabyNames.BabyNames(akDadRace)
+				endif
+				RenameAnything.SetRefName(theBaby, BabyName)
+			endif
+						
+			If akMother.Is3DLoaded()
+				(theBaby as FPFP_BabyScript).GetBabyBirthSound().Play(akMother)
+			EndIf
+				
+			akMother.AddItem(theBaby, 1)
+			
+			BHTrace("AddBaby ended iteration "+iteration+" of "+aiNumChildren+" total children")
+			iteration += 1
+			
+		EndWhile
+		BHTrace("AddBaby has finished adding children")
+	EndIf
+	BHTrace("AddBaby has finished")
+EndFunction
+
+
+
 Var Function GetBabyType(Race akDadRace, float afRadiation, Actor akMother)
 	; function to get the baby type. Can return none, the addon quest, or the default misc objects
 	
@@ -186,19 +308,54 @@ Var Function GetBabyType(Race akDadRace, float afRadiation, Actor akMother)
 			else
 				BabyName = ""
 				BabyName_Which = 5
+			endif
+			
+			If akMother == PlayerREF
+				FPFP_Messages.Birth_Baby_Death()
+			elseif akMother.GetDistance(PlayerRef) < 256.000
+				Debug.notification(RenameAnything.GetRefName(akMother) +": Crying uncontrollably. \n While her baby isn't")
+			endif
+			
+			if !akMother.HasPerk(WLD_Perk_DeadBaby)
+				akMother.EquipItem(aid_DeadBaby, abSilent = True)
 			endif	
+			
 			Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]
 			
 		else
-			if (random_LList <= FPFP_Global_Gender_Select.GetValue())
-				BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
-				BabyName_Which = 1
-				Return RadBabyTypes_F[Utility.RandomInt(0,RadBabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+			If GhoulAdultActors_F.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 2 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return GhoulAdultActors_F[Utility.RandomInt(0,GhoulAdultActors_F.Length-1)]
+
+			ElseIf GhoulAdultActors_M.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 2
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return GhoulAdultActors_M[Utility.RandomInt(0,GhoulAdultActors_M.Length-1)]
+			
+			ElseIf GhoulChildActors_F.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 1 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return GhoulChildActors_F[Utility.RandomInt(0,GhoulChildActors_F.Length-1)]
+
+			ElseIf GhoulChildActors_M.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 1
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return GhoulChildActors_M[Utility.RandomInt(0,GhoulChildActors_M.Length-1)]
+			
 			else
-				BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
-				BabyName_Which = 2
-				Return RadBabyTypes_M[Utility.RandomInt(0,RadBabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+			
+				if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+					Return RadBabyTypes_F[Utility.RandomInt(0,RadBabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+				else
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+					Return RadBabyTypes_M[Utility.RandomInt(0,RadBabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+				EndIf
 			EndIf
+			
 		EndIf	
 	EndIf
 
@@ -215,18 +372,52 @@ Var Function GetBabyType(Race akDadRace, float afRadiation, Actor akMother)
 			else
 				BabyName = ""
 				BabyName_Which = 5
-			endif	
+			endif
+			
+			If akMother == PlayerREF
+				FPFP_Messages.Birth_Baby_Death()
+			elseif akMother.GetDistance(PlayerRef) < 256.000
+				Debug.notification(RenameAnything.GetRefName(akMother) +": Crying uncontrollably. \n While her baby isn't")
+			endif
+			
+			if !akMother.HasPerk(WLD_Perk_DeadBaby)
+				akMother.EquipItem(aid_DeadBaby, abSilent = True)
+			endif
+			
 			Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]
 			
 		else
-			if (random_LList <= FPFP_Global_Gender_Select.GetValue())
-				BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
-				BabyName_Which = 1
-				Return BabyTypes_F[Utility.RandomInt(0,BabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+		
+			If HumanAdultActors_F.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 2 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return HumanAdultActors_F[Utility.RandomInt(0,HumanAdultActors_F.Length-1)]
+
+			ElseIf HumanAdultActors_M.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 2
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return HumanAdultActors_M[Utility.RandomInt(0,HumanAdultActors_M.Length-1)]
+			
+			ElseIf HumanChildActors_F.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 1 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return HumanChildActors_F[Utility.RandomInt(0,HumanChildActors_F.Length-1)]
+
+			ElseIf HumanChildActors_M.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 1
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return HumanChildActors_M[Utility.RandomInt(0,HumanChildActors_M.Length-1)]
+			
 			else
-				BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
-				BabyName_Which = 2
-				Return BabyTypes_M[Utility.RandomInt(0,BabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+				if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+					Return BabyTypes_F[Utility.RandomInt(0,BabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+				else
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+					Return BabyTypes_M[Utility.RandomInt(0,BabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+				EndIf
 			EndIf
 		EndIf	
 	EndIf
@@ -285,6 +476,210 @@ Var Function GetBabyType(Race akDadRace, float afRadiation, Actor akMother)
 	
 EndFunction
 
+Var Function GetBabyType_Dead(Race akDadRace, float afRadiation, Actor akMother)
+	; function to get the baby type. Can return none, the addon quest, or the default misc objects
+	
+	If FPE.FPFP_Global_GhoulifyChildren.GetValue() == 1.0 && (afRadiation >= 400 || akDadRace == GhoulRace)
+		Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]	
+	EndIf
+
+	If akDadRace == HumanRace  ; If the father is a human
+		Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]
+	EndIf
+	
+	
+	If akDadRace != HumanRace
+		Return ismybabydead(akDadRace)
+	EndIf
+	
+EndFunction
+
+
+Var Function GetBabyType_nongrowing(Race akDadRace, float afRadiation, Actor akMother)
+	; function to get the baby type. Can return none, the addon quest, or the default misc objects
+	
+	If FPE.FPFP_Global_GhoulifyChildren.GetValue() == 1.0 && (afRadiation >= 400 || akDadRace == GhoulRace)
+		; if mom has accumulated enough rads OR the dad was a ghoul
+		int random_LList = Utility.RandomInt(1, 100)
+		int random_Viable = Utility.RandomInt(1, 100)
+	
+		if random_Viable >= FPFP_Global_Viable_Ghoul.GetValue() && !akMother.HasPerk(WLD_Perk_Breeder)
+			If akMother == PlayerREF && FPFP_Global_Viable_Renaming.GetValue() == 1
+				BabyName_Which = Utility.RandomInt(1, 2)
+			elseif FPFP_Global_Viable_Renaming.GetValue() == 2
+				BabyName_Which = Utility.RandomInt(1, 2)
+			else
+				BabyName = ""
+				BabyName_Which = 5
+			endif
+			
+			If akMother == PlayerREF
+				FPFP_Messages.Birth_Baby_Death()
+			elseif akMother.GetDistance(PlayerRef) < 256.000
+				Debug.notification(RenameAnything.GetRefName(akMother) +": Crying uncontrollably. \n While her baby isn't")
+			endif
+			
+			if !akMother.HasPerk(WLD_Perk_DeadBaby)
+				akMother.EquipItem(aid_DeadBaby, abSilent = True)
+			endif	
+			
+			Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]
+			
+		else
+			If GhoulAdultActors_F.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 2 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return GhoulAdultActors_F[Utility.RandomInt(0,GhoulAdultActors_F.Length-1)]
+
+			ElseIf GhoulAdultActors_M.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 2
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return GhoulAdultActors_M[Utility.RandomInt(0,GhoulAdultActors_M.Length-1)]
+			
+			ElseIf GhoulChildActors_F.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 1 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return GhoulChildActors_F[Utility.RandomInt(0,GhoulChildActors_F.Length-1)]
+
+			ElseIf GhoulChildActors_M.Length > 0 && FPFP_Global_Ghoul_Birth.GetValue() == 1
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return GhoulChildActors_M[Utility.RandomInt(0,GhoulChildActors_M.Length-1)]
+			
+			else
+			
+				if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+					Return RadBabyTypes_nongrowing_F[Utility.RandomInt(0,RadBabyTypes_nongrowing_F.Length-1)] ; give Female Default babies, as to save computational power
+				else
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+					Return RadBabyTypes_nongrowing_M[Utility.RandomInt(0,RadBabyTypes_nongrowing_M.Length-1)] ; give Male default babies, as to save computational power
+				EndIf
+			EndIf
+			
+		EndIf	
+	EndIf
+
+	If akDadRace == HumanRace  ; If the father is a human
+	
+		int random_LList = Utility.RandomInt(1, 100)
+		int random_Viable = Utility.RandomInt(1, 100)
+	
+		if random_Viable >= FPFP_Global_Viable.GetValue() && !akMother.HasPerk(WLD_Perk_Breeder)
+			If akMother == PlayerREF && FPFP_Global_Viable_Renaming.GetValue() == 1
+				BabyName_Which = Utility.RandomInt(1, 2)
+			elseif FPFP_Global_Viable_Renaming.GetValue() == 2
+				BabyName_Which = Utility.RandomInt(1, 2)
+			else
+				BabyName = ""
+				BabyName_Which = 5
+			endif
+			
+			If akMother == PlayerREF
+				FPFP_Messages.Birth_Baby_Death()
+			elseif akMother.GetDistance(PlayerRef) < 256.000
+				Debug.notification(RenameAnything.GetRefName(akMother) +": Crying uncontrollably. \n While her baby isn't")
+			endif
+			
+			if !akMother.HasPerk(WLD_Perk_DeadBaby)
+				akMother.EquipItem(aid_DeadBaby, abSilent = True)
+			endif
+			
+			Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]
+			
+		else
+		
+			If HumanAdultActors_F.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 2 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return HumanAdultActors_F[Utility.RandomInt(0,HumanAdultActors_F.Length-1)]
+
+			ElseIf HumanAdultActors_M.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 2
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return HumanAdultActors_M[Utility.RandomInt(0,HumanAdultActors_M.Length-1)]
+			
+			ElseIf HumanChildActors_F.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 1 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+				Return HumanChildActors_F[Utility.RandomInt(0,HumanChildActors_F.Length-1)]
+
+			ElseIf HumanChildActors_M.Length > 0 && FPFP_Global_Human_Birth.GetValue() == 1
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+				Return HumanChildActors_M[Utility.RandomInt(0,HumanChildActors_M.Length-1)]
+			
+			else
+				if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+					BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+					BabyName_Which = 1
+					Return BabyTypes_nongrowing_F[Utility.RandomInt(0,BabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+				else
+					BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+					BabyName_Which = 2
+					Return BabyTypes_nongrowing_M[Utility.RandomInt(0,BabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+				EndIf
+			EndIf
+		EndIf	
+	EndIf
+	
+	
+	If akDadRace != HumanRace
+		Var theReturn
+		FPFP_BabyTypeAddon[] validTypes = new FPFP_BabyTypeAddon[0]
+		
+		int i = 0
+	
+		While i < AddonBabyTypes.Length
+			If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+				validTypes.Add(AddonBabyTypes[i])
+			EndIf
+			i += 1
+		EndWhile
+		
+		If validTypes.Length > 0 ; if there were valid race types added to the array
+		
+			; the following does the initial Baby name to be read at a later time
+			
+			int random_LList = Utility.RandomInt(1, 100)
+				
+			if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+				BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+				BabyName_Which = 1
+			else
+				BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+				BabyName_Which = 2
+			EndIf
+				
+			if FPFP_BabyNames.BabyNames(akDadRace)
+				BabyName = FPFP_BabyNames.BabyNames(akDadRace)
+				BabyName_Which = 3
+			endif
+			
+			
+			theReturn = validTypes[Utility.RandomInt(0,validTypes.Length-1)] ; set our return to one of the valid babytypeaddons
+		
+		else ; if there were no valid types
+			int random_LList = Utility.RandomInt(1, 100)
+			if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+				BabyName = FPFP_BabyNames.BabyNames_Female(akDadRace)
+				BabyName_Which = 1
+				Return BabyTypes_nongrowing_F[Utility.RandomInt(0,BabyTypes_F.Length-1)] ; give Female Default babies, as to save computational power
+			else
+				BabyName = FPFP_BabyNames.BabyNames_Male(akDadRace)
+				BabyName_Which = 2
+				Return BabyTypes_nongrowing_M[Utility.RandomInt(0,BabyTypes_M.Length-1)] ; give Male default babies, as to save computational power
+			EndIf
+		EndIf
+		
+		return theReturn
+	EndIf
+	
+EndFunction
+
+
 ;the Following read the already existing AddonBabyTypes Quests to receive data from each race
 
 bool Function FoundtheFather(Race akDadRace) ;bool to see if there is a father to be found
@@ -295,6 +690,8 @@ bool Function FoundtheFather(Race akDadRace) ;bool to see if there is a father t
 		EndIf
 		i += 1
 	EndWhile
+	
+	return false
 EndFunction
 
 bool Function AdultAllowed(Race akDadRace) ;bool to see if the creature would be harvested as an adult
@@ -305,6 +702,8 @@ bool Function AdultAllowed(Race akDadRace) ;bool to see if the creature would be
 		EndIf
 		i += 1
 	EndWhile
+	
+	return false
 EndFunction
 
 Float Function Howlongismypregnancy(Race akDadRace) ;Float to see how long the pregnancy will be, Default is 9
@@ -316,6 +715,8 @@ Float Function Howlongismypregnancy(Race akDadRace) ;Float to see how long the p
 		EndIf
 		i += 1
 	EndWhile
+	
+	return FPFP_Global_Length_Human.GetValue()
 EndFunction
 
 Spell Function WhatColourisMyCum(Race akDadRace) ;Spell to choose colour of semen is used by the creature
@@ -336,6 +737,8 @@ int Function HowMuch(Race akDadRace) ;Int to see how much product(Caps or other)
 		EndIf
 		i += 1
 	EndWhile
+	
+	return 100
 EndFunction
 
 bool Function WhatTwins(Race akDadRace) ;bool to see if this is a multilevel birth (for example this is mostly used for small creatures that cannot justify the length of time used for pregnancy for a single egg or womb)
@@ -346,6 +749,8 @@ bool Function WhatTwins(Race akDadRace) ;bool to see if this is a multilevel bir
 		EndIf
 		i += 1
 	EndWhile
+	
+	return false
 EndFunction
 
 Float Function HowBig(Race akDadRace) ;Float to see how big the pregnancy will be on the mother
@@ -357,6 +762,21 @@ Float Function HowBig(Race akDadRace) ;Float to see how big the pregnancy will b
 		EndIf
 		i += 1
 	EndWhile
+	
+	return FPFP_Global_Morph_Human.GetValue()
+EndFunction
+
+Float Function HowBig_Cumflation(Race akDadRace) ;Float to see how big the Cumflation will be on the mother
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_Morph_Cumflation.GetValue()
+			;return AddonBabyTypes[i].Creature_Morph_Cum
+		EndIf
+		i += 1
+	EndWhile
+	
+	return 1
 EndFunction
 
 Perk Function WhatsmyPerk(Race akDadRace) ;which perk will be picked if pregnant by this race
@@ -367,6 +787,8 @@ Perk Function WhatsmyPerk(Race akDadRace) ;which perk will be picked if pregnant
 		EndIf
 		i += 1
 	EndWhile
+	
+	return WLD_Perk_Impregnated
 EndFunction
 
 Potion Function WhatsmyDNA(Race akDadRace) ;which DNA will be collected when having sex with a condom
@@ -374,16 +796,6 @@ Potion Function WhatsmyDNA(Race akDadRace) ;which DNA will be collected when hav
 	While i < AddonBabyTypes.Length
 		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
 			return AddonBabyTypes[i].Creature_Cum
-		EndIf
-		i += 1
-	EndWhile
-EndFunction
-
-bool Function WhendoIStart(Race akDadRace) ;Used for WastelandBreeding or Impregnation, basically if the pregnancy starts halfway through the pregnancy
-	int i = 0
-	While i < AddonBabyTypes.Length
-		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
-			return AddonBabyTypes[i].Creature_Start
 		EndIf
 		i += 1
 	EndWhile
@@ -652,7 +1064,76 @@ float Function WhatsmyChances(Race akDadRace) ;bool to see if the baby does get 
 		EndIf
 		i += 1
 	EndWhile
+	
+	return FPFP_Global_Chance.GetValue()
 EndFunction
+
+
+
+
+
+ActorValue Function SexCounter(Race akDadRace) ;Counter for Sex Scenes from Creatures
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_SexCounter
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+ActorValue Function BirthCounter(Race akDadRace) ;Counter for Birth Scenes from Creatures
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_BirthCounter
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+float Function BirthCounter_Global(Race akDadRace) ;bool to see if the baby does get named automatically
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_BirthCounter_Global.GetValue()
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+float Function SexCounter_Global(Race akDadRace) ;bool to see if the baby does get named automatically
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_SexCounter_Global.GetValue()
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+Perk Function BirthPerk(Race akDadRace) ;Perks for Births from Creatures
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_BirthPerk
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+Perk Function SexPerk(Race akDadRace) ;Perks for Sex Scenes from Creatures
+	int i = 0
+	While i < AddonBabyTypes.Length
+		If AddonBabyTypes[i].IsRaceMatch(akDadRace)
+			return AddonBabyTypes[i].INVB_Global_Creature_SexPerk
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+
+
 
 ;/Int Function RegisterBaby(FPFP_BabyScript akBabyRef) 
 
@@ -755,11 +1236,9 @@ Function ShowBabyInfo(FPFP_BabyScript akBabyRef)
 
 	float ageInMonths = (Utility.GetCurrentGameTime() - akBabyRef.BirthDate ) / FPE.FPFP_Global_Day.GetValue()
 	
-	float monthsUntilChild = (FPE.FPFP_Global_BabyToChild.GetValue() * akBabyRef.GetGrowthMultiplier()) - ageInMonths
+	float monthsUntilChild = (akBabyRef.INVB_Global_BabyToChild.GetValue() * akBabyRef.GetGrowthMultiplier()) - ageInMonths
 	
-	float monthsUntilAdult = (FPE.FPFP_Global_ChildToAdult.GetValue() * akBabyRef.GetGrowthMultiplier()) + monthsUntilChild
-	
-	FPFP_Msg_BabyInfo.Show(ageInMonths, monthsUntilChild, monthsUntilAdult, FPE.FPFP_Global_Day.GetValue()) 
+	FPFP_Msg_BabyInfo.Show(ageInMonths, monthsUntilChild, FPE.FPFP_Global_Day.GetValue()) 
 
 EndFunction
 
@@ -767,7 +1246,17 @@ Function ShowChildInfo(FPFP_GrowingChildScript akChildRef)
 
 	float ageInMonths = (Utility.GetCurrentGameTime() - akChildRef.GetValue(FPFP_AV_BirthDate) ) / FPE.FPFP_Global_Day.GetValue()
 	
-	float monthsUntilAdult = ((FPE.FPFP_Global_ChildToAdult.GetValue() + FPE.FPFP_Global_BabyToChild.GetValue()) * akChildRef.GetGrowthMultiplier()) - ageInMonths
+	float monthsUntilAdult = akChildRef.INVB_Global_ChildToAdult.GetValue() - ageInMonths
+		
+	FPFP_Msg_ChildInfo.Show(ageInMonths,monthsUntilAdult, FPE.FPFP_Global_Day.GetValue()) 
+
+EndFunction
+
+Function ShowAdultInfo(FPFP_EvolvingAdult akAdultRef)
+
+	float ageInMonths = (Utility.GetCurrentGameTime() - akAdultRef.GetValue(FPFP_AV_BirthDate) ) / FPE.FPFP_Global_Day.GetValue()
+	
+	float monthsUntilAdult = akAdultRef.INVB_Global_AdultEvolve.GetValue() - ageInMonths
 		
 	FPFP_Msg_ChildInfo.Show(ageInMonths,monthsUntilAdult, FPE.FPFP_Global_Day.GetValue()) 
 
@@ -899,6 +1388,13 @@ String Function BuildAddonDisplayInfo(FPFP_BabyTypeAddon akBabyType, int aiIndex
 		text += "Child Actors : " + GetArrayPropertyAsStringName(akBabyType.OptionalChildActors as Form[], 3) +"\n"
 	endif
 	
+	if GetArrayPropertyAsStringName(akBabyType.OptionalAdultActors_M as Form[], 3) != ""
+		text += "Male Adult Actors : " + GetArrayPropertyAsStringName(akBabyType.OptionalAdultActors_M as Form[], 3) +"\n"
+		text += "Female Adult Actors : " + GetArrayPropertyAsStringName(akBabyType.OptionalAdultActors_F as Form[], 3) +"\n"
+	elseif GetArrayPropertyAsStringName(akBabyType.OptionalAdultActors as Form[], 3) != ""	
+		text += "Adult Actors : " + GetArrayPropertyAsStringName(akBabyType.OptionalAdultActors as Form[], 3) +"\n"
+	endif
+	
 	if akBabyType.ExtraBabiesToAdd != 0
 		text += "Extra Babies : " + akBabyType.ExtraBabiesToAdd 	
 	endif
@@ -951,8 +1447,6 @@ String Function BuildAddonDisplayInfo_Details(FPFP_BabyTypeAddon akBabyType, int
 	endif
 	
 	text += "Does the pregnancy have multiple births : " + akBabyType.Creature_Cycle_Multi +"\n"
-	
-	text += "Does this race have an advanced start : " + akBabyType.Creature_Start +"\n"
 	
 	Return text
 

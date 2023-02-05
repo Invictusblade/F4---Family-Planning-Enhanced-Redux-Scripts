@@ -38,6 +38,9 @@ EndGroup
 GlobalVariable property FPFP_Global_PlayerClone Auto Const Mandatory
 Actorbase Property PlayerClone_F Auto Const Mandatory
 Actorbase Property PlayerClone_M Auto Const Mandatory
+Perk Property WLD_Perk_Fertile_Both Auto Const Mandatory
+Perk Property WLD_Perk_Fertile_Female Auto Const Mandatory
+Perk Property WLD_Perk_Fertile_Male Auto Const Mandatory
 
 ; Initialization
 Event OnQuestInit()
@@ -45,22 +48,16 @@ Event OnQuestInit()
 EndEvent
 
 Function LoadFP()
-	;Quest Main = Game.GetFormFromFile(0x02679, "four_play.esp") as quest
 	Quest Main = Game.GetFormFromFile(0x01000F99, "AAF.esm") as quest
 	If Main
-		;FourPlayAPI = Main as four_play:Main
-		;RegisterForCustomEvent(FourPlayAPI, "animation_over")
 		AAF_Events = Main as AAF:AAF_API
 		RegisterForCustomEvent(AAF_Events, "OnAnimationStop")
 	Else
-		;debug.Trace("Family Planning Self Impreg can't find Four-Play.")
-		;debug.Trace("Family Planning Self Impreg can't find AAF.")
 		utility.wait(0.1)
 	Endif
 EndFunction
 
 ; Meat of functionality
-;Event four_play:Main.animation_over(four_play:Main akSender, Var[] akArgs)
 Event AAF:AAF_API.OnAnimationStop(AAF:AAF_API akSender, Var[] akArgs)
 
 	If FPFP_Global_SelfImpreg.GetValue() == 0.0
@@ -130,6 +127,10 @@ Function TryForSelfImpreg() ; meat of the determination. Uses most of TryforSper
 		chance *= FPFP_Global_FertileEffects.getValue()
 	Endif
 	
+	if PlayerREF.HasPerk(WLD_Perk_Fertile_Both) || PlayerREF.HasPerk(WLD_Perk_Fertile_Female) || PlayerREF.HasPerk(WLD_Perk_Fertile_Male)
+		chance *= FPFP_Global_FertileEffects.getValue()
+	Endif
+	
 	If PlayerREF.HasMagicEffect(FPFP_ME_Pill) ; Is the player on the pill?
 		chance *= ((100 - FPFP_Global_Contra.getValue()) * 0.01)
 	Endif
@@ -139,15 +140,15 @@ Function TryForSelfImpreg() ; meat of the determination. Uses most of TryforSper
 	Endif
 	
 	If impregnated && FPFP_Global_PlayerClone.GetValue() == 0
-		PlayerInfo.Impregnate(PlayerREF)
+		PlayerInfo.Impregnate(PlayerREF, false)
 	elseif impregnated && FPFP_Global_PlayerClone.GetValue() == 1 && PlayerREF.GetLeveledActorBase().GetSex() == 1
 		Actor tempActor = PlayerREF.PlaceAtMe(PlayerClone_F, abInitiallyDisabled = true) as Actor
 		Utility.Wait(1)
-		PlayerInfo.Impregnate(tempActor)
+		PlayerInfo.Impregnate(tempActor, false)
 	elseif impregnated && FPFP_Global_PlayerClone.GetValue() == 1 && PlayerREF.GetLeveledActorBase().GetSex() == 0
 		Actor tempActor = PlayerREF.PlaceAtMe(PlayerClone_M, abInitiallyDisabled = true) as Actor
 		Utility.Wait(1)
-		PlayerInfo.Impregnate(tempActor)
+		PlayerInfo.Impregnate(tempActor, false)
 	EndIf
 	
 	

@@ -16,12 +16,20 @@ Event OnEquipped(Actor akActor)
 		if akActor != PlayerREF && (akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem))
 			Debug.notification(akActor.GetLeveledActorBase().GetName() +" is already married to you")
 		elseif akActor != PlayerREF && (!akActor.HasPerk(WLD_Perk_Married) || !akActor.HasPerk(WLD_Perk_Married_2) || !akActor.HasPerk(WLD_Perk_Married_Poly) || !akActor.HasPerk(WLD_Perk_Married_Harem))
-			FPFP_Engagement.Engagement(akActor, bool_Submit)
-			akActor.unequipitem(self)
-			akActor.removeitem(self)
-			akActor.equipitem(Armor_Fake)
+		
+			if FPFP_Engagement.CheckRomance(akActor)
+				FPFP_Engagement.Engagement(akActor, bool_Submit)
+				akActor.unequipitem(self)
+				akActor.removeitem(self)
+				akActor.equipitem(Armor_Fake)
+			else
+				akActor.unequipitem(self)
+				akActor.removeitem(self)
+				PlayerREF.additem(self)
+			endif	
 		endif
 	else
+		Debug.notification("You need to equip this ring onto your romanced Partner")
 		akActor.unequipitem(self)	
 	endif	
 EndEvent

@@ -235,7 +235,9 @@ String[] Property Birth_Player_F_Swinger Auto Const
 
 
 
-
+String[] Property Death_Baby_Message Auto Const
+String[] Property Death_Baby_Message_2 Auto Const
+String[] Property Death_Baby_Message_3 Auto Const
 
 ;Vanilla
 Actor Property Piper Auto Const
@@ -480,7 +482,7 @@ Function Impregnation_Message(Actor akActor, Actor akMan)
 	endif
 EndFunction
 
-Function Marriage_Message_Male(Actor akActor)
+String Function Marriage_Message_Male(Actor akActor)
 	;DLC_Automatron
 	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
 	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
@@ -518,137 +520,128 @@ Function Marriage_Message_Male(Actor akActor)
 	;llamaCompanionHeather
 	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
 	
-	
-		NPC_String = ""
 		if akActor == SarahLyons
 			int random_Name = Utility.RandomInt(0, Marriage_SarahLyons_M.Length-1)
-			NPC_String = Marriage_SarahLyons_M[random_Name]
+			return Marriage_SarahLyons_M[random_Name]
 		elseif akActor == Valkyrie ;have no idea about the lore of the NPC, so Norse shit
 			int random_Name = Utility.RandomInt(0, Marriage_Valkyrie_M.Length-1)
-			NPC_String = Marriage_Valkyrie_M[random_Name]
+			return Marriage_Valkyrie_M[random_Name]
 		elseif akActor == Harley
 			int random_Name = Utility.RandomInt(0, Marriage_Harley_M.Length-1)
-			NPC_String = Marriage_Harley_M[random_Name]
+			return Marriage_Harley_M[random_Name]
 		elseif akActor == Roxy
 			int random_Name = Utility.RandomInt(0, Marriage_Roxy_M.Length-1)
-			NPC_String = Marriage_Roxy_M[random_Name]
+			return Marriage_Roxy_M[random_Name]
 		elseif akActor == Eden
 			int random_Name = Utility.RandomInt(0, Marriage_Eden_M.Length-1)
-			NPC_String = Marriage_Eden_M[random_Name]
+			return Marriage_Eden_M[random_Name]
 		elseif akActor == Raven
 			int random_Name = Utility.RandomInt(0, Marriage_Raven_M.Length-1)
-			NPC_String = Marriage_Raven_M[random_Name]
+			return Marriage_Raven_M[random_Name]
 		elseif akActor == Taryn
 			int random_Name = Utility.RandomInt(0, Marriage_Taryn_M.Length-1)
-			NPC_String = Marriage_Taryn_M[random_Name]
+			return Marriage_Taryn_M[random_Name]
 		elseif akActor == Sloan
 			int random_Name = Utility.RandomInt(0, Marriage_Sloan_M.Length-1)
-			NPC_String = Marriage_Sloan_M[random_Name]
+			return Marriage_Sloan_M[random_Name]
 		elseif akActor == Sadie
 			int random_Name = Utility.RandomInt(0, Marriage_Sadie_M.Length-1)
-			NPC_String = Marriage_Sadie_M[random_Name]
+			return Marriage_Sadie_M[random_Name]
 		elseif akActor == Raina
 			int random_Name = Utility.RandomInt(0, Marriage_Raina_M.Length-1)
-			NPC_String = Marriage_Raina_M[random_Name]
+			return Marriage_Raina_M[random_Name]
 		elseif akActor == Alerios
 			int random_Name = Utility.RandomInt(0, Marriage_Alerios_M.Length-1)
-			NPC_String = Marriage_Alerios_M[random_Name]
+			return Marriage_Alerios_M[random_Name]
 		elseif akActor == Cruz || akActor == Cruz_DP
 			int random_Name = Utility.RandomInt(0, Marriage_Cruz_M.Length-1)
-			NPC_String = Marriage_Cruz_M[random_Name]
+			return Marriage_Cruz_M[random_Name]
 		elseif akActor == V81_TinaDeLuca || akActor == Tina_DP
 			int random_Name = Utility.RandomInt(0, Marriage_Tina_M.Length-1)
-			NPC_String = Marriage_Tina_M[random_Name]
+			return Marriage_Tina_M[random_Name]
 		elseif akActor == Piper
 			int random_Name = Utility.RandomInt(0, Marriage_Piper_M.Length-1)
-			NPC_String = Marriage_Piper_M[random_Name]
+			return Marriage_Piper_M[random_Name]
 		elseif akActor == Cait
 			int random_Name = Utility.RandomInt(0, Marriage_Cait_M.Length-1)
-			NPC_String = Marriage_Cait_M[random_Name]
+			return Marriage_Cait_M[random_Name]
 		elseif akActor == Curie
 			int random_Name = Utility.RandomInt(0, Marriage_Curie_M.Length-1)
-			NPC_String = Marriage_Curie_M[random_Name]
+			return Marriage_Curie_M[random_Name]
 		elseif akActor == Ivy
 			int random_Name = Utility.RandomInt(0, Marriage_Ivy_M.Length-1)
-			NPC_String = Marriage_Ivy_M[random_Name]
+			return Marriage_Ivy_M[random_Name]
 		elseif akActor == Curie_robot
 			int random_Name = Utility.RandomInt(0, Marriage_Curie_robot_M.Length-1)
-			NPC_String = Marriage_Curie_robot_M[random_Name]
+			return Marriage_Curie_robot_M[random_Name]
 		elseif akActor == Codsworth
 			int random_Name = Utility.RandomInt(0, Marriage_Codsworth_M.Length-1)
-			NPC_String = Marriage_Codsworth_M[random_Name]
+			return Marriage_Codsworth_M[random_Name]
 		elseif akActor == Dogmeat
 			int random_Name = Utility.RandomInt(0, Marriage_Dogmeat_M.Length-1)
-			NPC_String = Marriage_Dogmeat_M[random_Name]
+			return Marriage_Dogmeat_M[random_Name]
 		elseif akActor == Deacon
 			int random_Name = Utility.RandomInt(0, Marriage_Deacon_M.Length-1)
-			NPC_String = Marriage_Deacon_M[random_Name]
+			return Marriage_Deacon_M[random_Name]
 		elseif akActor == Danse
 			int random_Name = Utility.RandomInt(0, Marriage_Danse_M.Length-1)
-			NPC_String = Marriage_Danse_M[random_Name]
+			return Marriage_Danse_M[random_Name]
 		elseif akActor == Garvey
 			int random_Name = Utility.RandomInt(0, Marriage_Garvey_M.Length-1)
-			NPC_String = Marriage_Garvey_M[random_Name]
+			return Marriage_Garvey_M[random_Name]
 		elseif akActor == Hancock
 			int random_Name = Utility.RandomInt(0, Marriage_Hancock_M.Length-1)
-			NPC_String = Marriage_Hancock_M[random_Name]
+			return Marriage_Hancock_M[random_Name]
 		elseif akActor == MacCready
 			int random_Name = Utility.RandomInt(0, Marriage_MacCready_M.Length-1)
-			NPC_String = Marriage_MacCready_M[random_Name]
+			return Marriage_MacCready_M[random_Name]
 		elseif akActor == NickValentine
 			int random_Name = Utility.RandomInt(0, Marriage_NickValentine_M.Length-1)
-			NPC_String = Marriage_NickValentine_M[random_Name]
+			return Marriage_NickValentine_M[random_Name]
 		elseif akActor == Strong
 			int random_Name = Utility.RandomInt(0, Marriage_Strong_M.Length-1)
-			NPC_String = Marriage_Strong_M[random_Name]
+			return Marriage_Strong_M[random_Name]
 		elseif akActor == X688
 			int random_Name = Utility.RandomInt(0, Marriage_X688_M.Length-1)
-			NPC_String = Marriage_X688_M[random_Name]
+			return Marriage_X688_M[random_Name]
 		elseif akActor == LongFellow
 			int random_Name = Utility.RandomInt(0, Marriage_LongFellow_M.Length-1)
-			NPC_String = Marriage_LongFellow_M[random_Name]
+			return Marriage_LongFellow_M[random_Name]
 		elseif akActor == Gage
 			int random_Name = Utility.RandomInt(0, Marriage_Gage_M.Length-1)
-			NPC_String = Marriage_Gage_M[random_Name]
+			return Marriage_Gage_M[random_Name]
 		elseif akActor == Cass
 			int random_Name = Utility.RandomInt(0, Marriage_Cass_M.Length-1)
-			NPC_String = Marriage_Cass_M[random_Name]
+			return Marriage_Cass_M[random_Name]
 		elseif akActor == Arcade 
 			int random_Name = Utility.RandomInt(0, Marriage_Arcade_M.Length-1)
-			NPC_String = Marriage_Arcade_M[random_Name]
+			return Marriage_Arcade_M[random_Name]
 		elseif akActor == Boone
 			int random_Name = Utility.RandomInt(0, Marriage_Boone_M.Length-1)
-			NPC_String = Marriage_Boone_M[random_Name]
+			return Marriage_Boone_M[random_Name]
 		elseif akActor == Raul
 			int random_Name = Utility.RandomInt(0, Marriage_Raul_M.Length-1)
-			NPC_String = Marriage_Raul_M[random_Name]
+			return Marriage_Raul_M[random_Name]
 		elseif akActor == Veronica 
 			int random_Name = Utility.RandomInt(0, Marriage_Veronica_M.Length-1)
-			NPC_String = Marriage_Veronica_M[random_Name]
+			return Marriage_Veronica_M[random_Name]
 		elseif akActor == Ellen
 			int random_Name = Utility.RandomInt(0, Marriage_Ellen_M.Length-1)
-			NPC_String = Marriage_Ellen_M[random_Name]
+			return Marriage_Ellen_M[random_Name]
 		elseif akActor == Heather
 			int random_Name = Utility.RandomInt(0, Marriage_Heather_M.Length-1)
-			NPC_String = Marriage_Heather_M[random_Name]
+			return Marriage_Heather_M[random_Name]
 		elseif akActor.GetLeveledActorBase().GetRace() == HumanRace
 			int random_Name = Utility.RandomInt(0, Marriage_NPC_M.Length-1)
-			NPC_String = Marriage_NPC_M[random_Name]
+			return Marriage_NPC_M[random_Name]
 		else
 			int random_Name = Utility.RandomInt(0, Marriage_NPC_M.Length-1)
-			NPC_String = Marriage_NPC_M[random_Name]	
+			return Marriage_NPC_M[random_Name]	
 		endif
-		
-		if akActor != PlayerREF
-			if INVB_Global_MessageType_Wedding.GetValue() == 0
-				Debug.notification(akActor.GetLeveledActorBase().GetName() +": "+ NPC_String)
-			elseif INVB_Global_MessageType_Wedding.GetValue() == 1
-				Debug.MessageBox(akActor.GetLeveledActorBase().GetName() +": "+ NPC_String)	
-			endif
-		endif
+	
 EndFunction
 
-Function Marriage_Message_Female(Actor akActor)
+String Function Marriage_Message_Female(Actor akActor)
 	;DLC_Automatron
 	Actor Ada = Game.GetFormFromFile(0x00FF12, "DLCRobot.esm") as Actor
 	Actor Cruz = Game.GetFormFromFile(0x00097C, "DLCRobot.esm") as Actor
@@ -685,132 +678,123 @@ Function Marriage_Message_Female(Actor akActor)
 	;llamaCompanionHeather
 	Actor Heather = Game.GetFormFromFile(0x00D157, "llamaCompanionHeather.esp") as Actor
 	
-		NPC_String = ""
 		if akActor == SarahLyons
 			int random_Name = Utility.RandomInt(0, Marriage_SarahLyons_F.Length-1)
-			NPC_String = Marriage_SarahLyons_F[random_Name]
+			return Marriage_SarahLyons_F[random_Name]
 		elseif akActor == Valkyrie ;have no idea about the lore of the NPC, so Norse shit
 			int random_Name = Utility.RandomInt(0, Marriage_Valkyrie_F.Length-1)
-			NPC_String = Marriage_Valkyrie_F[random_Name]
+			return Marriage_Valkyrie_F[random_Name]
 		elseif akActor == Harley
 			int random_Name = Utility.RandomInt(0, Marriage_Harley_F.Length-1)
-			NPC_String = Marriage_Harley_F[random_Name]
+			return Marriage_Harley_F[random_Name]
 		elseif akActor == Roxy
 			int random_Name = Utility.RandomInt(0, Marriage_Roxy_F.Length-1)
-			NPC_String = Marriage_Roxy_F[random_Name]
+			return Marriage_Roxy_F[random_Name]
 		elseif akActor == Eden
 			int random_Name = Utility.RandomInt(0, Marriage_Eden_F.Length-1)
-			NPC_String = Marriage_Eden_F[random_Name]
+			return Marriage_Eden_F[random_Name]
 		elseif akActor == Raven
 			int random_Name = Utility.RandomInt(0, Marriage_Raven_F.Length-1)
-			NPC_String = Marriage_Raven_F[random_Name]
+			return Marriage_Raven_F[random_Name]
 		elseif akActor == Taryn
 			int random_Name = Utility.RandomInt(0, Marriage_Taryn_F.Length-1)
-			NPC_String = Marriage_Taryn_F[random_Name]
+			return Marriage_Taryn_F[random_Name]
 		elseif akActor == Sloan
 			int random_Name = Utility.RandomInt(0, Marriage_Sloan_F.Length-1)
-			NPC_String = Marriage_Sloan_F[random_Name]
+			return Marriage_Sloan_F[random_Name]
 		elseif akActor == Sadie
 			int random_Name = Utility.RandomInt(0, Marriage_Sadie_F.Length-1)
-			NPC_String = Marriage_Sadie_F[random_Name]
+			return Marriage_Sadie_F[random_Name]
 		elseif akActor == Raina
 			int random_Name = Utility.RandomInt(0, Marriage_Raina_F.Length-1)
-			NPC_String = Marriage_Raina_F[random_Name]
+			return Marriage_Raina_F[random_Name]
 		elseif akActor == Alerios
 			int random_Name = Utility.RandomInt(0, Marriage_Alerios_F.Length-1)
-			NPC_String = Marriage_Alerios_F[random_Name]
+			return Marriage_Alerios_F[random_Name]
 		elseif akActor == Cruz || akActor == Cruz_DP
 			int random_Name = Utility.RandomInt(0, Marriage_Cruz_F.Length-1)
-			NPC_String = Marriage_Cruz_F[random_Name]
+			return Marriage_Cruz_F[random_Name]
 		elseif akActor == V81_TinaDeLuca || akActor == Tina_DP
 			int random_Name = Utility.RandomInt(0, Marriage_Tina_F.Length-1)
-			NPC_String = Marriage_Tina_F[random_Name]
+			return Marriage_Tina_F[random_Name]
 		elseif akActor == Piper
 			int random_Name = Utility.RandomInt(0, Marriage_Piper_F.Length-1)
-			NPC_String = Marriage_Piper_F[random_Name]
+			return Marriage_Piper_F[random_Name]
 		elseif akActor == Cait
 			int random_Name = Utility.RandomInt(0, Marriage_Cait_F.Length-1)
-			NPC_String = Marriage_Cait_F[random_Name]
+			return Marriage_Cait_F[random_Name]
 		elseif akActor == Curie
 			int random_Name = Utility.RandomInt(0, Marriage_Curie_F.Length-1)
-			NPC_String = Marriage_Curie_F[random_Name]
+			return Marriage_Curie_F[random_Name]
 		elseif akActor == Ivy
 			int random_Name = Utility.RandomInt(0, Marriage_Ivy_F.Length-1)
-			NPC_String = Marriage_Ivy_F[random_Name]
+			return Marriage_Ivy_F[random_Name]
 		elseif akActor == Curie_robot
 			int random_Name = Utility.RandomInt(0, Marriage_Curie_robot_F.Length-1)
-			NPC_String = Marriage_Curie_robot_F[random_Name]
+			return Marriage_Curie_robot_F[random_Name]
 		elseif akActor == Codsworth
 			int random_Name = Utility.RandomInt(0, Marriage_Codsworth_F.Length-1)
-			NPC_String = Marriage_Codsworth_F[random_Name]
+			return Marriage_Codsworth_F[random_Name]
 		elseif akActor == Dogmeat
 			int random_Name = Utility.RandomInt(0, Marriage_Dogmeat_F.Length-1)
-			NPC_String = Marriage_Dogmeat_F[random_Name]
+			return Marriage_Dogmeat_F[random_Name]
 		elseif akActor == Deacon
 			int random_Name = Utility.RandomInt(0, Marriage_Deacon_F.Length-1)
-			NPC_String = Marriage_Deacon_F[random_Name]
+			return Marriage_Deacon_F[random_Name]
 		elseif akActor == Danse
 			int random_Name = Utility.RandomInt(0, Marriage_Danse_F.Length-1)
-			NPC_String = Marriage_Danse_F[random_Name]
+			return Marriage_Danse_F[random_Name]
 		elseif akActor == Garvey
 			int random_Name = Utility.RandomInt(0, Marriage_Garvey_F.Length-1)
-			NPC_String = Marriage_Garvey_F[random_Name]
+			return Marriage_Garvey_F[random_Name]
 		elseif akActor == Hancock
 			int random_Name = Utility.RandomInt(0, Marriage_Hancock_F.Length-1)
-			NPC_String = Marriage_Hancock_F[random_Name]
+			return Marriage_Hancock_F[random_Name]
 		elseif akActor == MacCready
 			int random_Name = Utility.RandomInt(0, Marriage_MacCready_F.Length-1)
-			NPC_String = Marriage_MacCready_F[random_Name]
+			return Marriage_MacCready_F[random_Name]
 		elseif akActor == NickValentine
 			int random_Name = Utility.RandomInt(0, Marriage_NickValentine_F.Length-1)
-			NPC_String = Marriage_NickValentine_F[random_Name]
+			return Marriage_NickValentine_F[random_Name]
 		elseif akActor == Strong
 			int random_Name = Utility.RandomInt(0, Marriage_Strong_F.Length-1)
-			NPC_String = Marriage_Strong_F[random_Name]
+			return Marriage_Strong_F[random_Name]
 		elseif akActor == X688
 			int random_Name = Utility.RandomInt(0, Marriage_X688_F.Length-1)
-			NPC_String = Marriage_X688_F[random_Name]
+			return Marriage_X688_F[random_Name]
 		elseif akActor == LongFellow
 			int random_Name = Utility.RandomInt(0, Marriage_LongFellow_F.Length-1)
-			NPC_String = Marriage_LongFellow_F[random_Name]
+			return Marriage_LongFellow_F[random_Name]
 		elseif akActor == Gage
 			int random_Name = Utility.RandomInt(0, Marriage_Gage_F.Length-1)
-			NPC_String = Marriage_Gage_F[random_Name]
+			return Marriage_Gage_F[random_Name]
 		elseif akActor == Cass
 			int random_Name = Utility.RandomInt(0, Marriage_Cass_F.Length-1)
-			NPC_String = Marriage_Cass_F[random_Name]
+			return Marriage_Cass_F[random_Name]
 		elseif akActor == Arcade 
 			int random_Name = Utility.RandomInt(0, Marriage_Arcade_F.Length-1)
-			NPC_String = Marriage_Arcade_F[random_Name]
+			return Marriage_Arcade_F[random_Name]
 		elseif akActor == Boone
 			int random_Name = Utility.RandomInt(0, Marriage_Boone_F.Length-1)
-			NPC_String = Marriage_Boone_F[random_Name]
+			return Marriage_Boone_F[random_Name]
 		elseif akActor == Raul
 			int random_Name = Utility.RandomInt(0, Marriage_Raul_F.Length-1)
-			NPC_String = Marriage_Raul_F[random_Name]
+			return Marriage_Raul_F[random_Name]
 		elseif akActor == Veronica 
 			int random_Name = Utility.RandomInt(0, Marriage_Veronica_F.Length-1)
-			NPC_String = Marriage_Veronica_F[random_Name]
+			return Marriage_Veronica_F[random_Name]
 		elseif akActor == Ellen
 			int random_Name = Utility.RandomInt(0, Marriage_Ellen_F.Length-1)
-			NPC_String = Marriage_Ellen_F[random_Name]
+			return Marriage_Ellen_F[random_Name]
 		elseif akActor == Heather
 			int random_Name = Utility.RandomInt(0, Marriage_Heather_F.Length-1)
-			NPC_String = Marriage_Heather_F[random_Name]
+			return Marriage_Heather_F[random_Name]
 		elseif akActor.GetLeveledActorBase().GetRace() == HumanRace
 			int random_Name = Utility.RandomInt(0, Marriage_NPC_F.Length-1)
-			NPC_String = Marriage_NPC_F[random_Name]
+			return Marriage_NPC_F[random_Name]
 		else
 			int random_Name = Utility.RandomInt(0, Marriage_NPC_F.Length-1)
-			NPC_String = Marriage_NPC_F[random_Name]	
-		endif
-		
-		if akActor != PlayerREF
-			if INVB_Global_MessageType_Wedding.GetValue() == 0
-				Debug.notification(akActor.GetLeveledActorBase().GetName() +": "+ NPC_String)
-			elseif INVB_Global_MessageType_Wedding.GetValue() == 1
-				Debug.MessageBox(akActor.GetLeveledActorBase().GetName() +": "+ NPC_String)	
-			endif
+			return Marriage_NPC_F[random_Name]	
 		endif
 EndFunction
 
@@ -1037,6 +1021,14 @@ Function Birth_Death(Actor akActor)
 		Debug.MessageBox(akActor.Getname() + NPC_String)
 	endif
 	
+EndFunction
+
+Function Birth_Baby_Death()
+	NPC_String = Death_Baby_Message[Utility.RandomInt(0, Death_Baby_Message.Length-1)]+"\n"
+	NPC_String += Death_Baby_Message_2[Utility.RandomInt(0, Death_Baby_Message_2.Length-1)]+"\n"
+	NPC_String += Death_Baby_Message_3[Utility.RandomInt(0, Death_Baby_Message_3.Length-1)]
+	
+	Debug.MessageBox(NPC_String)
 EndFunction
 
 Function BirthMessage(Actor akActor, Race akDadRace)

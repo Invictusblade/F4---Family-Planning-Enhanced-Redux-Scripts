@@ -14,84 +14,102 @@ Keyword Property kw_Chain Auto const
 String[] Property NPC_Question_Chain Auto Const
 String[] Property NPC_Question Auto Const
 String[] Property NPC_Answer_Reject Auto Const
-String NPC_String
+String NPC_String_Accepted
 String NPC_String_Reject
 aaf:aaf_api AAF_API 
 GlobalVariable property INVB_Global_Marriage_Honeynoon Auto
 GlobalVariable property INVB_Global_Marriage_Honeynoon_Duration Auto
 FPE_Messages Property FPFP_Messages Auto Const Mandatory
 
+ActorValue Property FPFP_AV_Romance_Drugs Auto Const
+ActorValue Property FPFP_AV_Romance_Gift Auto Const
+ActorValue Property FPFP_AV_Romance_Sex Auto Const
+ActorValue Property FPFP_AV_Romance_Total Auto Const
+GlobalVariable property INVB_Global_Marriage_Total Auto Mandatory
+
+
 Function Engagement(Actor akActor, bool bool_Submit)
 	if INVB_Global_Marriage_Polygamy.GetValue() == 1 || (INVB_Global_Marriage_Polygamy.GetValue() == 0 && !PlayerREF.HasPerk(WLD_Perk_Married))
-		int random_LList = Utility.RandomInt(1, 100)
 		
-		if (random_LList <= INVB_Global_Marriage_Chance.GetValue())
-			if bool_Submit == true
-				int random_Name = Utility.RandomInt(0, NPC_Question_Chain.Length-1)
-				NPC_String = NPC_Question_Chain[random_Name]
+		if CheckRomance(akActor)
+			if (Utility.RandomInt(1, 100) <= INVB_Global_Marriage_Chance.GetValue())
+				if bool_Submit == true
+					int random_Name = Utility.RandomInt(0, NPC_Question_Chain.Length-1)
+					NPC_String_Accepted = PlayerREF.GetLeveledActorBase().GetName() +": "+ NPC_Question_Chain[random_Name]+"\n"	
+				else
+					int random_Name = Utility.RandomInt(0, NPC_Question.Length-1)
+					NPC_String_Accepted = PlayerREF.GetLeveledActorBase().GetName() +": "+ NPC_Question[random_Name]+"\n"	
+				endif
+			
+				if INVB_Global_Marriage_NPCs.GetValue() == 1
+					Marriage_Action(akActor)
+				else
+					akActor.AddPerk(WLD_Perk_Married)
+					INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
+				endif
+				
+				
+				if PlayerREF.GetLeveledActorBase().GetSex() == 0
+					NPC_String_Accepted += FPFP_Messages.Marriage_Message_Male(akActor)+"\n"	
+				elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
+					NPC_String_Accepted += FPFP_Messages.Marriage_Message_Female(akActor)+"\n"	
+				endif
+				
+				akActor.SetRelationshipRank(PlayerREF, 4)
+				
+				if INVB_Global_MessageType_Wedding.GetValue() == 0
+					Debug.notification(NPC_String_Accepted)
+				elseif INVB_Global_MessageType_Wedding.GetValue() == 1
+					Debug.MessageBox(NPC_String_Accepted)
+				endif
+				
+				if INVB_Global_Marriage_Honeynoon.GetValue() == 1 && akActor != PlayerREF && (akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem))
+					Utility.wait(2.5 as float)
+					FPFP_Messages.Sex_Message(PlayerREF, akActor)
+					Utility.wait(2.5 as float)
+						
+					Actor[] Actors = new Actor[2]
+					Actors[0] = akActor
+					Actors[1] = PlayerREF
+					AAF:AAF_API:SceneSettings settings = AAF_API.GetSceneSettings()
+					settings.duration = INVB_Global_Marriage_Honeynoon_Duration.GetValue()
+					settings.excludeTags = "Spanking,Jackoff,Pose,Utility,Tease,Foreplay,Finish,TitJob"
+					aaf:aaf_api.GetAPI().StartScene(Actors, settings)
+				endif
+				
+				if INVB_Global_Marriage_Count_Current.getvalue() == 1
+					PlayerREF.addperk(WLD_Perk_Married)
+					PlayerREF.removeperk(WLD_Perk_Married_2)
+				elseif INVB_Global_Marriage_Count_Current.getvalue() == 2
+					PlayerREF.addperk(WLD_Perk_Married_2)
+					PlayerREF.removeperk(WLD_Perk_Married)
+				elseif INVB_Global_Marriage_Count_Current.getvalue() > 10
+					PlayerREF.addperk(WLD_Perk_Married_Harem)
+					PlayerREF.removeperk(WLD_Perk_Married_Poly)
+				elseif INVB_Global_Marriage_Count_Current.getvalue() > 3
+					PlayerREF.addperk(WLD_Perk_Married_Poly)
+					PlayerREF.removeperk(WLD_Perk_Married_2)
+				endif
 			else
-				int random_Name = Utility.RandomInt(0, NPC_Question.Length-1)
-				NPC_String = NPC_Question[random_Name]
-			endif
-		
-			if INVB_Global_MessageType_Wedding.GetValue() == 0
-				Debug.notification(PlayerREF.GetLeveledActorBase().GetName() +": "+ NPC_String)
-			elseif INVB_Global_MessageType_Wedding.GetValue() == 1
-				Debug.MessageBox(PlayerREF.GetLeveledActorBase().GetName() +": "+ NPC_String)
-			endif
-		
-			Marriage_Message(akActor)
-			
-			if INVB_Global_Marriage_Honeynoon.GetValue() == 1 && akActor != PlayerREF && (akActor.HasPerk(WLD_Perk_Married) || akActor.HasPerk(WLD_Perk_Married_2) || akActor.HasPerk(WLD_Perk_Married_Poly) || akActor.HasPerk(WLD_Perk_Married_Harem))
-				Utility.wait(2.5 as float)
-				FPFP_Messages.Sex_Message(PlayerREF, akActor)
-				Utility.wait(2.5 as float)
+				if bool_Submit == true
+					int random_Name = Utility.RandomInt(0, NPC_Question_Chain.Length-1)
+					NPC_String_Reject = NPC_Question_Chain[random_Name]+"\n"	
+				else
+					int random_Name = Utility.RandomInt(0, NPC_Question.Length-1)
+					NPC_String_Reject = NPC_Question[random_Name]+"\n"	
+				endif
+					int random_Name = Utility.RandomInt(0, NPC_Answer_Reject.Length-1)
+					NPC_String_Reject += NPC_Answer_Reject[random_Name]+"\n"	
 					
-				Actor[] Actors = new Actor[2]
-				Actors[0] = PlayerREF
-				Actors[1] = akActor
-				AAF:AAF_API:SceneSettings settings = AAF_API.GetSceneSettings()
-				settings.duration = INVB_Global_Marriage_Honeynoon_Duration.GetValue()
-				settings.excludeTags = "Spanking,Jackoff,Pose,Utility,Tease,Foreplay,Finish,TitJob"
-				aaf:aaf_api.GetAPI().StartScene(Actors, settings)
-			endif
-			
-			if INVB_Global_Marriage_Count_Current.getvalue() == 1
-				PlayerREF.addperk(WLD_Perk_Married)
-				PlayerREF.removeperk(WLD_Perk_Married_2)
-			elseif INVB_Global_Marriage_Count_Current.getvalue() == 2
-				PlayerREF.addperk(WLD_Perk_Married_2)
-				PlayerREF.removeperk(WLD_Perk_Married)
-			elseif INVB_Global_Marriage_Count_Current.getvalue() > 10
-				PlayerREF.addperk(WLD_Perk_Married_Harem)
-				PlayerREF.removeperk(WLD_Perk_Married_Poly)
-			elseif INVB_Global_Marriage_Count_Current.getvalue() > 3
-				PlayerREF.addperk(WLD_Perk_Married_Poly)
-				PlayerREF.removeperk(WLD_Perk_Married_2)
+				if INVB_Global_MessageType_Wedding.GetValue() == 0
+					Debug.notification(NPC_String_Reject)
+				elseif INVB_Global_MessageType_Wedding.GetValue() == 1
+					Debug.MessageBox(NPC_String_Reject)
+				endif
 			endif
 		else
-			if bool_Submit == true
-				int random_Name = Utility.RandomInt(0, NPC_Question_Chain.Length-1)
-				NPC_String = NPC_Question_Chain[random_Name]
-			else
-				int random_Name = Utility.RandomInt(0, NPC_Question.Length-1)
-				NPC_String = NPC_Question[random_Name]
-			endif
-				int random_Name = Utility.RandomInt(0, NPC_Answer_Reject.Length-1)
-				NPC_String_Reject = NPC_Answer_Reject[random_Name]
-				
-			if INVB_Global_MessageType_Wedding.GetValue() == 0
-				Debug.notification(PlayerREF.GetLeveledActorBase().GetName() +": "+ NPC_String)
-			elseif INVB_Global_MessageType_Wedding.GetValue() == 1
-				Debug.MessageBox(PlayerREF.GetLeveledActorBase().GetName() +": "+ NPC_String)
-			endif
-		
-			if INVB_Global_MessageType_Wedding.GetValue() == 0
-				Debug.notification(akActor.GetLeveledActorBase().GetName() +": "+ NPC_String_Reject)
-			elseif INVB_Global_MessageType_Wedding.GetValue() == 1
-				Debug.MessageBox(akActor.GetLeveledActorBase().GetName() +": "+ NPC_String_Reject)
-			endif
-		endif
+			Debug.notification(NPC_String_Reject)
+		endif	
 	endif
 EndFunction
 
@@ -124,8 +142,28 @@ Event AAF:AAF_API.OnAnimationStop(AAF:AAF_API akSender, Var[] akArgs)
 	EndIf
 EndEvent
 
+bool Function CheckRomance(Actor akActor)
+	
+	if akActor.GetValue(FPFP_AV_Romance_Total) == 0
+		int Random_Total = (Utility.RandomInt(INVB_Global_Marriage_Total.GetValue() as int / 2, INVB_Global_Marriage_Total.GetValue() as int * 2))
+		akActor.SetValue(FPFP_AV_Romance_Total, Random_Total)
+	endif
 
-Function Marriage_Message(Actor akActor)
+	int Romance_Total = 0
+	
+	Romance_Total += akActor.GetValue(FPFP_AV_Romance_Drugs) as int
+	Romance_Total += akActor.GetValue(FPFP_AV_Romance_Gift) as int
+	Romance_Total += akActor.GetValue(FPFP_AV_Romance_Sex) as int
+	
+	if Romance_Total > akActor.GetValue(FPFP_AV_Romance_Total) 
+		Return true
+	else
+		Return false
+	endif	
+	
+EndFunction
+
+Function Marriage_Action(Actor akActor)
 	;Vanilla
 	Actor Piper = Game.GetFormFromFile(0x002F1F, "Fallout4.esm") as Actor
 	Perk Piper_Perk = Game.GetFormFromFile(0x178D54, "Fallout4.esm") as Perk
@@ -173,131 +211,66 @@ Function Marriage_Message(Actor akActor)
 	
 	
 	if akActor == SarahLyons && PlayerREF.HasPerk(SarahLyons_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Valkyrie && PlayerREF.HasPerk(Valkyrie_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Piper && PlayerREF.HasPerk(Piper_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Cait && PlayerREF.HasPerk(Cait_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Curie && PlayerREF.HasPerk(Curie_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Ivy && PlayerREF.HasPerk(Ivy_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Deacon && PlayerREF.HasPerk(Deacon_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Danse && PlayerREF.HasPerk(Danse_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Garvey && PlayerREF.HasPerk(Garvey_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Hancock && PlayerREF.HasPerk(Hancock_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == MacCready && PlayerREF.HasPerk(MacCready_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == NickValentine && PlayerREF.HasPerk(NickValentine_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Strong && PlayerREF.HasPerk(Strong_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == X688 && PlayerREF.HasPerk(X688_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == LongFellow && PlayerREF.HasPerk(LongFellow_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Gage && PlayerREF.HasPerk(Gage_Perk)
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+		
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	elseif akActor == Dogmeat && akActor.wornHasKeyword(kw_Chain)
@@ -306,12 +279,7 @@ Function Marriage_Message(Actor akActor)
 		endif
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)	
-	elseif INVB_Global_Marriage_NPCs.GetValue() == 1
-		if PlayerREF.GetLeveledActorBase().GetSex() == 0
-			FPFP_Messages.Marriage_Message_Male(akActor)
-		elseif PlayerREF.GetLeveledActorBase().GetSex() == 1
-			FPFP_Messages.Marriage_Message_Female(akActor)
-		endif
+	else	
 		akActor.AddPerk(WLD_Perk_Married)
 		INVB_Global_Marriage_Count_Current.setvalue(INVB_Global_Marriage_Count_Current.getvalue() + 1)
 	endif

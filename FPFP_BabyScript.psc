@@ -40,6 +40,7 @@ EndGroup
 Actor Target
 Form TheBaby
 
+GlobalVariable property INVB_Global_BabyToChild Auto Const Mandatory ;Length of Born Baby To Child Growth
 
 GlobalVariable property FPFP_Global_Gender_Select Auto Const Mandatory
 GlobalVariable property FPFP_Global_Rename_Baby Auto Const Mandatory
@@ -60,6 +61,7 @@ Event OnInit()
 		Bad_Container = None
 	EndIf
 	
+	Trace("Don't Panic about the waiting for line 65, it is to prevent the ESPExplorerFO4 Issue")
 	If Bad_Container && Self.GetContainer().GetBaseObject() == Bad_Container
 		Trace("On init has failed because of ESPExplorerFO4")
 	Else	
@@ -95,7 +97,7 @@ EndEvent
 
 Float Function GetBabyToChildTimeLeft()
 
-	Return ((FPE.FPFP_Global_BabyToChild.GetValue() * GetGrowthMultiplier() * FPE.FPFP_Global_Day.GetValue()) - (Utility.GetCurrentGameTime() - BirthDate)) * 24 
+	Return ((INVB_Global_BabyToChild.GetValue() * GetGrowthMultiplier() * FPE.FPFP_Global_Day.GetValue()) - (Utility.GetCurrentGameTime() - BirthDate)) * 24 
 
 EndFunction
 
@@ -107,11 +109,31 @@ Event FPFP_BabyHandlerScript.FPEBabyUpdateGameTimer(FPFP_BabyHandlerScript akSen
 	
 	If timeLeftToGrow > 0.033
 		StartTimerGameTime(timeLeftToGrow)
+	elseIf timeLeftToGrow <= 0.033
+		GrowIntoChild()
 	Else
 		GrowIntoChild()
 	EndIf
 
 EndEvent
+
+
+Function CheckTime()
+
+	CancelTimerGameTime()
+	
+	float timeLeftToGrow = GetBabyToChildTimeLeft()
+	
+	If timeLeftToGrow > 0.033
+		StartTimerGameTime(timeLeftToGrow)
+	elseIf timeLeftToGrow <= 0.033
+		GrowIntoChild()
+	Else
+		GrowIntoChild()
+	EndIf
+	
+EndFunction
+
 
 Sound Function GetBabyBirthSound()
 	
@@ -134,6 +156,8 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 	If Bad_Container && akNewContainer.GetBaseObject() == Bad_Container
 		Trace("OnContainerChanged has failed because of ESPExplorerFO4")
 	Else
+		CheckTime()
+	
 		Trace("We've been moved to " + akNewContainer + " from " + akOldContainer)
 		If IsGrowingUp
 			Trace("It was done while growing up")
@@ -142,7 +166,9 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 		
 		ContainerOR = akNewContainer ; Whatever the container is, we shove it into the ContainerOR. ; ovh do a no container check that would initiate looking for a crib.
 		
+		
 		If ContainerOR ; put into a container
+		
 			If CribOR
 				BabyHandler.SetCribOwner(CribOR, False)
 				CribOR = NONE
@@ -159,6 +185,7 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 			
 			If CurLo && CurLo.HasKeyword(BabyHandler.KeySettle) 
 				CribOR = BabyHandler.GetCrib()
+				CheckTime()
 				If CribOR
 					BabyHandler.SetCribOwner(CribOR)
 					PlaceSelfAt(CribOR, 52.0)
@@ -305,7 +332,9 @@ Function GrowIntoChild()
 	
 	Trace("We placed "+theChild)
 	
-	theChild.SetValue(BabyHandler.FPFP_AV_BirthDate, BirthDate)
+	;theChild.SetValue(BabyHandler.FPFP_AV_BirthDate, BirthDate)
+	
+	theChild.SetValue(BabyHandler.FPFP_AV_BirthDate, Utility.GetCurrentGameTime())
 	
 	theChild.SetValue(BabyHandler.FPFP_AV_GrowthTimeMult, GetGrowthMultiplier())
 	

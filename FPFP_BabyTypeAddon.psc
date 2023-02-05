@@ -14,6 +14,10 @@ Race[] Property FatherRace Auto Const Mandatory
 {If a father's race matches this one, then the woman should birth this kind of child. 
 Note, this is checked if there are no elements in the FatherRaceKeywords variable.}
 
+Form[] Property BabyTypeItem_nongrowing_F Auto Const
+Form[] Property BabyTypeItem_nongrowing_M Auto Const
+Form[] Property BabyTypeItem_nongrowing Auto Const
+
 EndGroup
 
 Group OptionalProperties
@@ -21,6 +25,10 @@ Group OptionalProperties
 Form[] Property OptionalChildActors_F Auto Const
 Form[] Property OptionalChildActors_M Auto Const
 Form[] Property OptionalChildActors Auto Const
+
+Form[] Property OptionalAdultActors_F Auto Const
+Form[] Property OptionalAdultActors_M Auto Const
+Form[] Property OptionalAdultActors Auto Const
 {This list holds any child actors that should be spawned on birth. 
 NOTE that if this is filled with one viable actor base, then the BabyTypeItem variable is ignored.}
 
@@ -45,7 +53,6 @@ Group Data_Creature
 	Potion Property Egg_Object Auto Const	;if Creature can lay an egg
 	Potion Property Milk_Object Auto Const	;if Creature can be Milked
 	Bool Property Creature_Cycle_Multi = false Auto Const	;If a creature pregnancy has multple birthings
-	Bool Property Creature_Start = false Auto Const	;if the pregnancy starts halfway (for WDF Impregnation Mod)
 	String Property Creature_String Auto Const	;Creatures Sex Message
 	String Property Creature_String_Birth Auto Const	;Creatures Birth Message
 	String Property Creature_String_Impreg Auto Const	;Creatures Impregnation Message
@@ -61,10 +68,23 @@ Group Data_Creature
 	GlobalVariable property INVB_Global_Creature_Chance Auto Const Mandatory ;Chances of Pregnancy
 	GlobalVariable property INVB_Global_Creature_Length Auto Const Mandatory ;Length of Pregnancy
 	GlobalVariable property INVB_Global_Creature_Morph Auto Const Mandatory ;Size of Morph
+	GlobalVariable property INVB_Global_Creature_Morph_Cumflation Auto Const Mandatory ;Size of Cumflation Morph
 	GlobalVariable property INVB_Global_Creature_Extra Auto Const Mandatory ;Extra Babies
 	
 	Actorbase Property NewFather Auto Const ;Fake Father who will come in to cockblock you
 	Perk Property Creature_Balls Auto Const	;Creatures Perk when given to NPC allows them to father this Race
+	GlobalVariable property INVB_Global_Creature_BabyToChild Auto Const Mandatory ;Length of Born Baby To Child Growth
+	GlobalVariable property INVB_Global_Creature_BabyToChild_Revived Auto Const Mandatory ;Length of Revived Baby To Child Growth
+	GlobalVariable property INVB_Global_Creature_ChildToAdult Auto Const Mandatory ;Length of Child To Adult Growth
+	
+	ActorValue Property INVB_Global_Creature_BirthCounter Auto Const
+	Perk Property INVB_Global_Creature_BirthPerk Auto
+	GlobalVariable property INVB_Global_Creature_BirthCounter_Global Auto Const Mandatory
+	ActorValue Property INVB_Global_Creature_SexCounter Auto Const
+	Perk Property INVB_Global_Creature_SexPerk Auto
+	GlobalVariable property INVB_Global_Creature_SexCounter_Global Auto Const Mandatory
+
+
 EndGroup
 
 Group Data_Adults
@@ -91,7 +111,7 @@ Event OnQuestInit()
 	
 EndEvent
 
-Var Function GetBabyType(bool Breeder, float mod) 
+Var Function GetBabyType(bool nongrowing, float mod) 
 
 	Var theReturn
 	
@@ -102,11 +122,31 @@ Var Function GetBabyType(bool Breeder, float mod)
 		random_Viable = random_Viable * mod as int
 	endif	
 	
-	if random_Viable >= FPFP_Global_Viable.GetValue()
+	if nongrowing == true && (BabyTypeItem_nongrowing.Length > 0 || BabyTypeItem_nongrowing_F.Length > 0 || BabyTypeItem_nongrowing_M.Length > 0)
+		If BabyTypeItem_nongrowing.Length > 0
+			Return BabyTypeItem_nongrowing[Utility.RandomInt(0,BabyTypeItem_nongrowing.Length-1)]
+		endif
+		
+		if (random_LList <= FPFP_Global_Gender_Select.GetValue())
+			Return BabyTypeItem_nongrowing_F[Utility.RandomInt(0,BabyTypeItem_F.Length-1)]
+		else
+			Return BabyTypeItem_nongrowing_M[Utility.RandomInt(0,BabyTypeItem_M.Length-1)]
+		EndIf
+		
+	elseif random_Viable >= FPFP_Global_Viable.GetValue()
 		Return BabyTypeItem_dead[Utility.RandomInt(0,BabyTypeItem_dead.Length-1)]
 	else
 	
-		If OptionalChildActors_F.Length > 0 && INVB_Global_Creature_Birth.GetValue() == 1 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+		If OptionalAdultActors_F.Length > 0 && INVB_Global_Creature_Birth.GetValue() == 2 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
+			Return OptionalAdultActors_F[Utility.RandomInt(0,OptionalAdultActors_F.Length-1)]
+
+		ElseIf OptionalAdultActors_M.Length > 0 && INVB_Global_Creature_Birth.GetValue() == 2
+			Return OptionalAdultActors_M[Utility.RandomInt(0,OptionalAdultActors_M.Length-1)]
+		
+		ElseIf OptionalAdultActors.Length > 0 && INVB_Global_Creature_Birth.GetValue() == 2
+			Return OptionalAdultActors[Utility.RandomInt(0,OptionalAdultActors.Length-1)]
+	
+		ElseIf OptionalChildActors_F.Length > 0 && INVB_Global_Creature_Birth.GetValue() == 1 && (random_LList <= FPFP_Global_Gender_Select.GetValue())
 			Return OptionalChildActors_F[Utility.RandomInt(0,OptionalChildActors_F.Length-1)]
 
 		ElseIf OptionalChildActors_M.Length > 0 && INVB_Global_Creature_Birth.GetValue() == 1
@@ -154,13 +194,8 @@ EndFunction
 
 Int Function AdditionalBabies() ; This function is here to ensure that the add.babbs are >= 0
 	
-	;If ExtraBabiesToAdd >= 0
-	
-	;	return ExtraBabiesToAdd
-	;else 
-	
-	if INVB_Global_Creature_Birth.GetValue() > 0
-		return ExtraBabiesToAdd
+	If INVB_Global_Creature_Extra.GetValue() as int >= 0
+		return INVB_Global_Creature_Extra.GetValue() as int
 	EndIf
 	
 	return 0

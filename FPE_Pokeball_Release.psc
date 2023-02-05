@@ -10,7 +10,10 @@ String SummonName
 
 Event OnEffectStart(Actor akActor, Actor akCaster)
 	if Has_Array == false
-		Utility.Wait(2.5)
+		Game.FadeOutGame(true, true, 0, 1, true)
+			Utility.Wait(1)
+			Debug.notification("Ten Minutes Later.")
+			Utility.Wait(1)
 			
 		Actor tempActor = akCaster.PlaceAtMe(Creature_Donor) as Actor
 	
@@ -29,8 +32,12 @@ Event OnEffectStart(Actor akActor, Actor akCaster)
 		endif
 		
 		RenameAnything.SetRefName(tempActor, SummonName)
+		Game.FadeOutGame(false, true, 0, 1)	
 	elseif Has_Array == true
-		Utility.Wait(2.5)
+		Game.FadeOutGame(true, true, 0, 1, true)
+			Utility.Wait(1)
+			Debug.notification("Ten Minutes Later.")
+			Utility.Wait(1)
 		int random_Gift = Utility.RandomInt(0, Creature_Donors.Length-1)
 		
 		Actor tempActor = akCaster.PlaceAtMe(Creature_Donors[random_Gift]) as Actor
@@ -50,5 +57,6 @@ Event OnEffectStart(Actor akActor, Actor akCaster)
 		endif
 		
 		RenameAnything.SetRefName(tempActor, SummonName)
+		Game.FadeOutGame(false, true, 0, 1)	
 	endif	
 EndEvent
